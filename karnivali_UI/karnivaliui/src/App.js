@@ -1,11 +1,17 @@
-import logo from './logo.svg';
+
 import './App.css';
+import Welcome from './WelcomePage/welcomeBox';
+import StartBtn from './WelcomePage/clickStartBox';
 
 function App() {
   return (
-    <div className="App">
-      <h1>Welcome to Karnivalli</h1>
+    <div className="Window">
+      
+      <Welcome />
+      <StartBtn />
     </div>
+
+
   );
 }
 
