@@ -1,0 +1,29 @@
+/* Jacob's App CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    justify-content: center;
+  }
+  
+  .App {
+    text-align: center;
+    background-color: whitesmoke;
+  }
+  
+  .Window {
+    height: 200px;
+    width: 400px;
+    background-color: lightblue;
+    color: whitesmoke;
+    border-top-right-radius: 50px;
+    border-bottom-left-radius: 50px;
+  }
+  
+  .btn {
+    background-color: whitesmoke;
+    padding: 5px 10px 5px 10px;
+    border: none;
+    border-radius: 5px;
+  }
+  /* end of Jacob's CSS */

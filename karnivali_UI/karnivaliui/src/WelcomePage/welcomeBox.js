@@ -1,0 +1,19 @@
+import React from "react";
+import { ReactDOM } from "react";
+import "./welcomePage.css";
+
+
+function Welcome() {
+
+
+    return (
+      <div>
+          <h1>
+            Welcome to Karnivali!
+          </h1>
+      </div>
+    );
+  }
+
+
+export default Welcome;
