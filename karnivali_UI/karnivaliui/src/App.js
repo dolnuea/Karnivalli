@@ -8,7 +8,9 @@ function App() {
     <div className="Window">
       
       <Welcome />
+      
       <StartBtn />
+      
     </div>
 
 
