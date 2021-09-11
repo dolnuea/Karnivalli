@@ -1,17 +1,16 @@
-
-import './App.css';
 import RPSGameScreen from './RockPaperScissorJake/RPKGameScreenJake';
-// import Welcome from './WelcomePage/welcomeBox';
-// import StartBtn from './WelcomePage/clickStartBox';
-import RPSJake from './RockPaperScissorJake/RPKGameScreenJake.js';
+import WelcomeScreen from './WelcomePage/WelcomeScreen'
+import './App.css'
+
 
 function App() {
   return (
     <div>
-      <RPSGameScreen/>
-      {/* <Welcome /> */}
       
-      {/* <StartBtn /> */}
+      
+      <WelcomeScreen />
+      
+      {/* <RPSGameScreen/> */}
       
     </div>
 
