@@ -7,7 +7,7 @@
   }
 
 
-.RPKboard {
+.RPSboard {
     display: flex;
     flex-direction: row;
     height: 100vh;
@@ -21,23 +21,26 @@
 .RPSobject{
     height: 250px;
     width: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 
-.RPSLeft {
+.childBox:nth-child(1) {
     background-color: red;
     border-top-right-radius: 7em;
 }
 
 
-.RPSMiddle {
+.childBox:nth-child(2) {
     background-color: blue;
     border-bottom-right-radius: 7em;
 
 }
 
 
-.RPSRight {
+.childBox:nth-child(3) {
     background-color: green;
     border-bottom-left-radius: 7em;
 }

@@ -1,19 +1,21 @@
-import React from "react";
+import React, {useState} from "react";
 import { ReactDOM } from "react";
 
 import RPSObject from "./rockPaperScissorJake";
 import "./rockPaperScissorJake.css";
 
-function RPKGameScreen() {
+function RPSGameScreen() {
     
 
 
     return (
-      <div>
-          <RPSObject/>
+      <div className="RPSboard">
+          <RPSObject Name="leftObject"/>
+          <RPSObject Name="middleObject"/>
+          <RPSObject Name="rightObject"/>
       </div>
     );
   }
 
 
-export default RPKGameScreen;
+export default RPSGameScreen;

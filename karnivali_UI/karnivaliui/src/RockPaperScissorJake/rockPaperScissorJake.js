@@ -1,30 +1,29 @@
-import React from "react";
+import React, {useState} from "react";
 import { ReactDOM } from "react";
 import "./rockPaperScissorJake.css";
 
-function RPSObject() {
+function RPSObject(props) {
     
+    const [objectCount, setObjectCount] = useState(0);
+
 
     let roll = () => {
-        let randNum = Math.floor(Math.random() * 3);
-        console.log(randNum);
-        return(randNum);
+
+        setObjectCount(Math.floor(Math.random() * 3) + 1)
+
+        // let randNum = Math.floor(Math.random() * 3) + 1;
+        // console.log(randNum);
+        // return(randNum);
     };
 
     // Need to find a way to roll the roll function individually for each object and display it in the shape
 
     return (
-      <div className="RPKboard">
-          <div className="RPSobject RPSLeft" onClick={roll}>
-            <h1>Test</h1>
-          </div>
-
-          <div className="RPSobject RPSMiddle" onClick={roll}>
-            Click to get started!
-          </div>
-
-          <div className="RPSobject RPSRight" onClick={roll}>
-            Click to get started!
+      <div className="childBox">
+          <div className="RPSobject" onClick={roll}>
+            <h1>{props.Name}</h1>
+            <p>{objectCount}</p>
+            
           </div>
       </div>
     );
