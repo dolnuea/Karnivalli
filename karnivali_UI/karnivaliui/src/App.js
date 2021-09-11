@@ -1,6 +1,6 @@
 import RPSGameScreen from './RockPaperScissorJake/RPKGameScreenJake';
 import WelcomeScreen from './WelcomePage/WelcomeScreen'
-
+import GameSelectScreen from './SelectGame/GameSelectScreen';
 import StartOrJoinScreen from './StartOrJoinGame/StartOrJoinScreen';
 import './App.css'
 
@@ -8,16 +8,18 @@ import './App.css'
 
 function App() {
   return (
-    <div>
+    <div >
 
-      <StartOrJoinScreen />
+      <GameSelectScreen />
+
+      { /* <StartOrJoinScreen /> */}
 
       { /* <WelcomeScreen /> */}
 
       { /* <RPSGameScreen/> */}
 
-    </div>
-  );
+      </div>
+      );
 }
 
-export default App;
+      export default App;
