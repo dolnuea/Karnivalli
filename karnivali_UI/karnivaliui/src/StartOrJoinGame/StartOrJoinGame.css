@@ -35,3 +35,7 @@
     margin-top: 200px;
     background-color: teal;
 }
+
+.Gamebox:hover {
+    color: rgb(204, 187, 187);
+}
