@@ -8,10 +8,12 @@ https://docs.djangoproject.com/en/3.2/howto/deployment/asgi/
 """
 
 import os
-from django.core.asgi import get_asgi_applicationfrom channels.routing import ProtocolTypeRouter,URLRouter
+from django.core.asgi import get_asgi_application
+from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 from django.urls import path
 from .consumers import GameRoom
+from .consumers_rps import RPS
 
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'karnivali.settings')
@@ -19,10 +21,16 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'karnivali.settings')
 application = get_asgi_application()
 
 
-application= ProtocolTypeRouter(
+application = ProtocolTypeRouter(
     {
-        'websocket':AuthMiddlewareStack(URLRouter([
-            path('ws/game/<room_code>' , GameRoom)
+        'websocket': AuthMiddlewareStack(URLRouter([
+            path('ws/game/<room_code>', GameRoom)
+
+        ]))
+    },
+    {
+        'websocket': AuthMiddlewareStack(URLRouter([
+            path('ws/game/rps/<room_code>', RPS)
 
         ]))
     }
