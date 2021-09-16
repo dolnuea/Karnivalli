@@ -1,6 +1,7 @@
 import React from "react";
 import { ReactDOM } from "react";
-import "./welcomePage.css";
+import { Button } from '../Components/Button.styles.js';
+// import "./welcomePage.css";
 
 
 function Welcome() {
