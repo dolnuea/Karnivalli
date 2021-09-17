@@ -1,5 +1,6 @@
 import WelcomeScreen from "./WelcomeScreen";
 import StartOrJoinScreen from "./StartOrJoinScreen.js";
+import PlayAgainBox from "./PlayAgainBox";
 import './App.css';
 
 
@@ -9,7 +10,9 @@ function App() {
   return (
     <div>
 
-      <StartOrJoinScreen />
+      <PlayAgainBox />
+
+      {/* <StartOrJoinScreen /> */}
 
        {/* <WelcomeScreen />  */}
       
