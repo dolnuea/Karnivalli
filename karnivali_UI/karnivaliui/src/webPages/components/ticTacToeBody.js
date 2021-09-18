@@ -35,8 +35,10 @@ const TicTacToeBody = (props) => {
             console.log(data)
             if (data.payload.type == 'end' && data.payload.player !== player) {
                 alert("Sorry! you lost")
+                //options page
             } else if (data.payload.type == 'over') {
                 alert("Game over! game end no one won")
+                //options page
                 return;
             } else if (data.payload.type == 'running' && data.payload.player !== player) {
                 setAnotherUserText(data.payload.index, data.payload.player)
@@ -73,6 +75,7 @@ const TicTacToeBody = (props) => {
             var data = { 'type': 'over' }
             socket.send(JSON.stringify({ data }))
             alert("Game ends in a draw!!")
+            //options page
         }
     }
 
@@ -106,6 +109,7 @@ const TicTacToeBody = (props) => {
             socket.send(JSON.stringify({ data }))
             alert("Good job!, You won")
         } else {
+            //options page
             checkGameEnd();
         }
 
