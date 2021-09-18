@@ -13,12 +13,19 @@ function App() {
   return (
     <div>
 
-      <PlayAgainBox />
+          {/*   <PlayAgainBox />*/}
 
       {/* <StartOrJoinScreen /> */}
 
-       {/* <WelcomeScreen />  */}
-      
+          {/* <WelcomeScreen />  */}
+
+          {/* <StartGame /> */}
+
+          <Router>
+              <div className="App">
+                  <StartOrJoinScreen />
+              </div>
+          </Router>
 
 
     </div>
