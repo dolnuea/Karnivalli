@@ -1,5 +1,6 @@
 import React from "react";
 import reactDom from "react-dom";
+import {useHistory} from 'react-router-dom';
 import './App.css'
 import { GameboxStart, GameboxJoin, StartJoinScreen } from './Components/StartJoin.styles'
 
@@ -11,9 +12,16 @@ function StartOrJoinScreen(props) {
     alert("Let's party!")
   };
 
+  const history = useHistory();
+
+    const routeChange = () =>{ 
+        let path = 'game-selection'; 
+        history.push(path);
+    }
+
   return (
     <StartJoinScreen>
-      <GameboxStart onClick={redAlert}>
+      <GameboxStart onClick={routeChange}>
         <h1>
           Start New Game
         </h1>

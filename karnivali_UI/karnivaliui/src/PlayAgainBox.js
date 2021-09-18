@@ -1,10 +1,20 @@
 import { PlayAgainScreen, PlayAgainWinLose, ReplayGameBox } from "./Components/PlayAgain.styles";
+import {useHistory} from 'react-router-dom';
+
 
 const redAlert = () => {
     alert("Let's party!")
 };
 
 function PlayAgainBox(props) {
+
+    const history = useHistory();
+
+    const routeChange = () =>{ 
+        let path = ''; //go to welcome page
+        history.push(path);
+    }
+
     return (
         <PlayAgainScreen>
             <PlayAgainWinLose onClick={redAlert} >
