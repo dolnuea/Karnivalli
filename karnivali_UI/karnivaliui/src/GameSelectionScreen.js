@@ -1,4 +1,4 @@
-import {GameSelectionStyles } from "./Components/GameSelectionStyles";
+import {GameSelectionStyles } from "./Components/GameSelection.styles";
 import {useHistory} from 'react-router-dom';
 
 
