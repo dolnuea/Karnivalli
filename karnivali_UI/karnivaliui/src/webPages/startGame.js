@@ -18,7 +18,7 @@ function StartGame() {
         console.log('startGame', text)
         history.push("/play/tictactoe")
 
-        
+
     }
 
     const joinGame = () => {
@@ -40,7 +40,7 @@ function StartGame() {
         <div className="StartGame">
             <Switch>
                 <Route exact path="/play">
-                    <form className='add-form' onSubmit={(e) => {e.preventDefault()}}>
+                    <form className='add-form' onSubmit={(e) => { e.preventDefault() }}>
                         <div className='form-control'>
                             <label>Room Number</label>
                             <input
@@ -51,12 +51,12 @@ function StartGame() {
                             />
                         </div>
 
-                        <input type='submit' name='start' value='Start Game' className='btn btn-block' onClick={startGame}/>
-                        <input type='submit' name='join' value='Join Game' className='btn btn-block' onClick={joinGame}/>
+                        <input type='submit' name='start' value='Start Game' className='btn btn-block' onClick={startGame} />
+                        <input type='submit' name='join' value='Join Game' className='btn btn-block' onClick={joinGame} />
                     </form>
                 </Route>
                 <Route path="/play/tictactoe">
-                    <TicTacToe roomNumber={text} playColor={playColor}/>
+                    <TicTacToe roomNumber={text} playColor={playColor} />
                 </Route>
 
             </Switch>

@@ -24,14 +24,13 @@ application = get_asgi_application()
 application = ProtocolTypeRouter(
     {
         'websocket': AuthMiddlewareStack(URLRouter([
-            path('ws/game/<room_code>', GameRoom)
-
+            path('ws/game/<room_code>', GameRoom),
+            path('ws/game/rps/<room_code>', RPS)
         ]))
     },
-    {
-        'websocket': AuthMiddlewareStack(URLRouter([
-            path('ws/game/rps/<room_code>', RPS)
-
-        ]))
-    }
+    # {
+    #     'websocket': AuthMiddlewareStack(URLRouter([
+    #         path('ws/game/rps/<room_code>', RPS)
+    #     ]))
+    # }
 )

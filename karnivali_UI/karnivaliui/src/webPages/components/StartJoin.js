@@ -16,7 +16,7 @@ export default function StartJoin() {
         }
         setPlayer('p1')
         console.log('startGame', roomcode)
-        history.push("/rps")
+        history.push("/rps/")
     }
 
     const joinGame = () => {
@@ -34,7 +34,7 @@ export default function StartJoin() {
     return (
         <div>
             <Switch>
-                <Route exact path="/">
+                <Route exact path="/gamerps">
                     <form onSubmit={(e) => { e.preventDefault() }}>
                         <div>
                             <label>Room Number</label>

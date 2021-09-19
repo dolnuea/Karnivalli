@@ -11,7 +11,7 @@ export default function RockPaperScissor(props) {
     const [paper, setPaper] = useState('paper')
     const [scissor, setScissor] = useState('scissor')
 
-    let socket = new W3CWebSocket('ws://localhost:8000/ws/game/rps' + props.roomCode)
+    let socket = new W3CWebSocket('ws://localhost:8000/ws/game/rps/' + props.roomCode)
 
     let userChoices = {}
 
