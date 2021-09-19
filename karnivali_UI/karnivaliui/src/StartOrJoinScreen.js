@@ -21,9 +21,19 @@ function StartOrJoinScreen(props) {
   const history = useHistory();
 
   const routeChange = () => {
-    let path = "game-selection";
+    let path = ""; //the game selected
     history.push(path);
   };
+
+  
+//   const routeChangetoTTT = () =>{ 
+//     let path = 'tic-tac-toe'; 
+//     history.push(path);
+// }
+//   const routeChangetoRPS = () =>{ 
+//       let path = 'rock-paper-scissor'; 
+//       history.push(path);
+//   }
 
   return (
     <>
