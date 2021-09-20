@@ -1,6 +1,6 @@
 import React from "react";
 import { ReactDOM } from "react";
-import {useHistory} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import StartOrJoinScreen from "./StartOrJoinScreen.js";
 import { StartButton, WelcomeWindow } from "./Components/Welcome.styles";
 
@@ -13,8 +13,8 @@ function WelcomeScreen() {
 
     const history = useHistory();
 
-    const routeChange = () =>{ 
-        let path = 'game-selection'; 
+    const routeChange = () => {
+        let path = 'game-selection';
         history.push(path);
     }
 

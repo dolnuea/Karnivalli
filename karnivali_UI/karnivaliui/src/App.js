@@ -12,14 +12,6 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 export default function App() {
   return (
     <div className="App">
-      {/*   <PlayAgainBox />/}
-
-      {/ <StartOrJoinScreen /> /}
-
-          {/ <WelcomeScreen />  /}
-
-          {/ <StartGame /> */}
-
       <Router>
         <Switch>
           <Route
@@ -31,11 +23,6 @@ export default function App() {
             exact
             path="/start-or-join"
             render={(props) => <StartOrJoinScreen {...props} />}
-          />
-          <Route
-            exact
-            path="/game-selection"
-            render={(props) => <GameSelectionScreen {...props} />}
           />
           <Route
             exact
