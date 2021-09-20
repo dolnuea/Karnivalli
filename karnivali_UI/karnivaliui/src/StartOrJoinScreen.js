@@ -28,19 +28,19 @@ function StartOrJoinScreen(props) {
     history.push(path);
   };
 
-  
-//   const routeChangetoTTT = () =>{ 
-//     let path = 'tic-tac-toe'; 
-//     history.push(path);
-// }
-//   const routeChangetoRPS = () =>{ 
-//       let path = 'rock-paper-scissor'; 
-//       history.push(path);
-//   }
+
+  //   const routeChangetoTTT = () =>{ 
+  //     let path = 'tic-tac-toe'; 
+  //     history.push(path);
+  // }
+  //   const routeChangetoRPS = () =>{ 
+  //       let path = 'rock-paper-scissor'; 
+  //       history.push(path);
+  //   }
 
   return (
     <>
-    <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Modal heading</Modal.Title>
         </Modal.Header>
@@ -54,26 +54,26 @@ function StartOrJoinScreen(props) {
           </Button>
         </Modal.Footer>
       </Modal>
-      
-    <StartJoinScreen>
 
-      <h1>Selected Game: {selectedGame}</h1>
-      
-      <GameboxStart onClick={routeChange}>
-        <h1>Start New Game</h1>
-      </GameboxStart>
+      <StartJoinScreen>
 
-      <GameboxJoin onClick={handleShow}>
-        <h1>Join Game</h1>
-        <form>
-          <label>
-            Room Number:
-            <input type="text" name="roomnumber" />
-          </label>
-          <input type="submit" value="Submit" />
-        </form>
-      </GameboxJoin>
-    </StartJoinScreen>
+        <h1>Selected Game: {selectedGame}</h1>
+
+        <GameboxStart onClick={routeChange}>
+          <h1>Start New Game</h1>
+        </GameboxStart>
+
+        <GameboxJoin onClick={handleShow}>
+          <h1>Join Game</h1>
+          <form>
+            <label>
+              Room Number:
+              <input type="text" name="roomnumber" />
+            </label>
+            <input type="submit" value="Submit" />
+          </form>
+        </GameboxJoin>
+      </StartJoinScreen>
     </>
   );
 }
