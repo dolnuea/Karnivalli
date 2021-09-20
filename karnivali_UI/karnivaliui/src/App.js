@@ -39,11 +39,6 @@ export default function App() {
           />
           <Route
             exact
-            path="/game-selection"
-            render={(props) => <GameSelectionScreen {...props} />}
-          />
-          <Route
-            exact
             path="/tic-tac-toe"
             render={(props) => <TicTacToe {...props} />}
           />

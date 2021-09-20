@@ -14,6 +14,9 @@ function StartOrJoinScreen(props) {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  // The selected game passed from GameSelectionScreen
+  const selectedGame = props.location.state;
+
   const redAlert = () => {
     alert("Let's party!");
   };
@@ -21,7 +24,7 @@ function StartOrJoinScreen(props) {
   const history = useHistory();
 
   const routeChange = () => {
-    let path = ""; //the game selected
+    let path = selectedGame;
     history.push(path);
   };
 
@@ -53,6 +56,9 @@ function StartOrJoinScreen(props) {
       </Modal>
       
     <StartJoinScreen>
+
+      <h1>Selected Game: {selectedGame}</h1>
+      
       <GameboxStart onClick={routeChange}>
         <h1>Start New Game</h1>
       </GameboxStart>
