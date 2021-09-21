@@ -25,29 +25,43 @@ export default function RockPaperScissor(props) {
         socket.onmessage = function (e) {
             var data = JSON.parse(e.data).payload
             console.log(data)
-
+            if (data.state === "draw") {
+                alert("Its a draw")
+                return
+            }
+            if (data.state === props.player) {
+                alert("you won")
+                return
+            } else if (data.state === 'p2' && props.player === 'p1') {
+                alert("you lost")
+                return
+            } else if (data.state === 'p1' && props.player === 'p2') {
+                alert("you lost")
+                return
+            }
+            let value = data.value
+            let player = data['player']
             userChoices[data['player']] = data.value
             console.log(userChoices)
 
+            let state = 'continue'
+
             if (userChoices.p1 !== undefined && userChoices.p2 !== undefined) {
+
                 if (userChoices.p1 === userChoices.p2) {
-                    alert('game is draw')
-                    userChoices = {}
+                    state = 'draw'
                 } else if (userChoices.p1 === 'rock' && userChoices.p2 === 'scissor') {
-                    alert('player 1 won')
-                    //send message
-                    userChoices = {}
+                    state = "p1"
                 } else if (userChoices.p1 === 'paper' && userChoices.p2 === 'rock') {
-                    alert('player 1 won')
-                    userChoices = {}
+                    state = "p1"
                 } else if (userChoices.p1 === 'scissor' && userChoices.p2 === 'paper') {
-                    alert('player 1 won')
-                    userChoices = {}
+                    state = "p1"
                 } else {
-                    alert('player 2 won')
-                    userChoices = {}
+                    state = "p2"
+
                 }
             }
+
         }
 
         socket.onclose = function (e) {
@@ -65,9 +79,29 @@ export default function RockPaperScissor(props) {
             currentTurn = false
         }
 
+        userChoices[player] = value
+        let state = 'progress'
+
+        if (userChoices.p1 !== undefined && userChoices.p2 !== undefined) {
+
+            if (userChoices.p1 === userChoices.p2) {
+                state = 'draw'
+            } else if (userChoices.p1 === 'rock' && userChoices.p2 === 'scissor') {
+                state = "p1"
+            } else if (userChoices.p1 === 'paper' && userChoices.p2 === 'rock') {
+                state = "p1"
+            } else if (userChoices.p1 === 'scissor' && userChoices.p2 === 'paper') {
+                state = "p1"
+            } else {
+                state = "p2"
+
+            }
+        }
+
         socket.send(JSON.stringify({
             value,
-            player
+            player,
+            state
         }))
     }
 
