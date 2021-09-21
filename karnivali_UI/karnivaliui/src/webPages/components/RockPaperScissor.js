@@ -7,9 +7,9 @@ let currentTurn = true
 export default function RockPaperScissor(props) {
     console.log(props)
 
-    const [rock, setRock] = useState('rock')
-    const [paper, setPaper] = useState('paper')
-    const [scissor, setScissor] = useState('scissor')
+    // const [rock, setRock] = useState('rock')
+    // const [paper, setPaper] = useState('paper')
+    // const [scissor, setScissor] = useState('scissor')
 
     let socket = new W3CWebSocket('ws://localhost:8000/ws/game/rps/' + props.roomCode)
 
@@ -35,6 +35,7 @@ export default function RockPaperScissor(props) {
                     userChoices = {}
                 } else if (userChoices.p1 === 'rock' && userChoices.p2 === 'scissor') {
                     alert('player 1 won')
+                    //send message
                     userChoices = {}
                 } else if (userChoices.p1 === 'paper' && userChoices.p2 === 'rock') {
                     alert('player 1 won')
@@ -58,9 +59,10 @@ export default function RockPaperScissor(props) {
     function sendData(value, player) {
         if (currentTurn == false) {
             alert("Please wait for the oppsition's turn!!")
+            currentTurn = true
             return
         } else {
-            currentTurn = true
+            currentTurn = false
         }
 
         socket.send(JSON.stringify({
@@ -68,6 +70,8 @@ export default function RockPaperScissor(props) {
             player
         }))
     }
+
+
 
     return (
         <div>
