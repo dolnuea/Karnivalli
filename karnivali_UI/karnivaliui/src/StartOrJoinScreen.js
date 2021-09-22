@@ -17,9 +17,6 @@ function StartOrJoinScreen(props) {
   // The selected game passed from GameSelectionScreen
   const selectedGame = props.location.state;
 
-  const redAlert = () => {
-    alert("Let's party!");
-  };
 
   const history = useHistory();
 
@@ -29,28 +26,22 @@ function StartOrJoinScreen(props) {
   };
 
 
-  //   const routeChangetoTTT = () =>{ 
-  //     let path = 'tic-tac-toe'; 
-  //     history.push(path);
-  // }
-  //   const routeChangetoRPS = () =>{ 
-  //       let path = 'rock-paper-scissor'; 
-  //       history.push(path);
-  //   }
-
   return (
     <>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
+          <Modal.Title>Hold up...</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+        <Modal.Body>Please enter room number</Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
+        <form>
+              <input type="text" />
+            <Button variant="primary" onClick={handleClose}>
+            Enter
           </Button>
-          <Button variant="primary" onClick={handleClose}>
-            Save Changes
+          </form>
+          <Button variant="secondary" onClick={handleClose}>
+            Cancel
           </Button>
         </Modal.Footer>
       </Modal>
@@ -65,13 +56,6 @@ function StartOrJoinScreen(props) {
 
         <GameboxJoin onClick={handleShow}>
           <h1>Join Game</h1>
-          <form>
-            <label>
-              Room Number:
-              <input type="text" name="roomnumber" />
-            </label>
-            <input type="submit" value="Submit" />
-          </form>
         </GameboxJoin>
       </StartJoinScreen>
     </>
