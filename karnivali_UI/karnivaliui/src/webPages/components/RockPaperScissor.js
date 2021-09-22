@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { w3cwebsocket as W3CWebSocket } from "websocket";
-
+import { RockPaperScissorBackground, Slot, Rock, Paper, Scissor } from "./rockPaperScissors.styles";
 
 let currentTurn = true
 
@@ -112,10 +112,10 @@ export default function RockPaperScissor(props) {
 
 
     return (
-        <div>
-            <button onClick={(e) => { sendData('rock', props.location.state.player) }}>Rock</button>
-            <button onClick={(e) => { sendData('paper', props.location.state.player) }}>Papper</button>
-            <button onClick={(e) => { sendData('scissor', props.location.state.player) }}>Scissors</button>
-        </div>
+        <RockPaperScissorBackground>
+            <Slot onClick={(e) => { sendData('rock', props.location.state.player) }}><Rock>🪨</Rock></Slot>
+            <Slot onClick={(e) => { sendData('paper', props.location.state.player) }}><Paper>📜</Paper></Slot>
+            <Slot onClick={(e) => { sendData('scissor', props.location.state.player) }}><Scissor>✂️</Scissor></Slot>
+        </RockPaperScissorBackground>
     )
 }
