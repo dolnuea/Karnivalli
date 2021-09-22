@@ -14,6 +14,8 @@ function StartOrJoinScreen(props) {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+    const [roomCode, setRoomCode] = useState("");
+
   // The selected game passed from GameSelectionScreen
   const selectedGame = props.location.state;
 
@@ -23,10 +25,39 @@ function StartOrJoinScreen(props) {
 
   const history = useHistory();
 
-  const routeChange = () => {
+  const routeChangeStart = () => {
+      if (!roomCode) {
+            alert("Please add a room number");
+            return;
+        }
+      console.log("startGame", roomCode);
     let path = selectedGame;
-    history.push(path);
-  };
+      
+      history.push({
+          pathname: path,
+          state: {
+              roomCode: roomCode,
+              player: "p1"
+          }
+      });
+    };
+
+    const routeChangeJoin = () => {
+        if (!roomCode) {
+            alert("Please add a room number");
+            return;
+        }
+        console.log("joinRoom", roomCode);
+        let path = selectedGame;
+        
+        history.push({
+            pathname: path,
+            state: {
+                roomCode: roomCode,
+                player: "p2"
+            }
+        });
+    };
 
 
   //   const routeChangetoTTT = () =>{ 
@@ -54,24 +85,25 @@ function StartOrJoinScreen(props) {
           </Button>
         </Modal.Footer>
       </Modal>
-
+    
       <StartJoinScreen>
 
-        <h1>Selected Game: {selectedGame}</h1>
+              <label>Room Number</label>
+              <input
+                  type="text"
+                  placeholder="Type Room Number "
+                  value={roomCode}
+                  onChange={(e) => setRoomCode(e.target.value)}
+              />
 
-        <GameboxStart onClick={routeChange}>
-          <h1>Start New Game</h1>
+        <GameboxStart onClick={routeChangeStart}>
+                  <h1>Start New Game</h1>
+                  
         </GameboxStart>
 
-        <GameboxJoin onClick={handleShow}>
+              <GameboxJoin onClick={routeChangeJoin}>
           <h1>Join Game</h1>
-          <form>
-            <label>
-              Room Number:
-              <input type="text" name="roomnumber" />
-            </label>
-            <input type="submit" value="Submit" />
-          </form>
+               
         </GameboxJoin>
       </StartJoinScreen>
     </>

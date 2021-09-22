@@ -11,7 +11,7 @@ export default function RockPaperScissor(props) {
     // const [paper, setPaper] = useState('paper')
     // const [scissor, setScissor] = useState('scissor')
 
-    let socket = new W3CWebSocket('ws://localhost:8000/ws/game/rps/' + props.roomCode)
+    let socket = new W3CWebSocket('ws://localhost:8000/ws/game/rps/' + props.location.state.roomCode)
 
     let userChoices = {}
 
@@ -27,16 +27,20 @@ export default function RockPaperScissor(props) {
             console.log(data)
             if (data.state === "draw") {
                 alert("Its a draw")
+                currentTurn = true
                 return
             }
-            if (data.state === props.player) {
+            if (data.state === props.location.state.player) {
                 alert("you won")
+                currentTurn = true
                 return
-            } else if (data.state === 'p2' && props.player === 'p1') {
+            } else if (data.state === 'p2' && props.location.state.player === 'p1') {
                 alert("you lost")
+                currentTurn = true
                 return
-            } else if (data.state === 'p1' && props.player === 'p2') {
+            } else if (data.state === 'p1' && props.location.state.player === 'p2') {
                 alert("you lost")
+                currentTurn = true
                 return
             }
             let value = data.value
@@ -109,9 +113,9 @@ export default function RockPaperScissor(props) {
 
     return (
         <div>
-            <button onClick={(e) => { sendData('rock', props.player) }}>Rock</button>
-            <button onClick={(e) => { sendData('paper', props.player) }}>Papper</button>
-            <button onClick={(e) => { sendData('scissor', props.player) }}>Scissors</button>
+            <button onClick={(e) => { sendData('rock', props.location.state.player) }}>Rock</button>
+            <button onClick={(e) => { sendData('paper', props.location.state.player) }}>Papper</button>
+            <button onClick={(e) => { sendData('scissor', props.location.state.player) }}>Scissors</button>
         </div>
     )
 }
