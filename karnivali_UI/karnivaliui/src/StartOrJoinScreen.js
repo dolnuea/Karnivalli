@@ -50,7 +50,7 @@ function StartOrJoinScreen(props) {
 
         <h1>Selected Game: {selectedGame}</h1>
 
-        <GameboxStart onClick={routeChange}>
+        <GameboxStart onClick={handleShow}>
           <h1>Start New Game</h1>
         </GameboxStart>
 
