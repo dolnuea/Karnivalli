@@ -39,7 +39,7 @@ export default function App() {
             exact
             path="/rock-paper-scissor"
             render={(props) => <RockPaperScissor {...props} />}
-          /> */}
+          />  */}
           <Route
             exact
             path="/play-again"
