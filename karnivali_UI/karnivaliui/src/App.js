@@ -6,6 +6,7 @@ import "./App.css";
 import TicTacToe from "./webPages/ticTacToe";
 import StartGame from "./webPages/startGame";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import RockPaperScissor from "./webPages/components/RockPaperScissor";
 
 // to test each page, un-comment the line you want to test
 
@@ -43,7 +44,13 @@ export default function App() {
             exact
             path="/play-again"
             render={(props) => <PlayAgainBox {...props} />}
-          />
+                  />
+                  <Route
+                      exact
+                      path="/rock-paper-scissor"
+                      render={(props) => <RockPaperScissor {...props} />}
+                  />
+
         </Switch>
       </Router>
     </div>
