@@ -113,7 +113,7 @@ export default function RockPaperScissor(props) {
 
     return (
         <RockPaperScissorBackground>
-            <Slot onClick={(e) => { sendData('rock', props.location.state.player) }}><Rock>🪨</Rock></Slot>
+            <Slot onClick={(e) => { sendData('rock', props.location.state.player) }}><Rock>🧱</Rock></Slot>
             <Slot onClick={(e) => { sendData('paper', props.location.state.player) }}><Paper>📜</Paper></Slot>
             <Slot onClick={(e) => { sendData('scissor', props.location.state.player) }}><Scissor>✂️</Scissor></Slot>
         </RockPaperScissorBackground>
