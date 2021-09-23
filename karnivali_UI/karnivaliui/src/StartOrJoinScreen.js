@@ -36,7 +36,7 @@ function StartOrJoinScreen(props) {
         <Modal.Footer>
         <form>
               <input type="text" />
-            <Button variant="primary" onClick={handleClose}>
+            <Button variant="primary" onClick={routeChange}>
             Enter
           </Button>
           </form>
