@@ -8,13 +8,13 @@ import {
 } from "./Components/StartJoin.styles";
 import { Modal, Button } from "react-bootstrap";
 
-function StartOrJoinScreen(props) {
+function StartOrJoinScreen(props) {""
   const [show, setShow] = useState(false);
-
+  const [option, setOption] = useState("");
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-    const [roomCode, setRoomCode] = useState("");
+  const [roomCode, setRoomCode] = useState("");
 
   // The selected game passed from GameSelectionScreen
   const selectedGame = props.location.state;
@@ -26,39 +26,48 @@ function StartOrJoinScreen(props) {
   const history = useHistory();
 
   const routeChangeStart = () => {
-      if (!roomCode) {
-            alert("Please add a room number");
-            return;
-        }
-      console.log("startGame", roomCode);
+    if (!roomCode) {
+          alert("Please add a room number");
+          return;
+      }
+    console.log("startGame", roomCode);
     let path = selectedGame;
-      
-      history.push({
-          pathname: path,
-          state: {
-              roomCode: roomCode,
-              player: "p1"
-          }
-      });
-    };
+    history.push(path);
+    history.push({
+      pathname: path,
+      state: {
+          roomCode: roomCode,
+          player: "p1"
+      }
+  });
+};
 
-    const routeChangeJoin = () => {
-        if (!roomCode) {
-            alert("Please add a room number");
-            return;
-        }
-        console.log("joinRoom", roomCode);
-        let path = selectedGame;
-        
-        history.push({
-            pathname: path,
-            state: {
-                roomCode: roomCode,
-                player: "p2"
-            }
-        });
-    };
+const routeChangeJoin = () => {
+  if (!roomCode) {
+      alert("Please add a room number");
+      return;
+  }
+  console.log("joinRoom", roomCode);
+  let path = selectedGame;
+  
+  history.push({
+      pathname: path,
+      state: {
+          roomCode: roomCode,
+          player: "p2"
+      }
+  });
+};
 
+const routeChange = () => {
+  console.log(option)
+  if (option === 'start'){
+    routeChangeStart();
+  }
+  else if (option === 'join'){
+    routeChangeJoin();
+  }
+}
 
   //   const routeChangetoTTT = () =>{ 
   //     let path = 'tic-tac-toe'; 
@@ -77,6 +86,17 @@ function StartOrJoinScreen(props) {
         </Modal.Header>
         <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
         <Modal.Footer>
+        <form>
+        <input
+                  type="text"
+                  placeholder="Type Room Number "
+                  value={roomCode}
+                  onChange={(e) => setRoomCode(e.target.value)}
+        />
+            <Button variant="primary" onClick={routeChange}>
+            Enter
+          </Button>
+          </form>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
@@ -85,23 +105,16 @@ function StartOrJoinScreen(props) {
           </Button>
         </Modal.Footer>
       </Modal>
-    
+      
       <StartJoinScreen>
 
-              <label>Room Number</label>
-              <input
-                  type="text"
-                  placeholder="Type Room Number "
-                  value={roomCode}
-                  onChange={(e) => setRoomCode(e.target.value)}
-              />
+         {/* <h1>{selectedGame}</h1> */}
 
-        <GameboxStart onClick={routeChangeStart}>
-                  <h1>Start New Game</h1>
-                  
+        <GameboxStart onClick={() => {setOption("start"); setShow(true); }}>
+          <h1>Start New Game</h1>
         </GameboxStart>
 
-              <GameboxJoin onClick={routeChangeJoin}>
+        <GameboxJoin onClick={() => {setOption("join"); setShow(true); }}>
           <h1>Join Game</h1>
                
         </GameboxJoin>
