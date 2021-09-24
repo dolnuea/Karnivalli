@@ -82,9 +82,9 @@ const routeChange = () => {
     <>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
+          <Modal.Title>Hold up...</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+        <Modal.Body>Please enter room number</Modal.Body>
         <Modal.Footer>
         <form>
         <input
@@ -98,10 +98,7 @@ const routeChange = () => {
           </Button>
           </form>
           <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleClose}>
-            Save Changes
+            Cancel
           </Button>
         </Modal.Footer>
       </Modal>
@@ -116,7 +113,6 @@ const routeChange = () => {
 
         <GameboxJoin onClick={() => {setOption("join"); setShow(true); }}>
           <h1>Join Game</h1>
-               
         </GameboxJoin>
       </StartJoinScreen>
     </>
