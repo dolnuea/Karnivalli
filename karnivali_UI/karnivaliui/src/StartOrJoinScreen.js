@@ -93,7 +93,7 @@ const routeChange = () => {
       
       <StartJoinScreen>
 
-        <h1>Selected Game: {selectedGame}</h1>
+         {/* <h1>{selectedGame}</h1> */}
 
         <GameboxStart onClick={() => {setOption("start"); setShow(true); }}>
           <h1>Start New Game</h1>
