@@ -14,12 +14,12 @@ import {List, InputIrrem, WingBlank, WhiteSpace, Button, Radio} from 'antd-mobil
         render(){
             const RadioItem=Radio.RadioItem
             return(
-                <div className='pag-register'>
+                <div className='register'>
                     <logo/>
                     <list>
-                        <InputItem onChange={value=>this.makeleChange('playername', value)}>lbj-playername</InputItem>
-                        <InputItem onChange={value=>this.makeleChange('password', value)}>lbj-password</InputItem>
-                        <InputItem onChange={value=>this.makeChange('conpassword', value)}>lbj-conpassword</InputItem>
+                        <InputItem onChange={value=>this.makeChange('playername', value)}>playername</InputItem>
+                        <InputItem onChange={value=>this.makeChange('password', value)}>password</InputItem>
+                        <InputItem onChange={value=>this.makeChange('conpassword', value)}>conpassword</InputItem>
                     </list>
                     <WhiteSpace></WhiteSpace>
                     <WhiteSpace></WhiteSpace>
@@ -36,7 +36,7 @@ import {List, InputIrrem, WingBlank, WhiteSpace, Button, Radio} from 'antd-mobil
             )
         }
 
-        makeLogin(){
+        makeLogin() {
             this.props.history.push('/login')
 
         }
