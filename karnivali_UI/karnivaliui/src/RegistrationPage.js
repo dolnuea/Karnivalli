@@ -1,6 +1,5 @@
-import React from "react";
-import { ReactDOM } from "react";
-import {List, InputIrrem, WingBlank, WhiteSpace, Button, Radio} from 'antd-mobile'
+import React, {Component} from 'react'
+import {List, InputItem, WingBlank, WhiteSpace, Button, Radio} from 'antd-mobile'
 
     class Register extends Component{
         constructor(props){
@@ -9,6 +8,7 @@ import {List, InputIrrem, WingBlank, WhiteSpace, Button, Radio} from 'antd-mobil
                 password:'',
                 conpassword:'',
             }
+        }
 
 
         render(){
@@ -51,4 +51,3 @@ import {List, InputIrrem, WingBlank, WhiteSpace, Button, Radio} from 'antd-mobil
 
     }
 
-}
