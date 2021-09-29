@@ -1,3 +1,4 @@
+import React from "react";
 import React, {Component} from 'react'
 import {List, InputItem, WingBlank, WhiteSpace, Button, Radio} from 'antd-mobile'
 
