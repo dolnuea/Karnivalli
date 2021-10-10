@@ -1,3 +1,5 @@
+
+
 import WelcomeScreen from "./WelcomeScreen";
 import StartOrJoinScreen from "./StartOrJoinScreen.js";
 import GameSelectionScreen from "./GameSelectionScreen";
@@ -7,6 +9,9 @@ import TicTacToe from "./webPages/ticTacToe";
 import StartGame from "./webPages/startGame";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import RockPaperScissor from "./webPages/components/RockPaperScissor";
+import Login from "./login";
+import SignUp from "./signup";
+import LogOut from "./logout";
 
 // to test each page, un-comment the line you want to test
 
@@ -14,10 +19,27 @@ export default function App() {
   return (
     <div className="App">
       <Router>
-        <Switch>
+              <Switch>
+
+                  <Route
+                      exact
+                      path="/"
+                      render={(props) => <SignUp {...props} />}
+                  />
+                  <Route
+                      exact
+                      path="/sign-in"
+                      render={(props) => <Login {...props} />}
+                  />
+                  <Route
+                      exact
+                      path="/logout"
+                      render={(props) => <LogOut {...props} />}
+                  />
+
           <Route
             exact
-            path="/"
+            path="/welcome"
             render={(props) => <WelcomeScreen {...props} />}
           />
           <Route

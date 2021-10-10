@@ -9,7 +9,7 @@ import { StartButton, WelcomeWindow } from "./Components/Welcome.styles";
 //     alert("Let's party!")
 // }
 
-function WelcomeScreen() {
+function WelcomeScreen(props) {
 
     const history = useHistory();
 
@@ -17,18 +17,35 @@ function WelcomeScreen() {
         let path = 'game-selection';
         history.push(path);
     }
+    console.log(props.location.state.isGuest);
+    console.log(props.location.state.username);
 
-    return (
+    if (props.location.state.isGuest) {
+        return (
+            <WelcomeWindow>
+                <h1>
+                    Welcome to Karnivali!
+                </h1>
+
+                <StartButton onClick={routeChange}>
+                    Click Here to Start!
+                </StartButton>
+            </WelcomeWindow>
+        );
+    } else {
+        return(
         <WelcomeWindow>
             <h1>
-                Welcome to Karnivali!
+                Hi {props.location.state.username}, Welcome to Karnivali!
             </h1>
 
             <StartButton onClick={routeChange}>
                 Click Here to Start!
             </StartButton>
-        </WelcomeWindow>
-    );
+        </WelcomeWindow >
+            );
+    }
+   
 }
 
 export default WelcomeScreen;
