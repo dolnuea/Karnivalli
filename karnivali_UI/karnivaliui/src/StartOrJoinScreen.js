@@ -69,14 +69,6 @@ const routeChange = () => {
   }
 }
 
-  //   const routeChangetoTTT = () =>{ 
-  //     let path = 'tic-tac-toe'; 
-  //     history.push(path);
-  // }
-  //   const routeChangetoRPS = () =>{ 
-  //       let path = 'rock-paper-scissor'; 
-  //       history.push(path);
-  //   }
 
   return (
     <>

@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { w3cwebsocket as W3CWebSocket } from "websocket";
+import { Modal, Button } from "react-bootstrap";
+import { useHistory } from 'react-router-dom';
 
 let defaultColor = 'grey'
 let gameState = [defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor]
 let currentTurn = true
 
+
 const TicTacToeBody = (props) => {
-
-    
- 
-
+     
     const [box1, setBox1] = useState(defaultColor)
     const [box2, setBox2] = useState(defaultColor)
     const [box3, setBox3] = useState(defaultColor)
@@ -19,6 +19,33 @@ const TicTacToeBody = (props) => {
     const [box7, setBox7] = useState(defaultColor)
     const [box8, setBox8] = useState(defaultColor)
     const [box9, setBox9] = useState(defaultColor)
+
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+
+    const history = useHistory();
+
+    const routeChange = () => {
+        let path = 'game-selection';
+        history.push(path);
+    }
+
+    <>
+    <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+            <Modal.Title>Play Again?</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>Please enter room number</Modal.Body>
+            <Modal.Footer>
+              <Button variant="primary" onClick={''}> // reset state
+              Yes!
+            </Button>
+            <Button variant="secondary" onClick={routeChange}> // direct user to game selection page
+              Play another game
+            </Button>
+          </Modal.Footer>
+        </Modal>)
+        </>
 
     var room_code = props.roomNumber
     var player = props.playColor
@@ -36,15 +63,14 @@ const TicTacToeBody = (props) => {
             if (data.payload.type == 'end' && data.payload.player !== player) {
                 alert("Sorry! you lost")
                 //options page
+                setShow(true)
             } else if (data.payload.type == 'over') {
                 alert("Game over! game end no one won")
                 //options page
-                return;
+                return(setShow(true));
             } else if (data.payload.type == 'running' && data.payload.player !== player) {
                 setAnotherUserText(data.payload.index, data.payload.player)
             }
-
-
 
         }
 
@@ -75,6 +101,7 @@ const TicTacToeBody = (props) => {
             var data = { 'type': 'over' }
             socket.send(JSON.stringify({ data }))
             alert("Game ends in a draw!!")
+            setShow(true)
             //options page
         }
     }
@@ -108,16 +135,13 @@ const TicTacToeBody = (props) => {
             var data = { 'type': 'end', 'player': player }
             socket.send(JSON.stringify({ data }))
             alert("Good job!, You won")
+            setShow(true)
         } else {
             //options page
             checkGameEnd();
         }
 
-        
-
     }
-
-
 
     function setText(i, value) {
         if (currentTurn == false) {
