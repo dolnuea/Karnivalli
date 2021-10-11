@@ -120,12 +120,8 @@ const TicTacToeBody = (props) => {
 
 
     function setText(i, value) {
-        if (currentTurn == false) {
-            alert("Please wait for the oppsition's turn!!")
-            return
-        } else {
-            currentTurn = false
-        }
+
+       
         
         var data = {
             'player': player,
@@ -136,6 +132,14 @@ const TicTacToeBody = (props) => {
 
      
         if (gameState[parseInt(i)] != "red" && gameState[parseInt(i)] != "blue") {
+
+            if (currentTurn == false) {
+                alert("Please wait for the oppsition's turn!!")
+                return
+            } else {
+                currentTurn = false
+            }
+
             console.log('same', value)
             gameState[parseInt(i)] = value
             setBoxStateValues()

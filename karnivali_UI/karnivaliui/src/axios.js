@@ -19,8 +19,15 @@ axiosInstance.interceptors.response.use(
 		return response;
 	},
 	async function (error) {
+		console.log("Start Case");
 		console.log(error.response.statusText);
 		const originalRequest = error.config;
+
+		if (error.response.status === 401 && error.response.data === 'Exists') {
+			console.log("CASE 10");
+			alert("User already exists. Please change your username.");
+			return Promise.reject(error);
+		}
 
 		if (typeof error.response === 'undefined') {
 			alert(
@@ -37,7 +44,7 @@ axiosInstance.interceptors.response.use(
 		) {
 			console.log("case 1");
 			alert("Please sign in again.");
-			window.location.href = '/sign-in/';
+			window.location.href = '/';
 			return Promise.reject(error);
 		}
 
@@ -80,14 +87,14 @@ axiosInstance.interceptors.response.use(
 					console.log("case 6");
 					console.log('Refresh token is expired', tokenParts.exp, now);
 					alert("Session Expired. Please sign in again.");
-					window.location.href = '/sign-in/';
+					window.location.href = '/';
 					
 				}
 			} else {
 				console.log("case 7");
 				console.log('Refresh token not available.');
 				alert("Please sign in again.");
-				window.location.href = '/sign-in/';
+				window.location.href = '/';
 			}
 		}
 		if (
@@ -96,7 +103,7 @@ axiosInstance.interceptors.response.use(
 		) {
 			console.log("case 8");
 			alert("Wrong username or password. Please sign again.");
-			window.location.href = '/sign-in/';
+			window.location.href = '/';
 		}
 
 		// specific error handling done elsewhere

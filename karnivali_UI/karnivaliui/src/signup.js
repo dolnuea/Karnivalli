@@ -1,7 +1,7 @@
 import React, { Component, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import axiosInstance from './axios';
-import { Container, Alert, Row, Col } from 'react-bootstrap';
+import { Container, Alert, Row, Col, Button } from 'react-bootstrap';
 
 export default function SignUp () {
 
@@ -28,6 +28,21 @@ export default function SignUp () {
 		e.preventDefault();
 		console.log(formData);
 
+		if (!formData.email) {
+			alert("Please enter your email Id.");
+			return;
+		}
+
+		if (!formData.password || formData.password.length<8) {
+			alert("Please enter a valid password. Password length should be atleast 8 characters.");
+			return;
+		}
+
+		if (!formData.username) {
+			alert("Please enter your username.");
+			return;
+		}
+
 		axiosInstance
 			.post(`user/create/`, {
 				email: formData.email,
@@ -35,7 +50,7 @@ export default function SignUp () {
 				password: formData.password,
 			})
 			.then((res) => {
-				history.push('/sign-in');
+				history.push('/');
 				console.log(res);
 				console.log(res.data);
 			});
@@ -62,8 +77,8 @@ export default function SignUp () {
 			<br /> <br />
 			<Container>
 				<Row>
-					<Col md={{ span: 4, offset: 4 }}>
-			<Alert variant='dark'>
+					<Col md={{ span: 5, offset: 4 }}>
+						<Alert variant='light'>
             <form>
                 <h3>Register</h3>
 
@@ -82,10 +97,10 @@ export default function SignUp () {
 					<input type="password" className="form-control" placeholder="Enter password" onChange={handleChange} autoComplete="password" name="password" />
                 </div>
 
-								<button type="submit" className="btn btn-dark btn-lg btn-block" onClick={handleSubmit}>Register</button>
-								<button type="submit" className="btn btn-dark btn-lg btn-block" onClick={guest_signup}>Enter as a guest</button>
+								<Button variant="outline-success" onClick={handleSubmit}>Register</Button>
+								<Button variant="outline-success" onClick={guest_signup}>Enter as a guest</Button>
                 <p className="forgot-password text-right">
-                    Already registered <Link to={"/sign-in"}>Sign in</Link>
+                    Already registered <Link to={"/"}>Sign in</Link>
                 </p>
 					</form>
 				

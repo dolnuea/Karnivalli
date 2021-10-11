@@ -19,8 +19,12 @@ class CustomUserCreate(APIView):
 
     def post(self, request, format='json'):
         serializer = CustomUserSerializer(data=request.data)
+        if(User.objects.filter(username=request.data['username'])):
+             return Response("Exists", status=status.HTTP_401_UNAUTHORIZED)
+        
         if serializer.is_valid():
             user = serializer.save()
+
             if user:
                 json = serializer.data
                 return Response(json, status=status.HTTP_201_CREATED)

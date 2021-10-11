@@ -24,12 +24,12 @@ export default function App() {
                   <Route
                       exact
                       path="/"
-                      render={(props) => <SignUp {...props} />}
+                      render={(props) => <Login {...props} />}
                   />
                   <Route
                       exact
-                      path="/sign-in"
-                      render={(props) => <Login {...props} />}
+                      path="/sign-up"
+                      render={(props) => <SignUp {...props} />}
                   />
                   <Route
                       exact

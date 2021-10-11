@@ -1,7 +1,7 @@
 import React, { Component, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import axiosInstance from './axios';
-import { Container, Alert, Row, Col } from 'react-bootstrap';
+import { Container, Alert, Row, Col, Button } from 'react-bootstrap';
 
 export default function Login() {
 
@@ -24,6 +24,16 @@ export default function Login() {
 	const handleSubmit_login = (e) => {
 		e.preventDefault();
 		console.log(formData_login);
+
+		if (!formData_login.password || formData_login.password.length < 8) {
+			alert("Please enter a valid password. Password length should be atleast 8 characters.");
+			return;
+		}
+
+		if (!formData_login.username) {
+			alert("Please enter your username.");
+			return;
+		}
 
 		axiosInstance
 			.post(`token/`, {
@@ -73,8 +83,8 @@ export default function Login() {
 			<br /> <br />
 			<Container>
 				<Row>
-					<Col md={{ span: 4, offset: 4 }}>
-						<Alert variant='dark'>
+					<Col md={{ span: 5, offset: 4 }}>
+						<Alert variant='light'>
             <form>
 
                 <h3>Log in</h3>
@@ -96,11 +106,10 @@ export default function Login() {
                     </div>
                 </div>
 
-				<button type="submit" className="btn btn-dark btn-lg btn-block" onClick={handleSubmit_login}>Sign in</button>
-				<button type="submit" className="btn btn-dark btn-lg btn-block" onClick={guest_login}>Enter as a guest</button>
+								<Button variant="outline-success" type="submit" onClick={handleSubmit_login}>Sign in</Button>
+								<Button variant="outline-success" onClick={guest_login}>Enter as a guest</Button>
                 <p className="forgot-password text-right">
-                    <a href="#"> Forgot password?</a> &nbsp; &nbsp;
-                    <Link to={"/"}>Sign up</Link>
+									<Link to={"/sign-up"}>Sign up</Link>
                 </p>
                 
 
