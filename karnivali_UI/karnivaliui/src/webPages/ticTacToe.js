@@ -3,14 +3,16 @@ import Header from './components/header';
 import TicTacToeBody from './components/ticTacToeBody';
 import ScreenImg from  '../images/wrinkledpaper.jpg';
 
+
 const TicTacToe = (props) => {
     console.log("TicTacToe")
     let player = props.location.state.player
     let playerColor = ""
     if (player === "p1") {
-        playerColor = "red"
+        playerColor = "#581845"
+
     } else if (player === "p2") {
-        playerColor = "blue"
+        playerColor = "#FFC30F"
     }
     return (
         <div className="TicTacToe" style = {{backgroundImage : `url(${ScreenImg})` }}>

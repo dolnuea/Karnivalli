@@ -5,9 +5,7 @@ import StartOrJoinScreen from "./StartOrJoinScreen.js";
 import { StartButton, WelcomeWindow } from "./Components/Welcome.styles";
 
 
-// const redAlert = () => {
-//     alert("Let's party!")
-// }
+
 
 function WelcomeScreen(props) {
 

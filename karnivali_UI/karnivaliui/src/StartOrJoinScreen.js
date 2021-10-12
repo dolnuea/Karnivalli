@@ -5,6 +5,7 @@ import {
   GameboxStart,
   GameboxJoin,
   StartJoinScreen,
+  RoomModal
 } from "./Components/StartJoin.styles";
 import { Modal, Button } from "react-bootstrap";
 
@@ -80,7 +81,9 @@ const routeChange = () => {
 
   return (
     <>
-      <Modal show={show} onHide={handleClose}>
+
+      <Modal show={show} onHide={handleClose}> 
+        {/* To change this back to styled modal, change 'Modal' to 'RoomModal' above */}
         <Modal.Header closeButton>
           <Modal.Title>Hold up...</Modal.Title>
         </Modal.Header>
@@ -102,6 +105,7 @@ const routeChange = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+      {/* To change this back to styled modal, change 'Modal' to 'RoomModal' above */}
       
       <StartJoinScreen>
 
