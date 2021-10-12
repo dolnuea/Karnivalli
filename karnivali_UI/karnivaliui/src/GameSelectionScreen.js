@@ -4,16 +4,18 @@ import ticTacToeImage from './images/tic-tac-toe.png';
 import RockPaperScissorsImage from './images/rock-paper-scissors.png';
 
 
-function GameSelectionScreen() {
+function GameSelectionScreen(props) {
 
+    const roomCode = props.location.state
     const history = useHistory();
 
     const routeChange = (game) => {
         // TODO: once the logic for page flow has been sorted, this should pass the game selection to the start or joing page
-        let path = 'start-or-join';
+        let path = game;
         history.push({
             pathname: path,
-            state: game
+            state: game,
+            room: roomCode
         });
     }
 

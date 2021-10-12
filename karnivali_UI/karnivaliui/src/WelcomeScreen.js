@@ -14,7 +14,7 @@ function WelcomeScreen() {
     const history = useHistory();
 
     const routeChange = () => {
-        let path = 'game-selection';
+        let path = 'start-or-join';
         history.push(path);
     }
 
