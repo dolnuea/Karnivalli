@@ -193,12 +193,28 @@ const TicTacToeBody = (props) => {
         console.log(gameState)
     }
 
+    function resetGame(){
+        //todo need to fix
+        setShow(!show);
+        setIsOver(false);
+        setBox1(defaultColor);
+        setBox2(defaultColor);
+        setBox3(defaultColor);
+        setBox4(defaultColor);
+        setBox5(defaultColor);
+        setBox6(defaultColor);
+        setBox7(defaultColor);
+        setBox8(defaultColor);
+        setBox9(defaultColor);
+        currentTurn = true;
+    }
+
     return (
         <>
         <Modal show={show} onHide={handleClose}>
                 <Modal.Title>{message}</Modal.Title>
                 <Modal.Footer>
-                  <Button variant="primary" onClick={''}>
+                  <Button variant="primary" onClick={resetGame}>
                   Play again!
                 </Button>
                 <Button variant="secondary" onClick={routeChange}> 
