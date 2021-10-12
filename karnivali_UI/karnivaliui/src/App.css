@@ -14,3 +14,7 @@ h1 {
     display: flex;
     color: #581845;
 }
+
+.test {
+    color: rgb(149, 112, 221, 0.6);
+}
