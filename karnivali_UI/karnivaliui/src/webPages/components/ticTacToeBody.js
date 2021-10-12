@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect} from 'react';
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { Modal, Button } from "react-bootstrap";
 import { useHistory } from 'react-router-dom';
@@ -23,29 +23,22 @@ const TicTacToeBody = (props) => {
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
 
+    const [isOver, setIsOver] = useState(false);
+    const[message, setMessage] = useState(null);
+
+    useEffect(() => {
+        if (isOver) {
+        setShow(true);
+        }
+    }, [isOver]);
+
+
     const history = useHistory();
 
-    const routeChange = () => {
+    const routeChange = () => { //for end of game
         let path = 'game-selection';
         history.push(path);
     }
-
-    <>
-    <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-            <Modal.Title>Play Again?</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>Please enter room number</Modal.Body>
-            <Modal.Footer>
-              <Button variant="primary" onClick={''}> // reset state
-              Yes!
-            </Button>
-            <Button variant="secondary" onClick={routeChange}> // direct user to game selection page
-              Play another game
-            </Button>
-          </Modal.Footer>
-        </Modal>)
-        </>
 
     var room_code = props.roomNumber
     var player = props.playColor
@@ -61,13 +54,15 @@ const TicTacToeBody = (props) => {
             var data = JSON.parse(e.data)
             console.log(data)
             if (data.payload.type == 'end' && data.payload.player !== player) {
-                alert("Sorry! you lost")
+                //alert("Sorry! you lost")
+                setMessage("Sorry! You lost");
                 //options page
-                setShow(true)
+                setIsOver(!isOver);
             } else if (data.payload.type == 'over') {
-                alert("Game over! game end no one won")
+                //alert("Game over! game end no one won")
+                setMessage("Game over! No one won");
                 //options page
-                return(setShow(true));
+                setIsOver(!isOver);
             } else if (data.payload.type == 'running' && data.payload.player !== player) {
                 setAnotherUserText(data.payload.index, data.payload.player)
             }
@@ -87,7 +82,6 @@ const TicTacToeBody = (props) => {
     
     let elementArray = document.querySelectorAll('.space')
 
-    
 
     function checkGameEnd() {
         var count = 0;
@@ -100,8 +94,9 @@ const TicTacToeBody = (props) => {
         if (count >= 9) {
             var data = { 'type': 'over' }
             socket.send(JSON.stringify({ data }))
-            alert("Game ends in a draw!!")
-            setShow(true)
+            //alert("Game ends in a draw!!")
+            setMessage("Game ends in a draw!");
+            setIsOver(!isOver);
             //options page
         }
     }
@@ -134,8 +129,9 @@ const TicTacToeBody = (props) => {
         if (won) {
             var data = { 'type': 'end', 'player': player }
             socket.send(JSON.stringify({ data }))
-            alert("Good job!, You won")
-            setShow(true)
+            //alert("Good job!, You won")
+            setMessage("Good job! You won");
+            setIsOver(!isOver);
         } else {
             //options page
             checkGameEnd();
@@ -144,7 +140,7 @@ const TicTacToeBody = (props) => {
     }
 
     function setText(i, value) {
-        if (currentTurn == false) {
+        if (currentTurn === false) {
             alert("Please wait for the oppsition's turn!!")
             return
         } else {
@@ -198,6 +194,19 @@ const TicTacToeBody = (props) => {
     }
 
     return (
+        <>
+        <Modal show={show} onHide={handleClose}>
+                <Modal.Title>{message}</Modal.Title>
+                <Modal.Footer>
+                  <Button variant="primary" onClick={''}>
+                  Play again!
+                </Button>
+                <Button variant="secondary" onClick={routeChange}> 
+                  Play another game
+                </Button>
+              </Modal.Footer>
+            </Modal>)
+
         <div className="body">
             <div className="full-page" id="full-page">
 
@@ -221,6 +230,7 @@ const TicTacToeBody = (props) => {
                 </div>
             </div>
         </div>
+        </>
     );
 }
 

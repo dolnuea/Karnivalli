@@ -12,16 +12,13 @@ function StartOrJoinScreen(props) {""
   const [show, setShow] = useState(false);
   const [option, setOption] = useState("");
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
 
   const [roomCode, setRoomCode] = useState("");
+  
 
   // The selected game passed from GameSelectionScreen
-  const selectedGame = props.location.state;
+   const selectedGame = props.location.state;
 
-  const redAlert = () => {
-    alert("Let's party!");
-  };
 
   const history = useHistory();
 
@@ -30,6 +27,7 @@ function StartOrJoinScreen(props) {""
           alert("Please add a room number");
           return;
       }
+
     console.log("startGame", roomCode);
     let path = selectedGame;
     history.push(path);
@@ -47,6 +45,7 @@ const routeChangeJoin = () => {
       alert("Please add a room number");
       return;
   }
+
   console.log("joinRoom", roomCode);
   let path = selectedGame;
   
