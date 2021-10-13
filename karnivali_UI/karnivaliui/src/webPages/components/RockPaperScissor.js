@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
-import Modal from 'react-modal'
+import MyModal from './Modals/MyModal'
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { RockPaperScissorBackground, Slot, Rock, Paper, Scissor } from "./rockPaperScissors.styles";
 
@@ -13,8 +12,8 @@ export default function RockPaperScissor(props) {
     // const [paper, setPaper] = useState('paper')
     // const [scissor, setScissor] = useState('scissor')
     const [modalIsopen, setModalIsOpen] = useState(false)
+    const [resultText, setResultText] = useState("")
     let socket = new W3CWebSocket('ws://localhost:8000/ws/game/rps/' + props.location.state.roomCode)
-    let history = useHistory()
 
     let userChoices = {}
 
@@ -31,6 +30,7 @@ export default function RockPaperScissor(props) {
             if (data.state === "draw") {
                 // alert("Its a draw")
                 setModalIsOpen(true)
+                setResultText("Game is Draw")
                 currentTurn = true
                 return
             }
@@ -120,7 +120,7 @@ export default function RockPaperScissor(props) {
             <Slot onClick={(e) => { sendData('rock', props.location.state.player) }}><Rock>🧱</Rock></Slot>
             <Slot onClick={(e) => { sendData('paper', props.location.state.player) }}><Paper>📜</Paper></Slot>
             <Slot onClick={(e) => { sendData('scissor', props.location.state.player) }}><Scissor>✂️</Scissor></Slot>
-            <Modal isOpen={modalIsopen}>
+            {/* <Modal isOpen={modalIsopen}>
                 <h2>The Game is draw</h2>
                 <button onClick={() => {
                     history.push('/game-selection')
@@ -128,7 +128,8 @@ export default function RockPaperScissor(props) {
                 <button onClick={() => {
                     history.push('/start-or-join')
                 }}>Play Again</button>
-            </Modal>
+            </Modal> */}
+            <MyModal open={modalIsopen} data={resultText}></MyModal>
 
         </RockPaperScissorBackground>
     )
