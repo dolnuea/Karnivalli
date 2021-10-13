@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect} from 'react';
 import { w3cwebsocket as W3CWebSocket } from "websocket";
+import { Modal, Button } from "react-bootstrap";
+import { useHistory } from 'react-router-dom';
 
 let defaultColor = 'grey'
 let gameState = [defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor]
 let currentTurn = true
 
+
 const TicTacToeBody = (props) => {
-
-    
- 
-
+     
     const [box1, setBox1] = useState(defaultColor)
     const [box2, setBox2] = useState(defaultColor)
     const [box3, setBox3] = useState(defaultColor)
@@ -19,6 +19,26 @@ const TicTacToeBody = (props) => {
     const [box7, setBox7] = useState(defaultColor)
     const [box8, setBox8] = useState(defaultColor)
     const [box9, setBox9] = useState(defaultColor)
+
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+
+    const [isOver, setIsOver] = useState(false);
+    const[message, setMessage] = useState(null);
+
+    useEffect(() => {
+        if (isOver) {
+        setShow(true);
+        }
+    }, [isOver]);
+
+
+    const history = useHistory();
+
+    const routeChange = () => { //for end of game
+        let path = 'game-selection';
+        history.push(path);
+    }
 
     var room_code = props.roomNumber
     var player = props.playColor
@@ -34,17 +54,18 @@ const TicTacToeBody = (props) => {
             var data = JSON.parse(e.data)
             console.log(data)
             if (data.payload.type == 'end' && data.payload.player !== player) {
-                alert("Sorry! you lost")
+                //alert("Sorry! you lost")
+                setMessage("Sorry! You lost");
                 //options page
+                setIsOver(!isOver);
             } else if (data.payload.type == 'over') {
-                alert("Game over! game end no one won")
+                //alert("Game over! game end no one won")
+                setMessage("Game over! No one won");
                 //options page
-                return;
+                setIsOver(!isOver);
             } else if (data.payload.type == 'running' && data.payload.player !== player) {
                 setAnotherUserText(data.payload.index, data.payload.player)
             }
-
-
 
         }
 
@@ -61,7 +82,6 @@ const TicTacToeBody = (props) => {
     
     let elementArray = document.querySelectorAll('.space')
 
-    
 
     function checkGameEnd() {
         var count = 0;
@@ -74,7 +94,9 @@ const TicTacToeBody = (props) => {
         if (count >= 9) {
             var data = { 'type': 'over' }
             socket.send(JSON.stringify({ data }))
-            alert("Game ends in a draw!!")
+            //alert("Game ends in a draw!!")
+            setMessage("Game ends in a draw!");
+            setIsOver(!isOver);
             //options page
         }
     }
@@ -107,21 +129,17 @@ const TicTacToeBody = (props) => {
         if (won) {
             var data = { 'type': 'end', 'player': player }
             socket.send(JSON.stringify({ data }))
-            alert("Good job!, You won")
+            //alert("Good job!, You won")
+            setMessage("Good job! You won");
+            setIsOver(!isOver);
         } else {
             //options page
             checkGameEnd();
         }
 
-        
-
     }
 
-
-
     function setText(i, value) {
-
-       
         
         var data = {
             'player': player,
@@ -177,7 +195,38 @@ const TicTacToeBody = (props) => {
         console.log(gameState)
     }
 
+    function resetGame(){
+        gameState = 
+            [defaultColor, 
+            defaultColor, 
+            defaultColor, 
+            defaultColor, 
+            defaultColor, 
+            defaultColor, 
+            defaultColor, 
+            defaultColor, 
+            defaultColor];
+
+        setBoxStateValues();
+        currentTurn = true;
+        setShow(!show);
+        setIsOver(false);
+    }
+
     return (
+        <>
+        <Modal show={show} onHide={handleClose}>
+                <Modal.Title>{message}</Modal.Title>
+                <Modal.Footer>
+                  <Button variant="primary" onClick={resetGame}>
+                  Play again!
+                </Button>
+                <Button variant="secondary" onClick={routeChange}> 
+                  Play another game
+                </Button>
+              </Modal.Footer>
+            </Modal>)
+
         <div className="body">
             <div className="full-page" id="full-page">
 
@@ -201,6 +250,7 @@ const TicTacToeBody = (props) => {
                 </div>
             </div>
         </div>
+        </>
     );
 }
 
