@@ -1,20 +1,20 @@
 import styled from 'styled-components';
 
-export const StartJoinScreen = styled.div `
-    background-color: whitesmoke;
+export const StartJoinScreen = styled.div`
+
     display: flex;
     justify-content: center;
     height: 100vh;
 `
 
-export const GameboxStart = styled.div `
+export const GameboxStart = styled.div`
     height: 150px;
     width: 500px;
-    background-color: lightblue;
-    border: lightskyblue 10px solid;
+    background-color: rgb(124, 64, 169, 0.7);
+    border: rgb(88, 24, 69, 0.7)  10px solid;
     border-top-right-radius: 50px;
     border-bottom-left-radius: 50px;
-    color: whitesmoke;
+    color: rgb(255, 195, 15);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -22,18 +22,18 @@ export const GameboxStart = styled.div `
     margin-bottom: 200px;
 
     &:hover{
-        background-color: cadetblue;
+        background-color: #C70039;
     }
 `;
 
-export const GameboxJoin = styled.div `
+export const GameboxJoin = styled.div`
     height: 150px;
     width: 500px;
-    background-color: lightblue;
-    border: lightskyblue 10px solid;
+    background-color: rgb(88, 24, 69, 0.7);
+    border: rgb(159, 5, 197) 10px solid;
     border-top-right-radius: 50px;
     border-bottom-left-radius: 50px;
-    color: whitesmoke;
+    color: rgb(255, 195, 15);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -41,6 +41,19 @@ export const GameboxJoin = styled.div `
     margin-top: 200px;
 
     &:hover{
-        background-color: salmon;
+        background-color: #FF5733;
     }
+`;
+
+export const RoomModal = styled.div`
+    background: rgb(149, 112, 221, 0.7);
+    width: 40vw;
+    display: flex;
+    flex-direction: column;
+    color: rgb(68, 19, 143);
+    border-radius: 3em;
+    input[type=text] {
+        border: none;
+    }
+    /* This modal doesn't work (you can't select anything or go back right now) Need to ask luna how to do it */
 `;

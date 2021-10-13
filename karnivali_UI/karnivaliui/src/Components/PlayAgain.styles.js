@@ -4,7 +4,6 @@ import styled from "styled-components";
 export const PlayAgainScreen = styled.div `
     height: 100vh;
     width: 100%;
-    background-color: whitesmoke;
     display: flex;
 `;
 
@@ -12,10 +11,10 @@ export const PlayAgainScreen = styled.div `
 export const PlayAgainWinLose = styled.div `
     display: flex;
     color: whitesmoke;
-    border: lightseagreen 10px solid;
+    border: #7C40A9 10px solid;
     height: 500px;
     width: 600px;
-    background-color: lightskyblue;
+    background-color: #693699;
     border-top-right-radius: 7em;
     border-bottom-left-radius: 7em;
 
@@ -28,14 +27,14 @@ export const PlayAgainWinLose = styled.div `
 export const ReplayGameBox = styled.div `
     display: flex;
     color: whitesmoke;
-    border: lightseagreen 10px solid;
+    border: #7C40A9 10px solid;
     height: 300px;
     width: 300px;
     border-top-left-radius: 7em;
     border-bottom-right-radius: 7em;
-    background-color: lightslategray;
+    background-color: #9570DD;
 
     &:hover{
-        background-color: coral;
+        background-color: #9F05C5;
     }
 `;
