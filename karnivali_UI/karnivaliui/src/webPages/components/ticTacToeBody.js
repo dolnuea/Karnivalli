@@ -6,6 +6,7 @@ import { useHistory } from 'react-router-dom';
 let defaultColor = 'grey'
 let gameState = [defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor]
 let currentTurn = true
+let resetGamePlayers = {}
 
 
 const TicTacToeBody = (props) => {
@@ -36,6 +37,7 @@ const TicTacToeBody = (props) => {
     const history = useHistory();
 
     const routeChange = () => { //for end of game
+        resetGame();
         let path = 'game-selection';
         history.push(path);
     }
@@ -44,6 +46,7 @@ const TicTacToeBody = (props) => {
     var player = props.playColor
     console.log('start')
     let socket = new W3CWebSocket('ws://localhost:8000/ws/game/' + room_code)
+    setTimeout(() => { console.log("connecting..."); }, 1000);
 
     useEffect(() => {
         socket.onopen = function (e) {
@@ -53,6 +56,18 @@ const TicTacToeBody = (props) => {
         socket.onmessage = function (e) {
             var data = JSON.parse(e.data)
             console.log(data)
+            
+            if (data.payload.reset === "reset") {
+                console.log("in reset")
+                resetGamePlayers[data.payload.player] = data.payload.reset;
+                checkForResetOrNewGame();
+                return;
+            }
+            if (data.payload.reset === "change") {
+                routeChange();
+                return;
+            }
+
             if (data.payload.type == 'end' && data.payload.player !== player) {
                 //alert("Sorry! you lost")
                 setMessage("Sorry! You lost");
@@ -86,7 +101,7 @@ const TicTacToeBody = (props) => {
     function checkGameEnd() {
         var count = 0;
         gameState.map((game) => {
-            if (game == "red" || game=="blue") {
+            if (game == "#FFC30F" || game =="#581845") {
                 count++;
             }
         })
@@ -144,12 +159,13 @@ const TicTacToeBody = (props) => {
         var data = {
             'player': player,
             'index': i,
-            'type': 'running'
+            'type': 'running',
+            'reset': ''
         }
 
 
      
-        if (gameState[parseInt(i)] != "red" && gameState[parseInt(i)] != "blue") {
+        if (gameState[parseInt(i)] != "#FFC30F" && gameState[parseInt(i)] != "#581845") {
 
             if (currentTurn == false) {
                 alert("Please wait for the oppsition's turn!!")
@@ -209,8 +225,56 @@ const TicTacToeBody = (props) => {
 
         setBoxStateValues();
         currentTurn = true;
-        setShow(!show);
+        if (show) {
+            setShow(!show);
+        }
         setIsOver(false);
+    }
+
+
+    function selectResetGame() {
+        let reset = 'reset';
+        resetGamePlayers[player] = reset;
+        var data = {
+            'player': player,
+            'reset': reset
+        }
+        socket.send(JSON.stringify({
+            data
+        }))
+        checkForResetOrNewGame();
+        if (show) {
+            setShow(!show);
+        }
+
+    }
+
+    function selectRouteChange() {
+        let reset = 'change';
+        resetGamePlayers[player] = reset;
+        var data = {
+            'player': player,
+            'reset': reset
+        }
+        socket.send(JSON.stringify({
+            data
+        }))
+        setTimeout(() => { console.log("Routing..."); }, 2000);
+        routeChange();
+    }
+
+    function checkForResetOrNewGame() {
+        console.log("checkForResetOrNewGame");
+        console.log(resetGamePlayers);
+        if (resetGamePlayers['#FFC30F'] !== undefined && resetGamePlayers['#581845'] !== undefined) {
+            if (resetGamePlayers['#FFC30F'] === "reset" && resetGamePlayers['#581845'] === "reset") {
+                console.log("resetting")
+                resetGame();
+            } else {
+                console.log("routing")
+                routeChange();
+            }
+        }
     }
 
     return (
@@ -218,10 +282,10 @@ const TicTacToeBody = (props) => {
         <Modal show={show} onHide={handleClose}>
                 <Modal.Title>{message}</Modal.Title>
                 <Modal.Footer>
-                  <Button variant="primary" onClick={resetGame}>
+                    <Button variant="primary" onClick={selectResetGame}>
                   Play again!
                 </Button>
-                <Button variant="secondary" onClick={routeChange}> 
+                    <Button variant="secondary" onClick={selectRouteChange}>
                   Play another game
                 </Button>
               </Modal.Footer>

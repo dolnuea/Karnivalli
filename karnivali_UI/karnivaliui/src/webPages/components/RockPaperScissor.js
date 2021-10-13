@@ -6,6 +6,8 @@ import { RockPaperScissorBackground, Slot, Rock, Paper, Scissor } from "./rockPa
 import { useHistory } from 'react-router-dom';
 
 let currentTurn = true
+let userChoices = {}
+let resetGamePlayers = {}
 
 export default function RockPaperScissor(props) {
     console.log(props)
@@ -32,11 +34,12 @@ export default function RockPaperScissor(props) {
     const history = useHistory();
 
     const routeChange = () => { //for end of game
+        resetGame();
         let path = 'game-selection';
         history.push(path);
     }
 
-    let userChoices = {}
+    
 
     useEffect(() => {
 
@@ -45,9 +48,20 @@ export default function RockPaperScissor(props) {
             console.log('Socket connected')
         }
 
+        console.log(userChoices);
+
         socket.onmessage = function (e) {
             var data = JSON.parse(e.data).payload
             console.log(data)
+            if (data.reset === "reset") {
+                resetGamePlayers[data.player] = data.reset;
+                checkForResetOrNewGame();
+                return;
+            }
+            if (data.reset === "change") {
+                routeChange();
+                return;
+            }
             if (data.state === "draw") {
                 // alert("Its a draw")
                 setModalIsOpen(true)
@@ -110,6 +124,7 @@ export default function RockPaperScissor(props) {
     }, [])
 
     function sendData(value, player) {
+        console.log(userChoices)
         if (currentTurn == false) {
             alert("Please wait for the oppsition's turn!!")
             currentTurn = true
@@ -139,24 +154,64 @@ export default function RockPaperScissor(props) {
             }
         }
 
+        let reset = '';
         socket.send(JSON.stringify({
             value,
             player,
-            state
+            state,
+            reset
         }))
     }
 
-    function resetGame(){
-        history.push({
-            pathname: 'rock-paper-scissor',
-            state: {
-                roomCode: props.location.state.roomCode,
-                player: props.location.state.player
+    function resetGame() {
+        console.log('reset game');
+        userChoices = {};
+        resetGamePlayers = {};
+        currentTurn = true;
+        if (show) {
+            setShow(!show);
+        }
+        setIsOver(false);
+        console.log(userChoices);
+    }
+
+    function selectResetGame(){
+        let reset = 'reset';
+        let player = props.location.state.player;
+        resetGamePlayers[player] = reset;
+        socket.send(JSON.stringify({
+            reset,
+            player
+        }))
+        checkForResetOrNewGame();
+        if (show) {
+            setShow(!show);
+        }
+        
+    }
+
+    function selectRouteChange() {
+        let reset = 'change';
+        let player = props.location.state.player;
+        resetGamePlayers[player] = reset;
+        socket.send(JSON.stringify({
+            reset,
+            player
+        }))
+
+        routeChange();
+    }
+
+    function checkForResetOrNewGame() {
+        if (resetGamePlayers.p1 !== undefined && resetGamePlayers.p2 !== undefined) {
+            if (resetGamePlayers.p1 === "reset" && resetGamePlayers.p2 === "reset") {
+                console.log("resetting")
+                resetGame();
+            } else {
+                console.log("routing")
+                routeChange();
             }
-        });
-        setShow(!show);
-        setIsOver(!isOver);
-        userChoices = {}
+        }
     }
 
 
@@ -165,10 +220,10 @@ export default function RockPaperScissor(props) {
         <Modal show={show} onHide={handleClose}>
                 <Modal.Title>{message}</Modal.Title>
                 <Modal.Footer>
-                  <Button variant="primary" onClick={resetGame}>
+                  <Button variant="primary" onClick={selectResetGame}>
                   Play again!
                 </Button>
-                <Button variant="secondary" onClick={routeChange}> 
+                <Button variant="secondary" onClick={selectRouteChange}> 
                   Play another game
                 </Button>
               </Modal.Footer>
