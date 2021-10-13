@@ -194,19 +194,21 @@ const TicTacToeBody = (props) => {
     }
 
     function resetGame(){
-        //todo need to fix
+        gameState = 
+            [defaultColor, 
+            defaultColor, 
+            defaultColor, 
+            defaultColor, 
+            defaultColor, 
+            defaultColor, 
+            defaultColor, 
+            defaultColor, 
+            defaultColor];
+
+        setBoxStateValues();
+        currentTurn = true;
         setShow(!show);
         setIsOver(false);
-        setBox1(defaultColor);
-        setBox2(defaultColor);
-        setBox3(defaultColor);
-        setBox4(defaultColor);
-        setBox5(defaultColor);
-        setBox6(defaultColor);
-        setBox7(defaultColor);
-        setBox8(defaultColor);
-        setBox9(defaultColor);
-        currentTurn = true;
     }
 
     return (

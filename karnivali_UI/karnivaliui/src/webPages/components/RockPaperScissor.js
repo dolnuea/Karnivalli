@@ -138,18 +138,12 @@ export default function RockPaperScissor(props) {
         }))
     }
 
-    function resetGame() {
-        //todo need to fix
-        setShow(!show);
-        setIsOver(false);
-    }
-
     return (
         <>
         <Modal show={show} onHide={handleClose}>
                 <Modal.Title>{message}</Modal.Title>
                 <Modal.Footer>
-                  <Button variant="primary" onClick={resetGame}>
+                  <Button variant="primary" onClick={''}>
                   Play again!
                 </Button>
                 <Button variant="secondary" onClick={routeChange}> 
