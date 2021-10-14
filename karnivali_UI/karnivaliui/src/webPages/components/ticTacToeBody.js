@@ -289,7 +289,7 @@ const TicTacToeBody = (props) => {
                   Play another game
                 </Button>
               </Modal.Footer>
-            </Modal>)
+            </Modal>
 
         <div className="body">
             <div className="full-page" id="full-page">
