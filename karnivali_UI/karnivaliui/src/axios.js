@@ -16,12 +16,19 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.response.use(
 	(response) => {
+		console.log("response axios");
+		console.log(response);
 		return response;
 	},
 	async function (error) {
 		console.log("Start Case");
-		console.log(error.response.statusText);
 		const originalRequest = error.config;
+
+		if (error.response.status === 500) {
+			console.log("CASE 11");
+			alert("500-Internal Server error. Please try again or contact system administrator.");
+			return Promise.reject(error);
+		}
 
 		if (error.response.status === 401 && error.response.data === 'Exists') {
 			console.log("CASE 10");
