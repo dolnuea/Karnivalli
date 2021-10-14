@@ -100,7 +100,7 @@ export default function SignUp () {
 								<Button variant="outline-success" onClick={handleSubmit}>Register</Button>
 								<Button variant="outline-success" onClick={guest_signup}>Enter as a guest</Button>
                 <p className="forgot-password text-right">
-                    Already registered <Link to={"/"}>Sign in</Link>
+                    Already registered? <Link to={"/"}>Sign in</Link>
                 </p>
 					</form>
 				
