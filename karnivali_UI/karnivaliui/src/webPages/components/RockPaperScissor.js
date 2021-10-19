@@ -4,11 +4,12 @@ import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { Modal, Button } from "react-bootstrap";
 import { RockPaperScissorBackground, Slot, Rock, Paper, Scissor } from "./rockPaperScissors.styles";
 import { useHistory } from 'react-router-dom';
+import ChatModal from 'react-modal'
 
 let currentTurn = true
 let userChoices = {}
 let resetGamePlayers = {}
-
+let chat_messages = ""
 export default function RockPaperScissor(props) {
     console.log(props)
 
@@ -17,17 +18,22 @@ export default function RockPaperScissor(props) {
     // const [scissor, setScissor] = useState('scissor')
     const [modalIsopen, setModalIsOpen] = useState(false)
     const [resultText, setResultText] = useState("")
+
+    const [isChatModalOpen, setChatModalOpen] = useState(false)
+    const [chatMsg, setChatMsg] = useState("")
+    const [msgs, setMsgs] = useState("")
+
     let socket = new W3CWebSocket('ws://localhost:8000/ws/game/rps/' + props.location.state.roomCode)
 
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
 
     const [isOver, setIsOver] = useState(false);
-    const[message, setMessage] = useState(null);
+    const [message, setMessage] = useState(null);
 
     useEffect(() => {
         if (isOver) {
-        setShow(true);
+            setShow(true);
         }
     }, [isOver]);
 
@@ -39,7 +45,7 @@ export default function RockPaperScissor(props) {
         history.push(path);
     }
 
-    
+
 
     useEffect(() => {
 
@@ -53,6 +59,12 @@ export default function RockPaperScissor(props) {
         socket.onmessage = function (e) {
             var data = JSON.parse(e.data).payload
             console.log(data)
+
+            if (data.msg_type !== undefined) {
+                chat_messages += data.player + ':' + data.chatMsg + '\n'
+                setMsgs(chat_messages)
+            }
+
             if (data.reset === "reset") {
                 resetGamePlayers[data.player] = data.reset;
                 checkForResetOrNewGame();
@@ -175,7 +187,7 @@ export default function RockPaperScissor(props) {
         console.log(userChoices);
     }
 
-    function selectResetGame(){
+    function selectResetGame() {
         let reset = 'reset';
         let player = props.location.state.player;
         resetGamePlayers[player] = reset;
@@ -187,7 +199,7 @@ export default function RockPaperScissor(props) {
         if (show) {
             setShow(!show);
         }
-        
+
     }
 
     function selectRouteChange() {
@@ -214,25 +226,33 @@ export default function RockPaperScissor(props) {
         }
     }
 
+    function sendChatData(player) {
+        socket.send(JSON.stringify({
+            msg_type: "chat_msg",
+            player,
+            chatMsg
+        }))
+
+    }
 
     return (
         <>
-        <Modal show={show} onHide={handleClose}>
+            <Modal show={show} onHide={handleClose}>
                 <Modal.Title>{message}</Modal.Title>
                 <Modal.Footer>
-                  <Button variant="primary" onClick={selectResetGame}>
-                  Play again!
-                </Button>
-                <Button variant="secondary" onClick={selectRouteChange}> 
-                  Play another game
-                </Button>
-              </Modal.Footer>
+                    <Button variant="primary" onClick={selectResetGame}>
+                        Play again!
+                    </Button>
+                    <Button variant="secondary" onClick={selectRouteChange}>
+                        Play another game
+                    </Button>
+                </Modal.Footer>
             </Modal>)
-        <RockPaperScissorBackground>
-            <Slot onClick={(e) => { sendData('rock', props.location.state.player) }}><Rock>🧱</Rock></Slot>
-            <Slot onClick={(e) => { sendData('paper', props.location.state.player) }}><Paper>📜</Paper></Slot>
-            <Slot onClick={(e) => { sendData('scissor', props.location.state.player) }}><Scissor>✂️</Scissor></Slot>
-            {/* <Modal isOpen={modalIsopen}>
+            <RockPaperScissorBackground>
+                <Slot onClick={(e) => { sendData('rock', props.location.state.player) }}><Rock>🧱</Rock></Slot>
+                <Slot onClick={(e) => { sendData('paper', props.location.state.player) }}><Paper>📜</Paper></Slot>
+                <Slot onClick={(e) => { sendData('scissor', props.location.state.player) }}><Scissor>✂️</Scissor></Slot>
+                {/* <Modal isOpen={modalIsopen}>
                 <h2>The Game is draw</h2>
                 <button onClick={() => {
                     history.push('/game-selection')
@@ -241,9 +261,25 @@ export default function RockPaperScissor(props) {
                     history.push('/start-or-join')
                 }}>Play Again</button>
             </Modal> */}
-            {/* <MyModal open={modalIsopen} data={resultText}></MyModal> */}
+                {/* <MyModal open={modalIsopen} data={resultText}></MyModal> */}
 
-        </RockPaperScissorBackground>
+                <button onClick={(e) => { setChatModalOpen(true) }}>Chat</button>
+                <ChatModal
+                    isOpen={isChatModalOpen}
+                // style={customStyles}
+
+                // portalClassName={ } // Can mention the class name from .css class.
+
+                >
+                    <textarea id="chat_area" cols="100" rows="20" value={msgs}></textarea>
+                    <input type="text" id="chat_input" placeholder="type here" onChange={(e) => { setChatMsg(e.target.value) }}></input>
+                    <button onClick={(e) => {
+                        sendChatData(props.location.state.player)
+                    }}>Send</button>
+                    <button onClick={(e) => { setChatModalOpen(false) }}>Close Chat</button>
+                </ChatModal>
+
+            </RockPaperScissorBackground>
         </>
     )
 }
