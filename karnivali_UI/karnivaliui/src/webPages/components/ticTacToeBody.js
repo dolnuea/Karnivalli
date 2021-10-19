@@ -1,16 +1,18 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { Modal, Button } from "react-bootstrap";
 import { useHistory } from 'react-router-dom';
+// import ChatModal from 'react-modal'
 
 let defaultColor = 'grey'
 let gameState = [defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor]
 let currentTurn = true
 let resetGamePlayers = {}
+// let chat_messages = ""
 
 
 const TicTacToeBody = (props) => {
-     
+
     const [box1, setBox1] = useState(defaultColor)
     const [box2, setBox2] = useState(defaultColor)
     const [box3, setBox3] = useState(defaultColor)
@@ -25,11 +27,15 @@ const TicTacToeBody = (props) => {
     const handleClose = () => setShow(false);
 
     const [isOver, setIsOver] = useState(false);
-    const[message, setMessage] = useState(null);
+    const [message, setMessage] = useState(null);
+
+    // const [isChatModalOpen, setChatModalOpen] = useState(false)
+    // const [chatMsg, setChatMsg] = useState("")
+    // const [msgs, setMsgs] = useState("")
 
     useEffect(() => {
         if (isOver) {
-        setShow(true);
+            setShow(true);
         }
     }, [isOver]);
 
@@ -56,7 +62,12 @@ const TicTacToeBody = (props) => {
         socket.onmessage = function (e) {
             var data = JSON.parse(e.data)
             console.log(data)
-            
+
+            // if (data.msg_type !== undefined) {
+            //     chat_messages += ':' + data.chatMsg + '\n'
+            //     setMsgs(chat_messages)
+            // }
+
             if (data.payload.reset === "reset") {
                 console.log("in reset")
                 resetGamePlayers[data.payload.player] = data.payload.reset;
@@ -92,16 +103,16 @@ const TicTacToeBody = (props) => {
 
     console.log('end')
 
-    
+
     console.log(gameState)
-    
+
     let elementArray = document.querySelectorAll('.space')
 
 
     function checkGameEnd() {
         var count = 0;
         gameState.map((game) => {
-            if (game == "#FFC30F" || game =="#581845") {
+            if (game == "#FFC30F" || game == "#581845") {
                 count++;
             }
         })
@@ -155,7 +166,7 @@ const TicTacToeBody = (props) => {
     }
 
     function setText(i, value) {
-        
+
         var data = {
             'player': player,
             'index': i,
@@ -164,7 +175,7 @@ const TicTacToeBody = (props) => {
         }
 
 
-     
+
         if (gameState[parseInt(i)] != "#FFC30F" && gameState[parseInt(i)] != "#581845") {
 
             if (currentTurn == false) {
@@ -188,7 +199,7 @@ const TicTacToeBody = (props) => {
         }
     }
 
-  
+
 
     function setBoxStateValues() {
         setBox1(gameState[0])
@@ -211,17 +222,17 @@ const TicTacToeBody = (props) => {
         console.log(gameState)
     }
 
-    function resetGame(){
-        gameState = 
-            [defaultColor, 
-            defaultColor, 
-            defaultColor, 
-            defaultColor, 
-            defaultColor, 
-            defaultColor, 
-            defaultColor, 
-            defaultColor, 
-            defaultColor];
+    function resetGame() {
+        gameState =
+            [defaultColor,
+                defaultColor,
+                defaultColor,
+                defaultColor,
+                defaultColor,
+                defaultColor,
+                defaultColor,
+                defaultColor,
+                defaultColor];
 
         setBoxStateValues();
         currentTurn = true;
@@ -277,43 +288,66 @@ const TicTacToeBody = (props) => {
         }
     }
 
+    // function sendChatData() {
+    //     socket.send(JSON.stringify({
+    //         msg_type: "chat_msg",
+    //         chatMsg
+    //     }))
+
+    // }
+
     return (
         <>
-        <Modal show={show} onHide={handleClose}>
+            <Modal show={show} onHide={handleClose}>
                 <Modal.Title>{message}</Modal.Title>
                 <Modal.Footer>
                     <Button variant="primary" onClick={selectResetGame}>
-                  Play again!
-                </Button>
+                        Play again!
+                    </Button>
                     <Button variant="secondary" onClick={selectRouteChange}>
-                  Play another game
-                </Button>
-              </Modal.Footer>
+                        Play another game
+                    </Button>
+                </Modal.Footer>
             </Modal>
 
-        <div className="body">
-            <div className="full-page" id="full-page">
+            <div className="body">
+                <div className="full-page" id="full-page">
 
-                <div className="game flex-column">
-                    <div className="scoreboard">
-                        Room Number : {props.roomNumber}
-                    </div>
-                    <div className="boardcontainer">
-                        <div className="board">
-                            <button style={{ backgroundColor: box1 }} data-cell-index="0" className="space" onClick={(e) => { setText("0", player) }}></button>
-                            <button style={{ backgroundColor: box2 }} data-cell-index="1" className="space" onClick={(e) => { setText("1", player) }}></button>
-                            <button style={{ backgroundColor: box3 }} data-cell-index="2" className="space" onClick={(e) => { setText("2", player) }}></button>
-                            <button style={{ backgroundColor: box4 }} data-cell-index="3" className="space" onClick={(e) => { setText("3", player) }}></button>
-                            <button style={{ backgroundColor: box5 }} data-cell-index="4" className="space" onClick={(e) => { setText("4", player) }}></button>
-                            <button style={{ backgroundColor: box6 }} data-cell-index="5" className="space" onClick={(e) => { setText("5", player) }}></button>
-                            <button style={{ backgroundColor: box7 }} data-cell-index="6" className="space" onClick={(e) => { setText("6", player) }}></button>
-                            <button style={{ backgroundColor: box8 }} data-cell-index="7" className="space" onClick={(e) => { setText("7", player) }}></button>
-                            <button style={{ backgroundColor: box9 }} data-cell-index="8" className="space" onClick={(e) => { setText("8", player) }}></button>
+                    <div className="game flex-column">
+                        <div className="scoreboard">
+                            Room Number : {props.roomNumber}
+                        </div>
+                        <div className="boardcontainer">
+                            <div className="board">
+                                <button style={{ backgroundColor: box1 }} data-cell-index="0" className="space" onClick={(e) => { setText("0", player) }}></button>
+                                <button style={{ backgroundColor: box2 }} data-cell-index="1" className="space" onClick={(e) => { setText("1", player) }}></button>
+                                <button style={{ backgroundColor: box3 }} data-cell-index="2" className="space" onClick={(e) => { setText("2", player) }}></button>
+                                <button style={{ backgroundColor: box4 }} data-cell-index="3" className="space" onClick={(e) => { setText("3", player) }}></button>
+                                <button style={{ backgroundColor: box5 }} data-cell-index="4" className="space" onClick={(e) => { setText("4", player) }}></button>
+                                <button style={{ backgroundColor: box6 }} data-cell-index="5" className="space" onClick={(e) => { setText("5", player) }}></button>
+                                <button style={{ backgroundColor: box7 }} data-cell-index="6" className="space" onClick={(e) => { setText("6", player) }}></button>
+                                <button style={{ backgroundColor: box8 }} data-cell-index="7" className="space" onClick={(e) => { setText("7", player) }}></button>
+                                <button style={{ backgroundColor: box9 }} data-cell-index="8" className="space" onClick={(e) => { setText("8", player) }}></button>
+                            </div>
                         </div>
                     </div>
                 </div>
+                {/* <button onClick={(e) => { setChatModalOpen(true) }}>Chat</button>
+                <ChatModal
+                    isOpen={isChatModalOpen}
+                // style={customStyles}
+
+                // portalClassName={ } // Can mention the class name from .css class.
+
+                >
+                    <textarea id="chat_area" cols="100" rows="20" value={msgs}></textarea>
+                    <input type="text" id="chat_input" placeholder="type here" onChange={(e) => { setChatMsg(e.target.value) }}></input>
+                    <button onClick={(e) => {
+                        sendChatData()
+                    }}>Send</button>
+                    <button onClick={(e) => { setChatModalOpen(false) }}>Close Chat</button>
+                </ChatModal> */}
             </div>
-        </div>
         </>
     );
 }
