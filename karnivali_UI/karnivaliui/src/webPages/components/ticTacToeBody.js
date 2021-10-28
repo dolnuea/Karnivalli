@@ -79,6 +79,11 @@ const TicTacToeBody = (props) => {
                 return;
             }
 
+            if (data.payload.type == 'end' && player == "viewer") {
+                alert("Game ended!!");
+                return;
+            }
+
             if (data.payload.type == 'end' && data.payload.player !== player) {
                 //alert("Sorry! you lost")
                 setMessage("Sorry! You lost");
@@ -110,6 +115,11 @@ const TicTacToeBody = (props) => {
 
 
     function checkGameEnd() {
+
+        if (player == "viewer") {
+            return;
+        }
+
         var count = 0;
         gameState.map((game) => {
             if (game == "#FFC30F" || game == "#581845") {
@@ -166,6 +176,11 @@ const TicTacToeBody = (props) => {
     }
 
     function setText(i, value) {
+
+        if (player == "viewer") {
+            alert("Well that would be cheating...")
+            return;
+        }
 
         var data = {
             'player': player,

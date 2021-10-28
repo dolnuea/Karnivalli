@@ -74,8 +74,24 @@ export default function RockPaperScissor(props) {
                 routeChange();
                 return;
             }
+
+            if (props.location.state.player == "viewer") {
+
+                if (data.state === 'p1') {
+                    alert("Player one wins.")
+                    return
+                } else if (data.state === 'p2') {
+                    alert("Player two wins.")
+                    return
+                } else if (data.state === 'draw') {
+                    alert("Game drawn.")
+                    return
+                }
+
+            }
+
             if (data.state === "draw") {
-                // alert("Its a draw")
+                // 
                 setModalIsOpen(true)
                 setResultText("Game is Draw")
                 setMessage("Game is Draw");
@@ -83,6 +99,9 @@ export default function RockPaperScissor(props) {
                 setIsOver(true);
                 return
             }
+
+            
+
             if (data.state === props.location.state.player) {
                 //alert("you won")
                 currentTurn = true
@@ -101,7 +120,7 @@ export default function RockPaperScissor(props) {
                 setMessage("you lost");
                 setIsOver(true);
                 return
-            }
+            } 
             let value = data.value
             let player = data['player']
             userChoices[data['player']] = data.value
@@ -136,6 +155,10 @@ export default function RockPaperScissor(props) {
     }, [])
 
     function sendData(value, player) {
+        if (props.location.state.player == "viewer") {
+            alert("Well, that would be cheating...")
+            return;
+        }
         console.log(userChoices)
         if (currentTurn == false) {
             alert("Please wait for the oppsition's turn!!")

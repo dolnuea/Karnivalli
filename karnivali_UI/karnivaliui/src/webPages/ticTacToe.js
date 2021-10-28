@@ -13,6 +13,8 @@ const TicTacToe = (props) => {
 
     } else if (player === "p2") {
         playerColor = "#FFC30F"
+    } else if (player === "viewer") {
+        playerColor = "viewer"
     }
     return (
         <div className="TicTacToe" style = {{backgroundImage : `url(${ScreenImg})` }}>

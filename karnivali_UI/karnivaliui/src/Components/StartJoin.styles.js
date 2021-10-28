@@ -9,9 +9,9 @@ export const StartJoinScreen = styled.div`
 
 export const GameboxStart = styled.div`
     height: 150px;
-    width: 500px;
+    width: 400px;
     background-color: rgb(124, 64, 169, 0.7);
-    border: rgb(88, 24, 69, 0.7)  10px solid;
+    border: rgb(88, 24, 69, 0.7)  8px solid;
     border-top-right-radius: 50px;
     border-bottom-left-radius: 50px;
     color: rgb(255, 195, 15);
@@ -28,9 +28,9 @@ export const GameboxStart = styled.div`
 
 export const GameboxJoin = styled.div`
     height: 150px;
-    width: 500px;
-    background-color: rgb(88, 24, 69, 0.7);
-    border: rgb(159, 5, 197) 10px solid;
+    width: 400px;
+    background-color: rgb(124, 64, 169, 0.7);
+    border: rgb(88, 24, 69, 0.7) 8px solid;
     border-top-right-radius: 50px;
     border-bottom-left-radius: 50px;
     color: rgb(255, 195, 15);
@@ -42,6 +42,26 @@ export const GameboxJoin = styled.div`
 
     &:hover{
         background-color: #FF5733;
+    }
+`;
+
+
+export const GameboxWatch = styled.div`
+    height: 150px;
+    width: 400px;
+    background-color: rgb(124, 64, 169, 0.7);
+    border: rgb(88, 24, 69, 0.7)  8px solid;
+    border-top-right-radius: 50px;
+    border-bottom-left-radius: 50px;
+    color: rgb(255, 195, 15);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 200px;
+
+    &:hover{
+        background-color: #C70039;
     }
 `;
 

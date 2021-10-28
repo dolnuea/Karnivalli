@@ -4,7 +4,8 @@ import "./App.css";
 import {
   GameboxStart,
   GameboxJoin,
-  StartJoinScreen,
+    StartJoinScreen,
+    GameboxWatch,
   RoomModal
 } from "./Components/StartJoin.styles";
 import { Modal, Button } from "react-bootstrap";
@@ -57,7 +58,26 @@ const routeChangeJoin = () => {
           player: "p2"
       }
   });
-};
+ };
+
+
+    const routeChangeWatch = () => {
+        if (!roomCode) {
+            alert("Please add a room number");
+            return;
+        }
+
+        console.log("watchRoom", roomCode);
+        let path = selectedGame;
+
+        history.push({
+            pathname: path,
+            state: {
+                roomCode: roomCode,
+                player: "viewer"
+            }
+        });
+    };
 
 const routeChange = () => {
   console.log(option)
@@ -66,6 +86,10 @@ const routeChange = () => {
   }
   else if (option === 'join'){
     routeChangeJoin();
+    }
+
+  else if (option === 'viewer') {
+    routeChangeWatch();
   }
 }
 
@@ -109,6 +133,13 @@ const routeChange = () => {
         <GameboxJoin onClick={() => {setOption("join"); setShow(true); }}>
           <h1>Join Game</h1>
         </GameboxJoin>
+
+
+        <GameboxWatch onClick={() => { setOption("viewer"); setShow(true); }}>
+           <h1>Watch Game</h1>
+        </GameboxWatch>
+
+
       </StartJoinScreen>
     </>
   );
