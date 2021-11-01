@@ -4,7 +4,7 @@ import WelcomeScreen from "./WelcomeScreen";
 import StartOrJoinScreen from "./StartOrJoinScreen.js";
 import GameSelectionScreen from "./GameSelectionScreen";
 import PlayAgainBox from "./PlayAgainBox";
-import "./App.css";
+//import "./App.css";
 import TicTacToe from "./webPages/ticTacToe";
 import StartGame from "./webPages/startGame";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
@@ -12,12 +12,33 @@ import RockPaperScissor from "./webPages/components/RockPaperScissor";
 import Login from "./login";
 import SignUp from "./signup";
 import LogOut from "./logout";
+import background from "./images/Marvel Opening Theme.mp4"
+import React from "react"
 
 // to test each page, un-comment the line you want to test
 
 export default function App() {
   return (
     <div className="App">
+      
+      <video 
+        autoPlay
+        loop
+        
+        style={{
+          position:"absolute",
+          width:"100%",
+          left:"50%",
+          height:"200%",
+          objectFit:"cover",
+          transform:"translate(-50%, -50%)",
+          zIndex:"-1"        
+        }} 
+        
+      >
+        <source src={background} type="video/mp4"/>
+      </video>
+      
       <Router>
               <Switch>
 
