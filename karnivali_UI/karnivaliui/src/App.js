@@ -1,10 +1,9 @@
 
-
 import WelcomeScreen from "./WelcomeScreen";
 import StartOrJoinScreen from "./StartOrJoinScreen.js";
 import GameSelectionScreen from "./GameSelectionScreen";
 import PlayAgainBox from "./PlayAgainBox";
-//import "./App.css";
+import "./App.css";
 import TicTacToe from "./webPages/ticTacToe";
 import StartGame from "./webPages/startGame";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
@@ -20,7 +19,7 @@ import React from "react"
 export default function App() {
   return (
     <div className="App">
-      
+      /*
       <video 
         autoPlay
         loop
@@ -38,7 +37,7 @@ export default function App() {
       >
         <source src={background} type="video/mp4"/>
       </video>
-      
+      */
       <Router>
               <Switch>
 
