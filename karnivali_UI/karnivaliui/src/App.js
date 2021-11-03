@@ -1,12 +1,11 @@
 
-
 import WelcomeScreen from "./WelcomeScreen";
 import StartOrJoinScreen from "./StartOrJoinScreen.js";
 import GameSelectionScreen from "./GameSelectionScreen";
 import PlayAgainBox from "./PlayAgainBox";
 import "./App.css";
 import TicTacToe from "./webPages/ticTacToe";
-import Minesweeper from "./webPages/minesweeper";
+import Minesweeper from "./webPages/Minesweeper";
 import StartGame from "./webPages/startGame";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import RockPaperScissor from "./webPages/components/RockPaperScissor";
