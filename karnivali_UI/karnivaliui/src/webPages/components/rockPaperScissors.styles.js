@@ -14,9 +14,9 @@ export const Slot = styled.button `
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 80% / 30%;
-    background-color: rgb(149, 112, 221, 0.6);
-    border: #502989 solid 10px;
+   
+    background-color: rgb(255, 230, 239, 0.6);
+   
 `;
 
 export const Rock = styled.div ` 
