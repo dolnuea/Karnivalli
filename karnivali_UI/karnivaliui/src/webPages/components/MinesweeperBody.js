@@ -206,6 +206,8 @@ const MinesweeperBody = (props) => {
             return neighbors;       
     }
 
+    /*Other helper functions */
+
     // get mines
     function getMines(gameState) {
         let mineArray = [];
@@ -364,7 +366,8 @@ const MinesweeperBody = (props) => {
 
 
     }
-    // Component methods
+    /*Component methods*/
+    
     // function componentWillReceiveProps(nextProps) {
     //     if (JSON.stringify(this.props) !== JSON.stringify(nextProps)) {
     //         this.setState({
