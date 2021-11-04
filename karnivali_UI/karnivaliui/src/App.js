@@ -5,6 +5,7 @@ import GameSelectionScreen from "./GameSelectionScreen";
 import PlayAgainBox from "./PlayAgainBox";
 import "./App.css";
 import TicTacToe from "./webPages/ticTacToe";
+import Minesweeper from "./webPages/Minesweeper";
 import StartGame from "./webPages/startGame";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import RockPaperScissor from "./webPages/components/RockPaperScissor";
@@ -77,11 +78,11 @@ export default function App() {
             path="/tic-tac-toe"
             render={(props) => <TicTacToe {...props} />}
           />
-          {/* <Route
+          <Route
             exact
-            path="/rock-paper-scissor"
-            render={(props) => <RockPaperScissor {...props} />}
-          /> */}
+            path="/minesweeper"
+            render={(props) => <Minesweeper {...props} />}
+          />
           <Route
             exact
             path="/play-again"
