@@ -4,6 +4,8 @@ import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { Modal, Button } from "react-bootstrap";
 import { useHistory } from 'react-router-dom';
 import MinesweeperBody from './components/MinesweeperBody';
+import './components/Minesweeper.styles.css'
+import ScreenImg from  '../images/minesweeper_img.jpg';
 
 /**
  * The goal of the game is to find all the mines on the board.
@@ -27,25 +29,23 @@ https://github.com/kauer3/beesweeper-web
 
  */
 
-const Minesweeper = (props) => {
-    
-    console.log("Minesweeper")
-    let height = 16;
-    let width = 16;
-    let mines = 40;
+export default class Minesweeper extends React.Component {
 
-    let player = props.location.state.player
-    
-    //const{height, width, mines} = this.state;
-    /**
-     * 
-     * Render: display the specified HTML code inside the specified HTML element.
-     */
-    return(
+    state = {
+        height: 16,
+        width: 16,
+        mines: 40,
+    };
+
+
+    render() {
+        const { height, width, mines } = this.state;
+        return (
             <div className="game">
-                <MinesweeperBody height={height} width={width} mines={mines}/>
-             </div>
-        );
-}
 
-export default Minesweeper;
+                <MinesweeperBody height={height} width={width} mines={mines} />
+                
+            </div>
+        );
+    }
+}

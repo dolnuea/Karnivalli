@@ -1,28 +1,29 @@
 import React from 'react';
 
-const Cell = (props) => {
+export default class Cell extends React.Component {
 
-    function getValue() {
-        const { value } = this.props;
 
-        if (!value.isRevealed) {
+    getValue(){
+        if (!this.props.value.isRevealed){
             return this.props.value.isFlagged ? "🚩" : null;
         }
-        if (value.isMine) {
+        if (this.props.value.isMine) {
             return "💣";
         }
-        if (value.neighbour === 0) {
+        if(this.props.value.neighbour === 0 ){
             return null;
         }
-        return value.neighbour;
+        return this.props.value.neighbour;
     }
-    
-    let className = "cell" + (this.props.value.isRevealed ? "" : " hidden") + (this.props.value.isMine ? " is-mine" : "") + (this.props.value.isFlagged ? " is-flag" : "");
 
-    return (
-        <div ref="cell" onClick={this.props.onClick} className={className} onContextMenu={this.props.cMenu}>
-            {getValue()}
-         </div>
+    render(){
+        let className = "cell" + (this.props.value.isRevealed ? "" : " hidden") + (this.props.value.isMine ? " is-mine" : "") + (this.props.value.isFlagged ? " is-flag" : "");
+
+
+        return (
+            <div ref="cell" onClick={this.props.onClick} className={className} onContextMenu={this.props.cMenu}>
+                {this.getValue()}
+            </div>
         );
+    }
 }
-export default Cell;

@@ -5,214 +5,87 @@ import { useHistory } from 'react-router-dom';
 import Cell from './MinesweeperCell';
 
 
-/**
- * @param {*} props 
- * @returns 
- */
-const MinesweeperBody = (props) => {
+export default class MinesweeperBody extends React.Component {
+    state = {
+        boardData: this.initalizeBoardData(this.props.height, this.props.width, this.props.mines),
+        gameWon: false,
+        mineCount: this.props.mines,
+    };
 
-    //default variable
-    let currentTurn = true
-    let resetGamePlayers = {}
+    // const [show, setShow] = useState(false);
+    // const handleClose = () => setShow(false);
 
-    //minesweeper variables
-    let mine_num = this.props.mine_num;
-    let board_data = initializeGame(this.props.height, this.props.width, this.props.mines);
-    let game_won = false;
+    // const [isOver, setIsOver] = useState(false);
+    // const[message, setMessage] = useState(null);
 
-    //modal components
-    const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
+    // useEffect(() => {
+    //     if (isOver) {
+    //     setShow(true);
+    //     }
+    // }, [isOver]);
 
-    //game-over components
-    const [isOver, setIsOver] = useState(false);
-    const[message, setMessage] = useState(null);
 
-    //modal visibility for game over
-    useEffect(() => {
-        if (isOver) {
-        setShow(true);
-        }
-    }, [isOver]);
+    // const history = useHistory();
 
-    //route change for game over
-    const history = useHistory();
+    // const routeChange = () => { //for end of game
+    //     resetGame();
+    //     let path = 'game-selection';
+    //     history.push(path);
+    // }
 
-    const routeChange = () => { //for end of game
-        resetGame();
-        let path = 'game-selection';
-        history.push(path);
-    }
+    // var room_code = props.roomNumber
+    // var player = props.playColor
+    // console.log('start')
+    // let socket = new W3CWebSocket('ws://localhost:8000/ws/game/' + room_code)
+    // setTimeout(() => { console.log("connecting..."); }, 1000);
 
-    /*Multiplayer Game */
-    var room_code = props.roomNumber
-    var player = props.playColor
-    console.log('start')
-    let socket = new W3CWebSocket('ws://localhost:8000/ws/game/' + room_code)
-    setTimeout(() => { console.log("connecting..."); }, 1000);
+    // useEffect(() => {
+    //     socket.onopen = function (e) {
+    //         console.log('Socket connected')
+    //     }
 
-    useEffect(() => {
-        socket.onopen = function (e) {
-            console.log('Socket connected')
-        }
-
-        socket.onmessage = function (e) {
-            var data = JSON.parse(e.data)
-            console.log(data)
+    //     socket.onmessage = function (e) {
+    //         var data = JSON.parse(e.data)
+    //         console.log(data)
             
-            if (data.payload.reset === "reset") {
-                console.log("in reset")
-                resetGamePlayers[data.payload.player] = data.payload.reset;
-                checkForResetOrNewGame();
-                return;
-            }
-            if (data.payload.reset === "change") {
-                routeChange();
-                return;
-            }
+    //         if (data.payload.reset === "reset") {
+    //             console.log("in reset")
+    //             resetGamePlayers[data.payload.player] = data.payload.reset;
+    //             checkForResetOrNewGame();
+    //             return;
+    //         }
+    //         if (data.payload.reset === "change") {
+    //             routeChange();
+    //             return;
+    //         }
 
-            if (data.payload.type == 'end' && data.payload.player !== player) {
-                //alert("Sorry! you lost")
-                setMessage("Sorry! You lost");
-                //options page
-                setIsOver(!isOver);
-            } else if (data.payload.type === 'over') {
-                //alert("Game over! game end no one won")
-                setMessage("Game over! No one won");
-                //options page
-                setIsOver(!isOver);
-            } else if (data.payload.type === 'running' && data.payload.player !== player) {
-                setAnotherUserText(data.payload.index, data.payload.player)
-            }
+    //         if (data.payload.type == 'end' && data.payload.player !== player) {
+    //             //alert("Sorry! you lost")
+    //             setMessage("Sorry! You lost");
+    //             //options page
+    //             setIsOver(!isOver);
+    //         } else if (data.payload.type == 'over') {
+    //             //alert("Game over! game end no one won")
+    //             setMessage("Game over! No one won");
+    //             //options page
+    //             setIsOver(!isOver);
+    //         } else if (data.payload.type == 'running' && data.payload.player !== player) {
+    //             setAnotherUserText(data.payload.index, data.payload.player)
+    //         }
 
-        }
+    //     }
 
-        socket.onclose = function (e) {
-            console.log('Socket closed')
-        }
-    }, []);
+    //     socket.onclose = function (e) {
+    //         console.log('Socket closed')
+    //     }
+    // }, []);
 
-
-    /*******Minesweeper functions*********/
-
-    /**
-     * Initialize the game board:
-     * Put bombs in random locations
-     * Calculate the number of bombs in each square's nearby squares
-     * Put squares in the gameState array
-     */
-    function initializeGame(height, width, mines) {
-        let gameState = []
-        for (let i = 0; i <  height; i++) {
-            gameState.push([]);
-            for (let j = 0; j < width ; j++) {
-                gameState[i][j] = {
-                    x: i,
-                    y: j,
-                    isMine: false,
-                    neighbor: 0,
-                    isRevealed: false,
-                    isEmpty: false,
-                    isFlagged: false,
-                };
-            }
-        }
-
-        //put bombs in random locations
-        let mines_planted = 0, random_x, random_y;
-
-        while(mines_planted < mines) {
-            random_x = Math.floor((Math.random() * 1000) + 1) % width;
-            random_y = Math.floor((Math.random() * 1000) + 1) % height;
-            if (!gameState[random_x][random_y].isMine) {
-                gameState[random_x][random_y].isMine = true;
-                mines_planted++;
-            }
-        }
-        
-        //calculate the number of bombs in each square's nearby squares
-        for (let i = 0; i <  height; i++) {
-            for (let j = 0; j < width ; j++) {
-                if(gameState[i][[j].isMine] !== true){
-                    let mine = 0;
-                    const neighbors = getNeighbors(gameState[i][j].x, gameState[i][j].y, gameState);
-                    //The map() method creates a new array populated with the results
-                    // of calling a provided function on every element in the calling array.
-                    neighbors.map(neighbor => {
-                        if (neighbor.isMine) {
-                            mine++;
-                        }
-                    });
-                    if(mine === 0) {
-                        gameState[i][j].isEmpty = true;
-                    }
-                    gameState[i][j].neighbor = mine;
-                }
-            }
-        }
-        console.log(gameState)
-        return gameState;
-    }
-
-    /**
-    Reference: https://github.com/dolnuea/minesweeper/blob/master/minesweeper.c
-    ALGORITHM FOR REVEALING:
-       Using a recursive approach, referencing from flood fill algorithm:
-       STEP 1: If a square is valid then do the following:
-       STEP 2: if surrounding squares of asserted square has 0 surrounding bombs, and is not a bomb: Reveal it.
-       STEP 3: else if surrounding square of asserted square has surrounding bombs: stop, and print hint number of bombs.
-       STEP 4: check next surrounding square of the asserted square
-       STEP 5: if the square is already revealed, then stop.
-        * @param {*} i row index
-        * @param {*} j column index
-        * @param {*} gameState game
-     */
-    function getNeighbors(i, j, gameState) {
-
-            const neighbors = [];
-
-            //check up
-            if (i > 0) {
-                neighbors.push(gameState[i - 1][j]);
-            }
-            //check down
-            if (i < this.props.height - 1) {
-                neighbors.push(gameState[i + 1][j]);
-            }
-            //check left
-            if (j > 0) {
-                neighbors.push(gameState[i][j - 1]);
-            }
-            //check right
-            if (j < this.props.width - 1) {
-                neighbors.push(gameState[i][j + 1]);
-            }
-            //check up-left
-            if (i > 0 && j > 0) {
-                neighbors.push(gameState[i - 1][j - 1]);
-            }
-            //check up-right
-            if (i > 0 && j < this.props.width - 1) {
-                neighbors.push(gameState[i - 1][j + 1]);
-            }
-            //check down-right
-            if (i < this.props.height - 1 && j < this.props.width - 1) {
-                neighbors.push(gameState[i + 1][j + 1]);
-            }
-            //check down-left
-            if (i < this.props.height - 1 && j > 0) {
-                neighbors.push(gameState[i + 1][j - 1]);
-            }
-            return neighbors;       
-    }
-
-    /*Other helper functions */
 
     // get mines
-    function getMines(gameState) {
+    getMines(data) {
         let mineArray = [];
 
-        gameState.map(datarow => {
+        data.map(datarow => {
             datarow.map((dataitem) => {
                 if (dataitem.isMine) {
                     mineArray.push(dataitem);
@@ -224,10 +97,10 @@ const MinesweeperBody = (props) => {
     }
 
     // get Flags
-    function getFlags(gameState) {
+    getFlags(data) {
         let mineArray = [];
 
-        gameState.map(datarow => {
+        data.map(datarow => {
             datarow.map((dataitem) => {
                 if (dataitem.isFlagged) {
                     mineArray.push(dataitem);
@@ -239,10 +112,10 @@ const MinesweeperBody = (props) => {
     }
 
     // get Hidden cells
-    function getHidden(gameState) {
+    getHidden(data) {
         let mineArray = [];
 
-        gameState.map(datarow => {
+        data.map(datarow => {
             datarow.map((dataitem) => {
                 if (!dataitem.isRevealed) {
                     mineArray.push(dataitem);
@@ -253,8 +126,115 @@ const MinesweeperBody = (props) => {
         return mineArray;
     }
 
+    // Gets initial board data
+    initalizeBoardData(height, width, mines) {
+        let data = [];
+
+        for (let i = 0; i < height; i++) {
+            data.push([]);
+            for (let j = 0; j < width; j++) {
+                data[i][j] = {
+                    x: i,
+                    y: j,
+                    isMine: false,
+                    neighbour: 0,
+                    isRevealed: false,
+                    isEmpty: false,
+                    isFlagged: false,
+                };
+            }
+        }
+
+        // plant mines
+        let randomx, randomy, minesPlanted = 0;
+
+        while (minesPlanted < mines) {
+            randomx = Math.floor((Math.random() * 1000) + 1) % width;
+            randomy = Math.floor((Math.random() * 1000) + 1) % height;
+            if (!(data[randomx][randomy].isMine)) {
+                data[randomx][randomy].isMine = true;
+                minesPlanted++;
+            }
+        }
+
+        // get neighbours
+
+        let updatedData = data;
+
+        for (let i = 0; i < height; i++) {
+            for (let j = 0; j < width; j++) {
+                if (data[i][j].isMine !== true) {
+                    let mine = 0;
+                    const area = this.traverseBoard(data[i][j].x, data[i][j].y, data);
+                    area.map(value => {
+                        if (value.isMine) {
+                            mine++;
+                        }
+                    });
+                    if (mine === 0) {
+                        updatedData[i][j].isEmpty = true;
+                    }
+                    updatedData[i][j].neighbour = mine;
+                }
+            }
+        }
+
+        data = updatedData;
+
+        console.log(data);
+        return data;
+    }
+
+
+    // looks for neighbouring cells and returns them
+    traverseBoard(x, y, data) {
+        const el = [];
+
+        //up
+        if (x > 0) {
+            el.push(data[x - 1][y]);
+        }
+
+        //down
+        if (x < this.props.height - 1) {
+            el.push(data[x + 1][y]);
+        }
+
+        //left
+        if (y > 0) {
+            el.push(data[x][y - 1]);
+        }
+
+        //right
+        if (y < this.props.width - 1) {
+            el.push(data[x][y + 1]);
+        }
+
+        // top left
+        if (x > 0 && y > 0) {
+            el.push(data[x - 1][y - 1]);
+        }
+
+        // top right
+        if (x > 0 && y < this.props.width - 1) {
+            el.push(data[x - 1][y + 1]);
+        }
+
+        // bottom right
+        if (x < this.props.height - 1 && y < this.props.width - 1) {
+            el.push(data[x + 1][y + 1]);
+        }
+
+        // bottom left
+        if (x < this.props.height - 1 && y > 0) {
+            el.push(data[x + 1][y - 1]);
+        }
+
+        return el;
+    }
+
     // reveals the whole board
-    function revealBoard() {
+    revealBoard() {
         let updatedData = this.state.boardData;
         updatedData.map((datarow) => {
             datarow.map((dataitem) => {
@@ -267,22 +247,23 @@ const MinesweeperBody = (props) => {
     }
 
     /* reveal logic for empty cell */
-    function revealEmpty(x, y, gameState) {
-        let area = this.traverseBoard(x, y, gameState);
+    revealEmpty(x, y, data) {
+        let area = this.traverseBoard(x, y, data);
         area.map(value => {
             if (!value.isRevealed && (value.isEmpty || !value.isMine)) {
-                gameState[value.x][value.y].isRevealed = true;
+                data[value.x][value.y].isRevealed = true;
                 if (value.isEmpty) {
-                    this.revealEmpty(value.x, value.y, gameState);
+                    this.revealEmpty(value.x, value.y, data);
                 }
             }
         });
-        return gameState;
+        return data;
+
     }
 
-    /*User Event Functions */
+    // Handle User Events
 
-    function handleCellClick(x, y) {
+    handleCellClick(x, y) {
         let win = false;
 
         // check if revealed. return if true.
@@ -315,7 +296,7 @@ const MinesweeperBody = (props) => {
         });
     }
 
-    function _handleContextMenu(e, x, y) {
+    handleContextMenu(e, x, y) {
         e.preventDefault();
         let updatedData = this.state.boardData;
         let mines = this.state.mineCount;
@@ -349,14 +330,14 @@ const MinesweeperBody = (props) => {
         });
     }
 
-    function renderBoard(data) {
+    renderBoard(data) {
         return data.map((datarow) => {
             return datarow.map((dataitem) => {
                 return (
                     <div key={dataitem.x * datarow.length + dataitem.y}>
                         <Cell
                             onClick={() => this.handleCellClick(dataitem.x, dataitem.y)}
-                            cMenu={(e) => this._handleContextMenu(e, dataitem.x, dataitem.y)}
+                            cMenu={(e) => this.handleContextMenu(e, dataitem.x, dataitem.y)}
                             value={dataitem}
                         />
                         {(datarow[datarow.length - 1] === dataitem) ? <div className="clear" /> : ""}
@@ -364,90 +345,12 @@ const MinesweeperBody = (props) => {
             })
         });
 
-
-    }
-    /*Component methods*/
-    
-    // function componentWillReceiveProps(nextProps) {
-    //     if (JSON.stringify(this.props) !== JSON.stringify(nextProps)) {
-    //         this.setState({
-    //             boardData: this.initBoardData(nextProps.height, nextProps.width, nextProps.mines),
-    //             gameWon: false,
-    //             mineCount: nextProps.mines,
-    //         });
-    //     }
-    // }
-
-    /**
-     *  This function resets the game
-     */
-    function resetGame() {
-        initializeGame();
-        socket.send(JSON.stringify({
-            type: 'reset',
-            room_code: room_code,
-            player: player
-        }));
     }
 
-
-    function setBoxStateValues() {
-        //todo: set the values of the boxes
-    }
-
-    function setAnotherUserText(i, value) {
-        console.log('another', value)
-        board_data[parseInt(i)] = value
-        setBoxStateValues()
-        currentTurn = true
-        console.log(board_data)
-    }
-
-
-    function selectResetGame() {
-        let reset = 'reset';
-        resetGamePlayers[player] = reset;
-        var data = {
-            'player': player,
-            'reset': reset
-        }
-        socket.send(JSON.stringify({
-            data
-        }))
-        checkForResetOrNewGame();
-
-        if (show) {
-            setShow(!show);
-        }
-
-    }
-
-    function checkForResetOrNewGame() {
-        console.log("checkForResetOrNewGame");
-        //todo: check if all players have reset or new game
-    }
-
-    function selectRouteChange() {
-        let reset = 'change';
-        resetGamePlayers[player] = reset;
-        var data = {
-            'player': player,
-            'reset': reset
-        }
-        socket.send(JSON.stringify({
-            data
-        }))
-        setTimeout(() => { console.log("Routing..."); }, 2000);
-        routeChange();
-    }
-
-    // function checkForResetOrNewGame() {
-    //    //todo: check for reset or new game
-    // }
-
-    return(
-        <>
-        <Modal show={show} onHide={handleClose}>
+    render() {
+        return (
+            <>
+            {/* <Modal show={show} onHide={handleClose}>
                 <Modal.Title>{message}</Modal.Title>
                 <Modal.Footer>
                     <Button variant="primary" onClick={selectResetGame}>
@@ -457,8 +360,7 @@ const MinesweeperBody = (props) => {
                   Play another game
                 </Button>
               </Modal.Footer>
-            </Modal>
-            
+            </Modal> */}
             <div className="board">
                 <div className="game-info">
                     <span className="info">mines: {this.state.mineCount}</span><br />
@@ -468,7 +370,7 @@ const MinesweeperBody = (props) => {
                     this.renderBoard(this.state.boardData)
                 }
             </div>
-        </>
-    );
+            </>
+        );
+    }
 }
-export default MinesweeperBody;

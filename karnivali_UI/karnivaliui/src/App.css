@@ -8,6 +8,7 @@
 body {
     background-image: url("./images/controller.jpg");
     background-size: cover;
+    overflow: hidden;
 }
 
 h1 {
