@@ -12,7 +12,7 @@ import RockPaperScissor from "./webPages/components/RockPaperScissor";
 import Login from "./login";
 import SignUp from "./signup";
 import LogOut from "./logout";
-import background from "./images/Marvel Opening Theme.mp4"
+// import background from "./images/Marvel Opening Theme.mp4"
 import React from "react"
 
 // to test each page, un-comment the line you want to test
@@ -20,43 +20,42 @@ import React from "react"
 export default function App() {
   return (
     <div className="App">
-      /*
-      <video 
+      {/* <video
         autoPlay
         loop
-        
-        style={{
-          position:"absolute",
-          width:"100%",
-          left:"50%",
-          height:"200%",
-          objectFit:"cover",
-          transform:"translate(-50%, -50%)",
-          zIndex:"-1"        
-        }} 
-        
-      >
-        <source src={background} type="video/mp4"/>
-      </video>
-      */
-      <Router>
-              <Switch>
 
-                  <Route
-                      exact
-                      path="/"
-                      render={(props) => <Login {...props} />}
-                  />
-                  <Route
-                      exact
-                      path="/sign-up"
-                      render={(props) => <SignUp {...props} />}
-                  />
-                  <Route
-                      exact
-                      path="/logout"
-                      render={(props) => <LogOut {...props} />}
-                  />
+        style={{
+          position: "absolute",
+          width: "100%",
+          left: "50%",
+          height: "200%",
+          objectFit: "cover",
+          transform: "translate(-50%, -50%)",
+          zIndex: "-1"
+        }}
+
+      >
+        <source src={background} type="video/mp4" />
+      </video> */}
+
+      <Router>
+        <Switch>
+
+          <Route
+            exact
+            path="/"
+            render={(props) => <Login {...props} />}
+          />
+          <Route
+            exact
+            path="/sign-up"
+            render={(props) => <SignUp {...props} />}
+          />
+          <Route
+            exact
+            path="/logout"
+            render={(props) => <LogOut {...props} />}
+          />
 
           <Route
             exact
@@ -87,12 +86,12 @@ export default function App() {
             exact
             path="/play-again"
             render={(props) => <PlayAgainBox {...props} />}
-                  />
-                  <Route
-                      exact
-                      path="/rock-paper-scissor"
-                      render={(props) => <RockPaperScissor {...props} />}
-                  />
+          />
+          <Route
+            exact
+            path="/rock-paper-scissor"
+            render={(props) => <RockPaperScissor {...props} />}
+          />
 
         </Switch>
       </Router>
