@@ -5,7 +5,7 @@ import { Modal, Button } from "react-bootstrap";
 import { RockPaperScissorBackground, Slot, Rock, Paper, Scissor } from "./rockPaperScissors.styles";
 import { useHistory } from 'react-router-dom';
 import ChatModal from 'react-modal'
-
+import chatImg from '../../images/chat_button_img.png'
 let currentTurn = true
 let userChoices = {}
 let resetGamePlayers = {}
@@ -100,7 +100,7 @@ export default function RockPaperScissor(props) {
                 return
             }
 
-            
+
 
             if (data.state === props.location.state.player) {
                 //alert("you won")
@@ -120,7 +120,7 @@ export default function RockPaperScissor(props) {
                 setMessage("you lost");
                 setIsOver(true);
                 return
-            } 
+            }
             let value = data.value
             let player = data['player']
             userChoices[data['player']] = data.value
@@ -286,20 +286,32 @@ export default function RockPaperScissor(props) {
             </Modal> */}
                 {/* <MyModal open={modalIsopen} data={resultText}></MyModal> */}
 
-                <button onClick={(e) => { setChatModalOpen(true) }}>Chat</button>
+                <button onClick={(e) => { setChatModalOpen(true) }}><img src={chatImg} ></img></button>
                 <ChatModal
                     isOpen={isChatModalOpen}
-                // style={customStyles}
+                    style={{
+                        overlay: {
+                            width: '500px',
+                            height: '700px',
+                            padding: '0px',
+                            top: '0px'
+                        },
+                        content: {
+                            padding: '10px'
+                        }
+                    }}
 
                 // portalClassName={ } // Can mention the class name from .css class.
 
                 >
-                    <textarea id="chat_area" cols="100" rows="20" value={msgs}></textarea>
-                    <input type="text" id="chat_input" placeholder="type here" onChange={(e) => { setChatMsg(e.target.value) }}></input>
+                    <textarea id="chat_area" cols="50" rows="20" value={msgs} style={{ borderRadius: '5px', padding: '5px', backgroundColor: '#F1E5AC' }}></textarea><br></br>
+                    <input type="text" id="chat_input" placeholder="type here" onChange={(e) => { setChatMsg(e.target.value) }}
+                        style={{ borderRadius: '5px', margin: '3px' }}></input>
                     <button onClick={(e) => {
                         sendChatData(props.location.state.player)
-                    }}>Send</button>
-                    <button onClick={(e) => { setChatModalOpen(false) }}>Close Chat</button>
+                    }} style={{ backgroundColor: '#ADD8E6', borderRadius: '5px' }}>Send</button>
+                    <br></br>
+                    <button onClick={(e) => { setChatModalOpen(false) }} style={{ backgroundColor: 'red', borderRadius: '5px', margin: '3px' }}>Close Chat</button>
                 </ChatModal>
 
             </RockPaperScissorBackground>
