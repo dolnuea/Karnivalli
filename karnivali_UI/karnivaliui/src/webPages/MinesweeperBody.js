@@ -2,6 +2,7 @@ import React, { useState, useEffect} from 'react';
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { Modal, Button } from "react-bootstrap";
 import { useHistory } from 'react-router-dom';
+import {game_info, clear} from './Minesweeper.styles'; 
 import Cell from './MinesweeperCell';
 
 
@@ -188,49 +189,49 @@ export default class MinesweeperBody extends React.Component {
 
     // looks for neighbouring cells and returns them
     traverseBoard(x, y, data) {
-        const el = [];
+        const board = [];
 
         //up
         if (x > 0) {
-            el.push(data[x - 1][y]);
+            board.push(data[x - 1][y]);
         }
 
         //down
         if (x < this.props.height - 1) {
-            el.push(data[x + 1][y]);
+            board.push(data[x + 1][y]);
         }
 
         //left
         if (y > 0) {
-            el.push(data[x][y - 1]);
+            board.push(data[x][y - 1]);
         }
 
         //right
         if (y < this.props.width - 1) {
-            el.push(data[x][y + 1]);
+            board.push(data[x][y + 1]);
         }
 
         // top left
         if (x > 0 && y > 0) {
-            el.push(data[x - 1][y - 1]);
+            board.push(data[x - 1][y - 1]);
         }
 
         // top right
         if (x > 0 && y < this.props.width - 1) {
-            el.push(data[x - 1][y + 1]);
+            board.push(data[x - 1][y + 1]);
         }
 
         // bottom right
         if (x < this.props.height - 1 && y < this.props.width - 1) {
-            el.push(data[x + 1][y + 1]);
+            board.push(data[x + 1][y + 1]);
         }
 
         // bottom left
         if (x < this.props.height - 1 && y > 0) {
-            el.push(data[x + 1][y - 1]);
+            board.push(data[x + 1][y - 1]);
         }
 
-        return el;
+        return board;
     }
 
     // reveals the whole board
@@ -330,6 +331,9 @@ export default class MinesweeperBody extends React.Component {
         });
     }
 
+    /*
+    this function is extremely sus. this is the one lining up cells wrongly
+    */
     renderBoard(data) {
         return data.map((datarow) => {
             return datarow.map((dataitem) => {
@@ -340,7 +344,7 @@ export default class MinesweeperBody extends React.Component {
                             cMenu={(e) => this.handleContextMenu(e, dataitem.x, dataitem.y)}
                             value={dataitem}
                         />
-                        {(datarow[datarow.length - 1] === dataitem) ? <div className="clear" /> : ""}
+                        {(datarow[datarow.length - 1] === dataitem) ? <clear/> : ""}
                     </div>);
             })
         });
@@ -361,11 +365,11 @@ export default class MinesweeperBody extends React.Component {
                 </Button>
               </Modal.Footer>
             </Modal> */}
-            <div className="board">
-                <div className="game-info">
+            <div className = 'board'>
+                <game_info>
                     <span className="info">mines: {this.state.mineCount}</span><br />
                     <span className="info">{this.state.gameWon ? "You Win" : ""}</span>
-                </div>
+                </game_info>
                 {
                     this.renderBoard(this.state.boardData)
                 }

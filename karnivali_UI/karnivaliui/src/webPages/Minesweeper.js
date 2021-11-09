@@ -3,11 +3,11 @@ import ReactDOM from 'react-dom';
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { Modal, Button } from "react-bootstrap";
 import { useHistory } from 'react-router-dom';
-import MinesweeperBody from './components/MinesweeperBody';
-import './components/Minesweeper.styles.css'
-import ScreenImg from  '../images/minesweeper_img.jpg';
+import MinesweeperBody from './MinesweeperBody';
+import {gamebody, game} from './Minesweeper.styles'; 
+//import ScreenImg from  '../images/minesweeper_img.jpg';
 
-/**
+/**this is with css (no react compeonent)
  * The goal of the game is to find all the mines on the board.
 You reveal mines by clicking the cells, if you reveal a mine you loose.
 If you reveal a cell without mine it will show number of mines surrounding the cell.
@@ -36,16 +36,17 @@ export default class Minesweeper extends React.Component {
         width: 16,
         mines: 40,
     };
-
-
+    
     render() {
         const { height, width, mines } = this.state;
         return (
-            <div className="game">
-
-                <MinesweeperBody height={height} width={width} mines={mines} />
-                
-            </div>
+            <>
+            <gamebody>
+                <game>
+                    <MinesweeperBody height={height} width={width} mines={mines} />
+                </game>
+            </gamebody>
+            </>
         );
     }
 }
