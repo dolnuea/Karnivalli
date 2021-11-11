@@ -159,9 +159,9 @@ export default function RockPaperScissor(props) {
             return;
         }
         console.log(userChoices)
+
         if (currentTurn == false) {
             alert("Please wait for the oppsition's turn!!")
-            currentTurn = true
             return
         } else {
             currentTurn = false
