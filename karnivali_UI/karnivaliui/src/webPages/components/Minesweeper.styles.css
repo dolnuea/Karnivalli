@@ -13,6 +13,12 @@ body {
     flex-direction: column;
     margin: 0 auto;
   }
+
+  .board{
+    display: inline;
+    margin: 50px;
+    margin-left: 500px;
+  }
   
   .game-info {
     min-height: 50px;
