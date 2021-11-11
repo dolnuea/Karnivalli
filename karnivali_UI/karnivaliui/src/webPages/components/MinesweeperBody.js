@@ -331,6 +331,8 @@ export default class MinesweeperBody extends React.Component {
     }
 
     renderBoard(data) {
+        console.log(data)
+        
         return data.map((datarow) => {
             return datarow.map((dataitem) => {
                 return (
@@ -344,7 +346,17 @@ export default class MinesweeperBody extends React.Component {
                     </div>);
             })
         });
+    }
 
+    // Component methods
+    componentWillReceiveProps(nextProps) {
+        if (JSON.stringify(this.props) !== JSON.stringify(nextProps)) {
+            this.setState({
+                boardData: this.initBoardData(nextProps.height, nextProps.width, nextProps.mines),
+                gameWon: false,
+                mineCount: nextProps.mines,
+            });
+        }
     }
 
     render() {
