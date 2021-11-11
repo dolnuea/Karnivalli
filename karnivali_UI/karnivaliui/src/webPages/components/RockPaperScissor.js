@@ -17,7 +17,6 @@ export default function RockPaperScissor(props) {
     // const [paper, setPaper] = useState('paper')
     // const [scissor, setScissor] = useState('scissor')
     const [modalIsopen, setModalIsOpen] = useState(false)
-    const [resultText, setResultText] = useState("")
 
     const [isChatModalOpen, setChatModalOpen] = useState(false)
     const [chatMsg, setChatMsg] = useState("")
@@ -50,7 +49,7 @@ export default function RockPaperScissor(props) {
     useEffect(() => {
 
         // This function gets executed when the 
-        socket.onopen = function (e) {
+        socket.onopen = function () {
             console.log('Socket connected')
         }
 
@@ -87,40 +86,26 @@ export default function RockPaperScissor(props) {
                     alert("Game drawn.")
                     return
                 }
-
             }
 
             if (data.state === "draw") {
-                // 
                 setModalIsOpen(true)
-                setResultText("Game is Draw")
-                setMessage("Game is Draw");
+                setMessage("Draw!");
                 currentTurn = true
+                setIsOver(true);
+                return
+            } else if (data.state === props.location.state.player) {
+                currentTurn = true
+                setMessage("You won!");
+                setIsOver(true);
+                return
+            } else if ((data.state === 'p2' && props.location.state.player === 'p1') || (data.state === 'p1' && props.location.state.player === 'p2')) {
+                currentTurn = true
+                setMessage("You lost!");
                 setIsOver(true);
                 return
             }
 
-
-
-            if (data.state === props.location.state.player) {
-                //alert("you won")
-                currentTurn = true
-                setMessage("you won");
-                setIsOver(true);
-                return
-            } else if (data.state === 'p2' && props.location.state.player === 'p1') {
-                //alert("you lost")
-                currentTurn = true
-                setMessage("you lost");
-                setIsOver(true);
-                return
-            } else if (data.state === 'p1' && props.location.state.player === 'p2') {
-                //alert("you lost")
-                currentTurn = true
-                setMessage("you lost");
-                setIsOver(true);
-                return
-            }
             let value = data.value
             let player = data['player']
             userChoices[data['player']] = data.value
@@ -129,7 +114,6 @@ export default function RockPaperScissor(props) {
             let state = 'continue'
 
             if (userChoices.p1 !== undefined && userChoices.p2 !== undefined) {
-
                 if (userChoices.p1 === userChoices.p2) {
                     state = 'draw'
                     setMessage("draw");
@@ -142,12 +126,11 @@ export default function RockPaperScissor(props) {
                     state = "p1"
                 } else {
                     state = "p2"
-
                 }
             }
         }
 
-        socket.onclose = function (e) {
+        socket.onclose = function () {
             console.log('Socket Closed')
         }
 
@@ -161,7 +144,7 @@ export default function RockPaperScissor(props) {
         console.log(userChoices)
 
         if (currentTurn == false) {
-            alert("Please wait for the oppsition's turn!!")
+            alert("Please wait for your opponent's turn!")
             return
         } else {
             currentTurn = false
