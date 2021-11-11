@@ -145,7 +145,6 @@ export default function RockPaperScissor(props) {
 
                 }
             }
-
         }
 
         socket.onclose = function (e) {
@@ -185,7 +184,6 @@ export default function RockPaperScissor(props) {
                 state = "p1"
             } else {
                 state = "p2"
-
             }
         }
 
@@ -256,6 +254,7 @@ export default function RockPaperScissor(props) {
             chatMsg
         }))
 
+        setChatMsg("")
     }
 
     return (
@@ -272,9 +271,9 @@ export default function RockPaperScissor(props) {
                 </Modal.Footer>
             </Modal>)
             <RockPaperScissorBackground>
-                <Slot onClick={(e) => { sendData('rock', props.location.state.player) }}><Rock>🧱</Rock></Slot>
-                <Slot onClick={(e) => { sendData('paper', props.location.state.player) }}><Paper>📜</Paper></Slot>
-                <Slot onClick={(e) => { sendData('scissor', props.location.state.player) }}><Scissor>✂️</Scissor></Slot>
+                <Slot onClick={() => { sendData('rock', props.location.state.player) }}><Rock>🧱</Rock></Slot>
+                <Slot onClick={() => { sendData('paper', props.location.state.player) }}><Paper>📜</Paper></Slot>
+                <Slot onClick={() => { sendData('scissor', props.location.state.player) }}><Scissor>✂️</Scissor></Slot>
                 {/* <Modal isOpen={modalIsopen}>
                 <h2>The Game is draw</h2>
                 <button onClick={() => {
@@ -305,13 +304,19 @@ export default function RockPaperScissor(props) {
 
                 >
                     <textarea id="chat_area" cols="50" rows="20" value={msgs} style={{ borderRadius: '5px', padding: '5px', backgroundColor: '#F1E5AC' }}></textarea><br></br>
-                    <input type="text" id="chat_input" placeholder="type here" onChange={(e) => { setChatMsg(e.target.value) }}
-                        style={{ borderRadius: '5px', margin: '3px' }}></input>
-                    <button onClick={(e) => {
-                        sendChatData(props.location.state.player)
-                    }} style={{ backgroundColor: '#ADD8E6', borderRadius: '5px' }}>Send</button>
+                    <input type="text" id="chat_input" placeholder="Type here"
+                        value={chatMsg}
+                        onChange={(e) => { setChatMsg(e.target.value) }}
+                        style={{ borderRadius: '5px', margin: '3px' }}
+                        onKeyPress={(e) => { if (e.key === 'Enter') sendChatData(props.location.state.player) }}>
+                    </input>
+                    <button
+                        onClick={() => { sendChatData(props.location.state.player) }}
+                        style={{ backgroundColor: '#ADD8E6', borderRadius: '5px' }}>
+                        Send
+                    </button>
                     <br></br>
-                    <button onClick={(e) => { setChatModalOpen(false) }} style={{ backgroundColor: 'red', borderRadius: '5px', margin: '3px' }}>Close Chat</button>
+                    <button onClick={() => { setChatModalOpen(false) }} style={{ backgroundColor: 'red', borderRadius: '5px', margin: '3px' }}>Close Chat</button>
                 </ChatModal>
 
             </RockPaperScissorBackground>
