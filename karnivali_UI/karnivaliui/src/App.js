@@ -1,4 +1,3 @@
-
 import WelcomeScreen from "./WelcomeScreen";
 import StartOrJoinScreen from "./StartOrJoinScreen.js";
 import GameSelectionScreen from "./GameSelectionScreen";
@@ -12,7 +11,7 @@ import RockPaperScissor from "./webPages/components/RockPaperScissor";
 import Login from "./login";
 import SignUp from "./signup";
 import LogOut from "./logout";
-// import background from "./images/Marvel Opening Theme.mp4"
+import background from "./images/Christmas_background.mp4"
 import React from "react"
 
 // to test each page, un-comment the line you want to test
@@ -20,7 +19,7 @@ import React from "react"
 export default function App() {
   return (
     <div className="App">
-      {/* <video
+      { <video
         autoPlay
         loop
 
@@ -36,7 +35,7 @@ export default function App() {
 
       >
         <source src={background} type="video/mp4" />
-      </video> */}
+      </video> }
 
       <Router>
         <Switch>
