@@ -29,7 +29,7 @@ function GameSelectionScreen() {
                 <h1>Rock Paper Scissors</h1>
             </Panel>
 
-            <Panel hoverColor='#FFC300' onClick={() => routeChange('rock-paper-scissor')}>
+            <Panel hoverColor='#FFC300' onClick={() => routeChange('minesweeper')}>
                 <img src={mineSweeperImage} height='60%'></img>
                 <h1>4D Minesweeper</h1>
                 
