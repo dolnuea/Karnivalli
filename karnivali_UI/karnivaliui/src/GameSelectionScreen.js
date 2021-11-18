@@ -2,6 +2,7 @@ import { Panel, SelectionPanel } from "./Components/GameSelection.styles";
 import { useHistory } from 'react-router-dom';
 import ticTacToeImage from './images/tic-tac-toe.png';
 import RockPaperScissorsImage from './images/rock-paper-scissors.png';
+import mineSweeperImage from './images/minesweeper USE THIS ONE.svg';
 
 
 function GameSelectionScreen() {
@@ -19,13 +20,19 @@ function GameSelectionScreen() {
 
     return (
         <SelectionPanel>
-            <Panel hoverColor='#2E64FE' onClick={() => routeChange('tic-tac-toe')}>
-                <img src={ticTacToeImage} height='80%'></img>
+            <Panel hoverColor='#DAF7A6' onClick={() => routeChange('tic-tac-toe')}>
+                <img src={ticTacToeImage} height='60%'></img>
                 <h1>TicTacToe</h1>
             </Panel>
-            <Panel hoverColor='coral' onClick={() => routeChange('rock-paper-scissor')}>
-                <img src={RockPaperScissorsImage} height='80%'></img>
+            <Panel hoverColor='#FF5733' onClick={() => routeChange('rock-paper-scissor')}>
+                <img src={RockPaperScissorsImage} height='60%'></img>
                 <h1>Rock Paper Scissors</h1>
+            </Panel>
+
+            <Panel hoverColor='#FFC300' onClick={() => routeChange('minesweeper')}>
+                <img src={mineSweeperImage} height='60%'></img>
+                <h1>4D Minesweeper</h1>
+                
             </Panel>
         </SelectionPanel>
     );
