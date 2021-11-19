@@ -1,7 +1,7 @@
 import React from 'react';
 import Header from './components/header';
 import TicTacToeBody from './components/ticTacToeBody';
-import ScreenImg from  '../images/ttt.jpg';
+import ScreenImg from  '../images/xmas-tree-1.jpg';
 
 
 const TicTacToe = (props) => {
