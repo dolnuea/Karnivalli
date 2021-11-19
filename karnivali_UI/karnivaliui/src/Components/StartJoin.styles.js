@@ -10,7 +10,7 @@ export const StartJoinScreen = styled.div`
 export const GameboxStart = styled.div`
     height: 150px;
     width: 400px;
-    background-color: rgb(211, 251, 191, 0.7);
+    background-color: rgb(246, 220, 212, 0.7);
     
     border-top-right-radius: 0px;
     border-bottom-left-radius: 0px;
@@ -29,7 +29,7 @@ export const GameboxStart = styled.div`
 export const GameboxJoin = styled.div`
     height: 150px;
     width: 400px;
-    background-color: rgb(249, 255, 191, 0.7);
+    background-color: rgb(246, 220, 212, 0.7);
     
     border-top-right-radius: 0px;
     border-bottom-left-radius: 0px;
@@ -48,7 +48,7 @@ export const GameboxJoin = styled.div`
 export const GameboxWatch = styled.div`
     height: 150px;
     width: 400px;
-    background-color: rgb(211, 251, 191, 0.7);
+    background-color: rgb(246, 220, 212, 0.7);
     
     border-top-right-radius: 0px;
     border-bottom-left-radius: 0px;
