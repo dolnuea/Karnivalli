@@ -6,7 +6,7 @@
 }
 
 body {
-    background-image: url("./images/backg.jpg");
+    background-image: url("./images/background__gif.gif");
     background-size: cover;
     overflow: hidden;
 }
