@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import MyModal from '../webPages/components/Modals/MyModal'
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { Modal, Button } from "react-bootstrap";
-import { RockPaperScissorBackground, Slot, Rock, Paper, Scissor } from "../styles/rockPaperScissors.styles";
+import { RockPaperScissorBackground, Slot, Rock, Paper, Scissor } from "../styles/RockPaperScissors.styles";
 import { useHistory } from 'react-router-dom';
 import ChatModal from 'react-modal'
 import chatImg from '../images/chat_button_img.png'
