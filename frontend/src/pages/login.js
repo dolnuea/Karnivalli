@@ -1,6 +1,6 @@
 import React, { Component, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
-import axiosInstance from './axios';
+import axiosInstance from '../axios';
 import { Container, Alert, Row, Col, Button } from 'react-bootstrap';
 
 export default function Login() {

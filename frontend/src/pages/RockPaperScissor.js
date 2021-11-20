@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import MyModal from './Modals/MyModal'
+import MyModal from '../webPages/components/Modals/MyModal'
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { Modal, Button } from "react-bootstrap";
-import { RockPaperScissorBackground, Slot, Rock, Paper, Scissor } from "./rockPaperScissors.styles";
+import { RockPaperScissorBackground, Slot, Rock, Paper, Scissor } from "../styles/rockPaperScissors.styles";
 import { useHistory } from 'react-router-dom';
 import ChatModal from 'react-modal'
-import chatImg from '../../images/chat_button_img.png'
+import chatImg from '../images/chat_button_img.png'
 let currentTurn = true
 let userChoices = {}
 let resetGamePlayers = {}

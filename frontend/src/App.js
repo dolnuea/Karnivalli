@@ -1,16 +1,16 @@
-import WelcomeScreen from "./WelcomeScreen";
-import StartOrJoinScreen from "./StartOrJoinScreen.js";
-import GameSelectionScreen from "./GameSelectionScreen";
+import WelcomeScreen from "./pages/WelcomeScreen";
+import StartOrJoinScreen from "./pages/StartOrJoinScreen";
+import GameSelectionScreen from "./pages/GameSelectionScreen";
 import PlayAgainBox from "./PlayAgainBox";
 import "./App.css";
-import TicTacToe from "./webPages/ticTacToe";
-import Minesweeper from "./webPages/Minesweeper";
-import StartGame from "./webPages/startGame";
+import TicTacToe from "./pages/ticTacToe";
+import Minesweeper from "./pages/Minesweeper";
+import StartGame from "./pages/startGame";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import RockPaperScissor from "./webPages/components/RockPaperScissor";
-import Login from "./login";
-import SignUp from "./signup";
-import LogOut from "./logout";
+import RockPaperScissor from "./pages/RockPaperScissor";
+import Login from "./pages/login";
+import SignUp from "./pages/signup";
+import LogOut from "./pages/logout";
 //import background from "./images/Christmas_background.mp4"
 import React from "react"
 

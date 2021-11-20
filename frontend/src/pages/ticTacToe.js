@@ -1,6 +1,6 @@
 import React from 'react';
-import Header from './components/header';
-import TicTacToeBody from './components/ticTacToeBody';
+import Header from '../webPages/components/header';
+import TicTacToeBody from '../webPages/components/ticTacToeBody';
 import ScreenImg from  '../images/xmas-tree-1.jpg';
 
 
