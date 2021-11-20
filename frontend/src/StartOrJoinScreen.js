@@ -7,7 +7,7 @@ import {
     StartJoinScreen,
     GameboxWatch,
   RoomModal
-} from "./Components/StartJoin.styles";
+} from "./styles/StartJoin.styles";
 import { Modal, Button } from "react-bootstrap";
 
 function StartOrJoinScreen(props) {""
