@@ -8,7 +8,7 @@ import Minesweeper from "./pages/Minesweeper";
 import StartGame from "./pages/startGame";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import RockPaperScissor from "./pages/RockPaperScissor";
-import Login from "./pages/login";
+import Login from "./pages/Login";
 import SignUp from "./pages/signup";
 import LogOut from "./pages/logout";
 //import background from "./images/Christmas_background.mp4"
@@ -39,7 +39,6 @@ export default function App() {
 
       <Router>
         <Switch>
-
           <Route
             exact
             path="/"

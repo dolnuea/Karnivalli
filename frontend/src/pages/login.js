@@ -1,7 +1,8 @@
-import React, { Component, useState } from "react";
+import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import axiosInstance from '../axios';
-import { Container, Alert, Row, Col, Button } from 'react-bootstrap';
+import { Alert, Button } from 'react-bootstrap';
+import { Container } from "../styles/Login.styles";
 
 export default function Login() {
 
@@ -45,7 +46,7 @@ export default function Login() {
 				localStorage.setItem('refresh_token', res.data.refresh);
 				axiosInstance.defaults.headers['Authorization'] =
 					'JWT ' + localStorage.getItem('access_token');
-				
+
 				history.push({
 					pathname: '/welcome',
 					state: {
@@ -54,9 +55,6 @@ export default function Login() {
 						isGuest: false
 					}
 				});
-			
-				//console.log(res);
-				//console.log(res.data);
 			});
 	};
 
@@ -70,56 +68,42 @@ export default function Login() {
 				username: 'guest',
 				password: '',
 				isGuest: true
-
 			}
 		});
 	};
 
 
-
-
 	return (
-		<div className="login">
-			<br /> <br />
-			<Container>
-				<Row>
-					<Col md={{ span: 5, offset: 4 }}>
-						<Alert variant='light'>
-            <form>
+		<Container>
+			<Alert variant='light' style={{ width: '600px' }}>
+				<form>
+					<h3>Log in</h3>
 
-                <h3>Log in</h3>
+					<div className="form-group">
+						<label>User name</label>
+						<input type="text" className="form-control" placeholder="User name" onChange={handleChange_login} autoComplete="username" name="username" />
+					</div>
 
-                <div className="form-group">
-                    <label>User name</label>
-					<input type="text" className="form-control" placeholder="User name" onChange={handleChange_login} autoComplete="username" name="username"/>
-                </div>
+					<div className="form-group">
+						<label>Password</label>
+						<input type="password" className="form-control" placeholder="Enter password" onChange={handleChange_login} autoComplete="password" name="password" />
+					</div>
 
-                <div className="form-group">
-                    <label>Password</label>
-					<input type="password" className="form-control" placeholder="Enter password" onChange={handleChange_login} autoComplete="password" name="password"/>
-                </div>
+					<div className="form-group">
+						<div className="custom-control custom-checkbox">
+							<input type="checkbox" className="custom-control-input" id="customCheck1" />
+							<label className="custom-control-label" htmlFor="customCheck1">Remember me</label>
+						</div>
+					</div>
 
-                <div className="form-group">
-                    <div className="custom-control custom-checkbox">
-                        <input type="checkbox" className="custom-control-input" id="customCheck1" />
-                        <label className="custom-control-label" htmlFor="customCheck1">Remember me</label>
-                    </div>
-                </div>
+					<Button variant="outline-success" type="submit" onClick={handleSubmit_login}>Sign in</Button>
+					<Button variant="outline-success" onClick={guest_login}>Enter as a guest</Button>
+					<p className="forgot-password text-right">
+						<Link to={"/sign-up"}>Sign up</Link>
+					</p>
+				</form>
+			</Alert>
+		</Container>
+	);
 
-								<Button variant="outline-success" type="submit" onClick={handleSubmit_login}>Sign in</Button>
-								<Button variant="outline-success" onClick={guest_login}>Enter as a guest</Button>
-                <p className="forgot-password text-right">
-									<Link to={"/sign-up"}>Sign up</Link>
-                </p>
-                
-
-							</form>
-
-						</Alert>
-					</Col>
-				</Row>
-			</Container>
-		</div>
-        );
-    
 }
