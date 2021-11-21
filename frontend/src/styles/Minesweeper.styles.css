@@ -1,0 +1,23 @@
+.cell {
+    background: #fff;
+    border: 1px solid #414c69;
+    float: left;
+    line-height: 34px;
+    height: 34px;
+    text-align: center;
+    width: 34px;
+    cursor: pointer;
+}
+
+.cell:focus {
+    outline: none;
+}
+
+.cell-hidden {
+    background: #7e7b92;
+}
+
+.is-flag,
+.is-mine {
+    color: #fc543c;
+}
