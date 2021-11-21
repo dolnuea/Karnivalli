@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { Modal, Button } from "react-bootstrap";
 import { useHistory } from 'react-router-dom';
-import MinesweeperBody from '../webPages/components/MinesweeperBody';
+import MinesweeperBody from '../components/MinesweeperBody';
 import '../webPages/components/Minesweeper.styles.css'
 import ScreenImg from  '../images/backg.jpg';
 

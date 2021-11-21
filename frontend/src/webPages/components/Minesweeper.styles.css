@@ -2,29 +2,30 @@ body {
     margin: 20px;
     padding: 0;
     font-family: sans-serif;
-  }
-  .clear {
+}
+
+.clear {
     clear: both;
     content: ""
-  }
-  
-  .game {
+}
+
+.game {
     display: flex;
     flex-direction: column;
     margin: 0 auto;
-  }
+}
 
-  .board{
+.board {
     display: inline;
     margin: 50px;
     margin-left: 500px;
-  }
-  
-  .game-info {
+}
+
+.game-info {
     min-height: 50px;
-  }
-  
-  .cell {
+}
+
+.cell {
     background: #fff;
     border: 1px solid #414c69;
     float: left;
@@ -33,17 +34,17 @@ body {
     text-align: center;
     width: 34px;
     cursor: pointer;
-  }
-  
-  .cell:focus {
+}
+
+.cell:focus {
     outline: none;
-  }
-  
-  .hidden {
+}
+
+.hidden {
     background: #7e7b92;
-  }
-  
-  .is-flag,
-  .is-mine {
+}
+
+.is-flag,
+.is-mine {
     color: #fc543c;
-  }
+}
