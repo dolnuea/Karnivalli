@@ -16,22 +16,18 @@ export const Slot = styled.button `
     align-items: center;
    
     background-color: rgb(255, 230, 239, 0.6);
-   
 `;
 
 export const Rock = styled.div ` 
     font-size: 80px;
-
 `;
 
 
 export const Paper = styled.div ` 
     font-size: 80px;
-
 `;
 
 
 export const Scissor = styled.div ` 
     font-size: 80px;
-
 `;
