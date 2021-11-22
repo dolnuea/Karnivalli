@@ -3,7 +3,7 @@ import { ReactDOM } from "react";
 import { useHistory } from 'react-router-dom';
 import StartOrJoinScreen from "./StartOrJoinScreen.js";
 import { StartButton, WelcomeWindow } from "./Components/Welcome.styles";
-
+import Navbar from "./Navbar";
 
 
 
@@ -13,37 +13,48 @@ function WelcomeScreen(props) {
 
     const routeChange = () => {
         let path = 'game-selection';
-        history.push(path);
+        const userDetails = {
+            username: props.location.state.username,
+            isGuest: props.location.state.isGuest
+        }
+        history.push(path, userDetails);
     }
-    console.log(props.location.state.isGuest);
-    console.log(props.location.state.username);
 
     if (props.location.state.isGuest) {
         return (
-            <WelcomeWindow>
-                <h1>
-                    Welcome to Karnivali!
-                </h1>
+            <div>
+                <Navbar state={props.location} />
 
-                <StartButton onClick={routeChange}>
-                    Click Here to Start!
-                </StartButton>
-            </WelcomeWindow>
+                <WelcomeWindow>
+                    <h1>
+                        Welcome to Karnivali!
+                    </h1>
+
+                    <StartButton onClick={routeChange}>
+                        Click Here to Start!
+                    </StartButton>
+                </WelcomeWindow>
+            </div>
         );
     } else {
-        return(
-        <WelcomeWindow>
-            <h1>
-                Hi {props.location.state.username}, Welcome to Karnivali!
-            </h1>
+        return (
+            <div>
+                <Navbar state={props.location} />
 
-            <StartButton onClick={routeChange}>
-                Click Here to Start!
-            </StartButton>
-        </WelcomeWindow >
-            );
+                <WelcomeWindow>
+                    <h1>
+                        Hi {props.location.state.username}, Welcome to Karnivali!
+                    </h1>
+
+                    <StartButton onClick={routeChange}>
+                        Click Here to Start!
+                    </StartButton>
+                </WelcomeWindow >
+            </div>
+
+        );
     }
-   
+
 }
 
 export default WelcomeScreen;

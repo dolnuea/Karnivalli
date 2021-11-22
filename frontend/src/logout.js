@@ -7,13 +7,13 @@ export default function LogOut() {
 
 	useEffect(() => {
 		console.log(localStorage.getItem('refresh_token'));
-		const response = axiosInstance.post('user/logout/blacklist/', {
-			refresh_token: localStorage.getItem('refresh_token'),
-		});
 		localStorage.removeItem('access_token');
 		localStorage.removeItem('refresh_token');
+		localStorage.removeItem('username');
+		localStorage.removeItem('isGuest');
+
 		axiosInstance.defaults.headers['Authorization'] = null;
-		history.push('/sign-in');
+		history.push('/');
 	});
 	return <div>Logout</div>;
 }

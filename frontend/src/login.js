@@ -43,9 +43,12 @@ export default function Login() {
 			.then((res) => {
 				localStorage.setItem('access_token', res.data.access);
 				localStorage.setItem('refresh_token', res.data.refresh);
+				localStorage.setItem('username', formData_login.username);
+				localStorage.setItem('isGuest', false);
+
 				axiosInstance.defaults.headers['Authorization'] =
 					'JWT ' + localStorage.getItem('access_token');
-				
+
 				history.push({
 					pathname: '/welcome',
 					state: {
@@ -54,7 +57,7 @@ export default function Login() {
 						isGuest: false
 					}
 				});
-			
+
 				//console.log(res);
 				//console.log(res.data);
 			});
@@ -64,15 +67,23 @@ export default function Login() {
 		e.preventDefault();
 		console.log(formData_login);
 
-		history.push({
-			pathname: '/welcome',
-			state: {
-				username: 'guest',
-				password: '',
-				isGuest: true
+		if (localStorage.getItem('username') !== 'guest' && localStorage.getItem('isGuest') === false) {
+			alert('You already Logged In as ' + localStorage.getItem('username') + 'Try Logout first')
 
-			}
-		});
+		} else {
+			localStorage.setItem('username', "guest");
+			localStorage.setItem('isGuest', true);
+			history.push({
+				pathname: '/welcome',
+				state: {
+					username: 'guest',
+					password: '',
+					isGuest: true
+
+				}
+			});
+		}
+
 	};
 
 
@@ -85,33 +96,33 @@ export default function Login() {
 				<Row>
 					<Col md={{ span: 5, offset: 4 }}>
 						<Alert variant='light'>
-            <form>
+							<form>
 
-                <h3>Log in</h3>
+								<h3>Log in</h3>
 
-                <div className="form-group">
-                    <label>User name</label>
-					<input type="text" className="form-control" placeholder="User name" onChange={handleChange_login} autoComplete="username" name="username"/>
-                </div>
+								<div className="form-group">
+									<label>User name</label>
+									<input type="text" className="form-control" placeholder="User name" onChange={handleChange_login} autoComplete="username" name="username" />
+								</div>
 
-                <div className="form-group">
-                    <label>Password</label>
-					<input type="password" className="form-control" placeholder="Enter password" onChange={handleChange_login} autoComplete="password" name="password"/>
-                </div>
+								<div className="form-group">
+									<label>Password</label>
+									<input type="password" className="form-control" placeholder="Enter password" onChange={handleChange_login} autoComplete="password" name="password" />
+								</div>
 
-                <div className="form-group">
-                    <div className="custom-control custom-checkbox">
-                        <input type="checkbox" className="custom-control-input" id="customCheck1" />
-                        <label className="custom-control-label" htmlFor="customCheck1">Remember me</label>
-                    </div>
-                </div>
+								<div className="form-group">
+									<div className="custom-control custom-checkbox">
+										<input type="checkbox" className="custom-control-input" id="customCheck1" />
+										<label className="custom-control-label" htmlFor="customCheck1">Remember me</label>
+									</div>
+								</div>
 
 								<Button variant="outline-success" type="submit" onClick={handleSubmit_login}>Sign in</Button>
 								<Button variant="outline-success" onClick={guest_login}>Enter as a guest</Button>
-                <p className="forgot-password text-right">
+								<p className="forgot-password text-right">
 									<Link to={"/sign-up"}>Sign up</Link>
-                </p>
-                
+								</p>
+
 
 							</form>
 
@@ -120,6 +131,6 @@ export default function Login() {
 				</Row>
 			</Container>
 		</div>
-        );
-    
+	);
+
 }

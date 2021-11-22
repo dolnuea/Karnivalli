@@ -41,7 +41,11 @@ export default function RockPaperScissor(props) {
     const routeChange = () => { //for end of game
         resetGame();
         let path = 'game-selection';
-        history.push(path);
+        const userDetails = {
+            username: localStorage.getItem("username"),
+            isGuest: localStorage.getItem("isGuest")
+        }
+        history.push(path, userDetails);
     }
 
 
@@ -212,7 +216,7 @@ export default function RockPaperScissor(props) {
         resetGamePlayers[player] = reset;
         socket.send(JSON.stringify({
             reset,
-            player
+            player,
         }))
 
         routeChange();

@@ -1,5 +1,5 @@
 import { PlayAgainScreen, PlayAgainWinLose, ReplayGameBox } from "./Components/PlayAgain.styles";
-import {useHistory} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 
 const redAlert = () => {
@@ -7,14 +7,14 @@ const redAlert = () => {
 };
 
 function PlayAgainBox(props) {
-
+    console.log("In play again", props)
     const history = useHistory();
 
-    const routeChange = () =>{ 
+    const routeChange = () => {
         let path = ''; //go to welcome page
         history.push(path);
     }
-    const gameRouteChange = () =>{ 
+    const gameRouteChange = () => {
         let path = 'game-selection'; //go to welcome page
         history.push(path);
     }

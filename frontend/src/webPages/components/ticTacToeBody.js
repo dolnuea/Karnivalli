@@ -45,6 +45,11 @@ const TicTacToeBody = (props) => {
     const routeChange = () => { //for end of game
         resetGame();
         let path = 'game-selection';
+        // const userDetails = {
+        //     username: localStorage.getItem("username"),
+        //     isGuest: localStorage.getItem("isGuest")
+        // }
+        // history.push(path, userDetails);
         history.push(path);
     }
 

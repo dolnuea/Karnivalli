@@ -11,6 +11,7 @@ import RockPaperScissor from "./webPages/components/RockPaperScissor";
 import Login from "./login";
 import SignUp from "./signup";
 import LogOut from "./logout";
+import UserProfile from "./UserProfile"
 //import background from "./images/Christmas_background.mp4"
 import React from "react"
 
@@ -92,6 +93,11 @@ export default function App() {
             render={(props) => <RockPaperScissor {...props} />}
           />
 
+          <Route
+            exact
+            path="/userProfile"
+            render={(props) => <UserProfile {...props} />}
+          />
         </Switch>
       </Router>
     </div>
