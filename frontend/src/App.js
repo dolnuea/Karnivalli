@@ -5,12 +5,12 @@ import PlayAgainBox from "./PlayAgainBox";
 import "./App.css";
 import TicTacToe from "./pages/TicTacToe";
 import Minesweeper from "./pages/Minesweeper";
-import StartGame from "./pages/startGame";
+import StartGame from "./pages/StartGame";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import RockPaperScissor from "./pages/RockPaperScissor";
 import Login from "./pages/Login";
-import SignUp from "./pages/signup";
-import LogOut from "./pages/logout";
+import SignUp from "./pages/SignUp";
+import LogOut from "./pages/Logout";
 //import background from "./images/Christmas_background.mp4"
 import React from "react"
 
