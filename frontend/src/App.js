@@ -5,7 +5,6 @@ import PlayAgainBox from "./PlayAgainBox";
 import "./App.css";
 import TicTacToe from "./pages/TicTacToe";
 import Minesweeper from "./pages/Minesweeper";
-import StartGame from "./pages/StartGame";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import RockPaperScissor from "./pages/RockPaperScissor";
 import Login from "./pages/Login";
