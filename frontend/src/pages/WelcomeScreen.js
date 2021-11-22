@@ -2,8 +2,8 @@ import React from "react";
 import { ReactDOM } from "react";
 import { useHistory } from 'react-router-dom';
 import StartOrJoinScreen from "./StartOrJoinScreen.js";
-import { StartButton, WelcomeWindow } from "./Components/Welcome.styles";
-import Navbar from "./Navbar";
+import { StartButton, WelcomeWindow } from "../styles/Welcome.styles";
+import Navbar from "../Navbar";
 
 
 

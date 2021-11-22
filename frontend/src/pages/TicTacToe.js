@@ -1,5 +1,5 @@
 import React from 'react';
-import TicTacToeBody from '../components/TicTacToeBody';
+import TicTacToeBody from '../Components/TicTacToeBody';
 import { Background, Header, headlineTitle } from '../styles/TicTacToe.styles';
 
 

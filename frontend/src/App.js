@@ -11,6 +11,7 @@ import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import LogOut from "./pages/Logout";
 //import background from "./images/Christmas_background.mp4"
+import UserProfile from './UserProfile'
 import React from "react"
 
 // to test each page, un-comment the line you want to test

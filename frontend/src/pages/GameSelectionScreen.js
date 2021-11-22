@@ -19,7 +19,7 @@ function GameSelectionScreen(props) {
 
     return (
         <div>
-            <Navbar state={props.location} />
+            {/* <Navbar state={props.location} /> */}
             <SelectionPanel>
                 <Panel hoverColor='#DAF7A6' onClick={() => routeChange('tic-tac-toe')}>
                     <img src={ticTacToeImage} height='60%'></img>
