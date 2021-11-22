@@ -1,5 +1,5 @@
 import React, { } from 'react';
-import MinesweeperBody from '../Components/MinesweeperBody';
+import MinesweeperBody from '../components/MinesweeperBody';
 import { MinesweeperContainer } from '../styles/Minesweeper.styles';
 
 /**
