@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import MyModal from './Modals/MyModal'
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { Modal, Button } from "react-bootstrap";
-import { RockPaperScissorBackground, Slot, Rock, Paper, Scissor } from "./rockPaperScissors.styles";
+import { RockPaperScissorBackground, Slot, Rock, Paper, Scissor } from "../styles/RockPaperScissors.styles";
 import { useHistory } from 'react-router-dom';
 import ChatModal from 'react-modal'
-import chatImg from '../../images/chat_button_img.png'
+import chatImg from '../images/chat_button_img.png'
 let currentTurn = true
 let userChoices = {}
 let resetGamePlayers = {}
 let chat_messages = ""
+
 export default function RockPaperScissor(props) {
     console.log(props)
 
@@ -44,11 +44,7 @@ export default function RockPaperScissor(props) {
         history.push(path);
     }
 
-
-
     useEffect(() => {
-
-        // This function gets executed when the 
         socket.onopen = function () {
             console.log('Socket connected')
         }
@@ -106,8 +102,6 @@ export default function RockPaperScissor(props) {
                 return
             }
 
-            let value = data.value
-            let player = data['player']
             userChoices[data['player']] = data.value
             console.log(userChoices)
 
@@ -203,7 +197,6 @@ export default function RockPaperScissor(props) {
         if (show) {
             setShow(!show);
         }
-
     }
 
     function selectRouteChange() {
@@ -252,22 +245,11 @@ export default function RockPaperScissor(props) {
                         Play another game
                     </Button>
                 </Modal.Footer>
-            </Modal>)
+            </Modal>
             <RockPaperScissorBackground>
                 <Slot onClick={() => { sendData('rock', props.location.state.player) }}><Rock>🧱</Rock></Slot>
                 <Slot onClick={() => { sendData('paper', props.location.state.player) }}><Paper>📜</Paper></Slot>
                 <Slot onClick={() => { sendData('scissor', props.location.state.player) }}><Scissor>✂️</Scissor></Slot>
-                {/* <Modal isOpen={modalIsopen}>
-                <h2>The Game is draw</h2>
-                <button onClick={() => {
-                    history.push('/game-selection')
-                }}>Choose game</button>
-                <button onClick={() => {
-                    history.push('/start-or-join')
-                }}>Play Again</button>
-            </Modal> */}
-                {/* <MyModal open={modalIsopen} data={resultText}></MyModal> */}
-
                 <button onClick={(e) => { setChatModalOpen(true) }}><img src={chatImg} ></img></button>
                 <ChatModal
                     isOpen={isChatModalOpen}

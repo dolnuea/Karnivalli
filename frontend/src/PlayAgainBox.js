@@ -1,4 +1,4 @@
-import { PlayAgainScreen, PlayAgainWinLose, ReplayGameBox } from "./Components/PlayAgain.styles";
+import { PlayAgainScreen, PlayAgainWinLose, ReplayGameBox } from "./styles/PlayAgain.styles";
 import {useHistory} from 'react-router-dom';
 
 

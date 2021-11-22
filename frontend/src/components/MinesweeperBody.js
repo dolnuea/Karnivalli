@@ -1,8 +1,6 @@
-import React, { useState, useEffect} from 'react';
-import { w3cwebsocket as W3CWebSocket } from "websocket";
-import { Modal, Button } from "react-bootstrap";
-import { useHistory } from 'react-router-dom';
-import Cell from './MinesweeperCell';
+import React from 'react';
+import { Board, Clear, GameInfo } from '../styles/Minesweeper.styles';
+import MinesweeperCell from './MinesweeperCell';
 
 
 export default class MinesweeperBody extends React.Component {
@@ -47,7 +45,7 @@ export default class MinesweeperBody extends React.Component {
     //     socket.onmessage = function (e) {
     //         var data = JSON.parse(e.data)
     //         console.log(data)
-            
+
     //         if (data.payload.reset === "reset") {
     //             console.log("in reset")
     //             resetGamePlayers[data.payload.player] = data.payload.reset;
@@ -258,7 +256,6 @@ export default class MinesweeperBody extends React.Component {
             }
         });
         return data;
-
     }
 
     // Handle User Events
@@ -332,19 +329,23 @@ export default class MinesweeperBody extends React.Component {
 
     renderBoard(data) {
         console.log(data)
-        
-        return data.map((datarow) => {
-            return datarow.map((dataitem) => {
-                return (
-                    <div key={dataitem.x * datarow.length + dataitem.y}>
-                        <Cell
-                            onClick={() => this.handleCellClick(dataitem.x, dataitem.y)}
-                            cMenu={(e) => this.handleContextMenu(e, dataitem.x, dataitem.y)}
-                            value={dataitem}
-                        />
-                        {(datarow[datarow.length - 1] === dataitem) ? <div className="clear" /> : ""}
-                    </div>);
-            })
+
+        return data.map((dataRow) => {
+            return (
+                <tr>
+                    {dataRow.map((dataItem) => {
+                        return (
+                            <td key={dataItem.x * dataRow.length + dataItem.y}>
+                                <MinesweeperCell
+                                    onClick={() => this.handleCellClick(dataItem.x, dataItem.y)}
+                                    cMenu={(e) => this.handleContextMenu(e, dataItem.x, dataItem.y)}
+                                    value={dataItem}
+                                />
+                                {(dataRow[dataRow.length - 1] === dataItem) ? <Clear /> : ""}
+                            </td>);
+                    })}
+                </tr>
+            )
         });
     }
 
@@ -362,7 +363,7 @@ export default class MinesweeperBody extends React.Component {
     render() {
         return (
             <>
-            {/* <Modal show={show} onHide={handleClose}>
+                {/* <Modal show={show} onHide={handleClose}>
                 <Modal.Title>{message}</Modal.Title>
                 <Modal.Footer>
                     <Button variant="primary" onClick={selectResetGame}>
@@ -373,15 +374,13 @@ export default class MinesweeperBody extends React.Component {
                 </Button>
               </Modal.Footer>
             </Modal> */}
-            <div className="board">
-                <div className="game-info">
-                    <span className="info">mines: {this.state.mineCount}</span><br />
-                    <span className="info">{this.state.gameWon ? "You Win" : ""}</span>
-                </div>
-                {
-                    this.renderBoard(this.state.boardData)
-                }
-            </div>
+                <Board>
+                    <GameInfo>
+                        <span>Mines: {this.state.mineCount}</span><br />
+                        <span>{this.state.gameWon ? "You Win" : ""}</span>
+                    </GameInfo>
+                    {this.renderBoard(this.state.boardData)}
+                </Board>
             </>
         );
     }

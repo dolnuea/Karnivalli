@@ -1,13 +1,13 @@
 import { React, useState } from "react";
 import { useHistory } from "react-router-dom";
-import "./App.css";
+import "../App.css";
 import {
   GameboxStart,
   GameboxJoin,
     StartJoinScreen,
     GameboxWatch,
   RoomModal
-} from "./Components/StartJoin.styles";
+} from "../styles/StartJoin.styles";
 import { Modal, Button } from "react-bootstrap";
 
 function StartOrJoinScreen(props) {""

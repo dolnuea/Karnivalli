@@ -6,7 +6,7 @@ import {
   Link,
   useHistory,
 } from "react-router-dom";
-import TicTacToe from "./ticTacToe";
+import TicTacToe from "./TicTacToe";
 
 function StartGame() {
   const [text, setText] = useState("");

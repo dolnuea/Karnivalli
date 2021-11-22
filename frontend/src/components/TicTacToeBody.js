@@ -2,13 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { Modal, Button } from "react-bootstrap";
 import { useHistory } from 'react-router-dom';
-// import ChatModal from 'react-modal'
+import { Board, BoardContainer, Body, Game, ScoreBoard, Slot } from '../styles/TicTacToe.styles';
 
 let defaultColor = 'grey'
 let gameState = [defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor]
 let currentTurn = true
 let resetGamePlayers = {}
-// let chat_messages = ""
 
 
 const TicTacToeBody = (props) => {
@@ -55,7 +54,7 @@ const TicTacToeBody = (props) => {
     setTimeout(() => { console.log("connecting..."); }, 1000);
 
     useEffect(() => {
-        socket.onopen = function (e) {
+        socket.onopen = function () {
             console.log('Socket connected')
         }
 
@@ -100,7 +99,7 @@ const TicTacToeBody = (props) => {
 
         }
 
-        socket.onclose = function (e) {
+        socket.onclose = function () {
             console.log('Socket closed')
         }
     }, []);
@@ -108,11 +107,7 @@ const TicTacToeBody = (props) => {
 
     console.log('end')
 
-
     console.log(gameState)
-
-    let elementArray = document.querySelectorAll('.space')
-
 
     function checkGameEnd() {
 
@@ -226,7 +221,6 @@ const TicTacToeBody = (props) => {
         setBox7(gameState[6])
         setBox8(gameState[7])
         setBox9(gameState[8])
-
     }
 
     function setAnotherUserText(i, value) {
@@ -325,28 +319,25 @@ const TicTacToeBody = (props) => {
                 </Modal.Footer>
             </Modal>
 
-            <div className="body">
-                <div className="full-page" id="full-page">
-
-                    <div className="game flex-column">
-                        <div className="scoreboard">
-                            Room Number : {props.roomNumber}
-                        </div>
-                        <div className="boardcontainer">
-                            <div className="board">
-                                <button style={{ backgroundColor: box1 }} data-cell-index="0" className="space" onClick={(e) => { setText("0", player) }}></button>
-                                <button style={{ backgroundColor: box2 }} data-cell-index="1" className="space" onClick={(e) => { setText("1", player) }}></button>
-                                <button style={{ backgroundColor: box3 }} data-cell-index="2" className="space" onClick={(e) => { setText("2", player) }}></button>
-                                <button style={{ backgroundColor: box4 }} data-cell-index="3" className="space" onClick={(e) => { setText("3", player) }}></button>
-                                <button style={{ backgroundColor: box5 }} data-cell-index="4" className="space" onClick={(e) => { setText("4", player) }}></button>
-                                <button style={{ backgroundColor: box6 }} data-cell-index="5" className="space" onClick={(e) => { setText("5", player) }}></button>
-                                <button style={{ backgroundColor: box7 }} data-cell-index="6" className="space" onClick={(e) => { setText("6", player) }}></button>
-                                <button style={{ backgroundColor: box8 }} data-cell-index="7" className="space" onClick={(e) => { setText("7", player) }}></button>
-                                <button style={{ backgroundColor: box9 }} data-cell-index="8" className="space" onClick={(e) => { setText("8", player) }}></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <Body>
+                <Game>
+                    <ScoreBoard>
+                        Room Number : {props.roomNumber}
+                    </ScoreBoard>
+                    <BoardContainer>
+                        <Board>
+                            <Slot style={{ backgroundColor: box1 }} data-cell-index="0" onClick={() => { setText("0", player) }}></Slot>
+                            <Slot style={{ backgroundColor: box2 }} data-cell-index="1" onClick={() => { setText("1", player) }}></Slot>
+                            <Slot style={{ backgroundColor: box3 }} data-cell-index="2" onClick={() => { setText("2", player) }}></Slot>
+                            <Slot style={{ backgroundColor: box4 }} data-cell-index="3" onClick={() => { setText("3", player) }}></Slot>
+                            <Slot style={{ backgroundColor: box5 }} data-cell-index="4" onClick={() => { setText("4", player) }}></Slot>
+                            <Slot style={{ backgroundColor: box6 }} data-cell-index="5" onClick={() => { setText("5", player) }}></Slot>
+                            <Slot style={{ backgroundColor: box7 }} data-cell-index="6" onClick={() => { setText("6", player) }}></Slot>
+                            <Slot style={{ backgroundColor: box8 }} data-cell-index="7" onClick={() => { setText("7", player) }}></Slot>
+                            <Slot style={{ backgroundColor: box9 }} data-cell-index="8" onClick={() => { setText("8", player) }}></Slot>
+                        </Board>
+                    </BoardContainer>
+                </Game>
                 {/* <button onClick={(e) => { setChatModalOpen(true) }}>Chat</button>
                 <ChatModal
                     isOpen={isChatModalOpen}
@@ -362,7 +353,7 @@ const TicTacToeBody = (props) => {
                     }}>Send</button>
                     <button onClick={(e) => { setChatModalOpen(false) }}>Close Chat</button>
                 </ChatModal> */}
-            </div>
+            </Body>
         </>
     );
 }
