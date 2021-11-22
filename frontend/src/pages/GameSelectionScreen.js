@@ -1,9 +1,8 @@
-import { Panel, SelectionPanel } from "./Components/GameSelection.styles";
+import { Panel, SelectionPanel } from "../styles/GameSelection.styles";
 import { useHistory } from 'react-router-dom';
-import ticTacToeImage from './images/tic-tac-toe.png';
-import RockPaperScissorsImage from './images/rock-paper-scissors.png';
-import mineSweeperImage from './images/minesweeper USE THIS ONE.svg';
-import Navbar from "./Navbar";
+import ticTacToeImage from '../images/tic-tac-toe.png';
+import RockPaperScissorsImage from '../images/rock-paper-scissors.png';
+import mineSweeperImage from '../images/minesweeper USE THIS ONE.svg';
 
 function GameSelectionScreen(props) {
     // const { isGuest, username } = props.location.state

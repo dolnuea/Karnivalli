@@ -1,11 +1,6 @@
-import React, { useState, useEffect} from 'react';
-import ReactDOM from 'react-dom';
-import { w3cwebsocket as W3CWebSocket } from "websocket";
-import { Modal, Button } from "react-bootstrap";
-import { useHistory } from 'react-router-dom';
-import MinesweeperBody from './components/MinesweeperBody';
-import './components/Minesweeper.styles.css'
-import ScreenImg from  '../images/backg.jpg';
+import React, {  } from 'react';
+import MinesweeperBody from '../components/MinesweeperBody';
+import { MinesweeperContainer } from '../styles/Minesweeper.styles';
 
 /**
  * The goal of the game is to find all the mines on the board.
@@ -41,11 +36,9 @@ export default class Minesweeper extends React.Component {
     render() {
         const { height, width, mines } = this.state;
         return (
-            <div className="game">
-
+            <MinesweeperContainer>
                 <MinesweeperBody height={height} width={width} mines={mines} />
-                
-            </div>
+            </MinesweeperContainer>
         );
     }
 }

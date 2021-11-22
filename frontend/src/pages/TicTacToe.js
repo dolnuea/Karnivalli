@@ -1,7 +1,6 @@
 import React from 'react';
-import Header from './components/header';
-import TicTacToeBody from './components/ticTacToeBody';
-import ScreenImg from  '../images/xmas-tree-1.jpg';
+import TicTacToeBody from '../components/TicTacToeBody';
+import { Background, Header, headlineTitle } from '../styles/TicTacToe.styles';
 
 
 const TicTacToe = (props) => {
@@ -17,10 +16,10 @@ const TicTacToe = (props) => {
         playerColor = "viewer"
     }
     return (
-        <div className="TicTacToe" style = {{backgroundImage : `url(${ScreenImg})` }}>
-            <Header />
+        <Background>
+            <Header>TIC TAC TOE</Header>
             <TicTacToeBody roomNumber={props.location.state.roomCode} playColor={playerColor} />
-        </div>
+        </Background>
     );
 }
 
