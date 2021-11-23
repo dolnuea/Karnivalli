@@ -21,16 +21,16 @@ function GameSelectionScreen(props) {
         <div>
             {/* <Navbar state={props.location} /> */}
             <SelectionPanel>
-                <Panel hoverColor='#DAF7A6' onClick={() => routeChange('tic-tac-toe')}>
+                <Panel hoverColor='#ff124f' onClick={() => routeChange('tic-tac-toe')}>
                     <img src={ticTacToeImage} height='60%'></img>
                     <h1>TicTacToe</h1>
                 </Panel>
-                <Panel hoverColor='#FF5733' onClick={() => routeChange('rock-paper-scissor')}>
+                <Panel hoverColor='#7a04eb' onClick={() => routeChange('rock-paper-scissor')}>
                     <img src={RockPaperScissorsImage} height='60%'></img>
                     <h1>Rock Paper Scissors</h1>
                 </Panel>
 
-                <Panel hoverColor='#FFC300' onClick={() => routeChange('minesweeper')}>
+                <Panel hoverColor='#ff00a0' onClick={() => routeChange('minesweeper')}>
                     <img src={mineSweeperImage} height='60%'></img>
                     <h1>4D Minesweeper</h1>
 

@@ -17,9 +17,12 @@ export const PlayAgainWinLose = styled.div `
     background-color: #693699;
     border-top-right-radius: 7em;
     border-bottom-left-radius: 7em;
+    transition-property: transform, background-color, color;
+    transition-duration: .3s;
+    transition-timing-function: cubic-bezier(0.37, 0, 0.63, 1);
 
     &:hover{
-        background-color: red;
+        background-color: #ff124f;
     }
 `;
 
@@ -33,8 +36,11 @@ export const ReplayGameBox = styled.div `
     border-top-left-radius: 7em;
     border-bottom-right-radius: 7em;
     background-color: #9570DD;
+    transition-property: transform, background-color, color;
+    transition-duration: .3s;
+    transition-timing-function: cubic-bezier(0.37, 0, 0.63, 1);
 
     &:hover{
-        background-color: #9F05C5;
+        background-color: #fe75fe;
     }
 `;

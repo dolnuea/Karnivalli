@@ -5,6 +5,10 @@ import { RockPaperScissorBackground, Slot, Rock, Paper, Scissor } from "../style
 import { useHistory } from 'react-router-dom';
 import ChatModal from 'react-modal'
 import chatImg from '../images/chat_button_img.png'
+
+
+
+
 let currentTurn = true
 let userChoices = {}
 let resetGamePlayers = {}
