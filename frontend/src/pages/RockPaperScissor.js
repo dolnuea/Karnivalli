@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { Modal, Button } from "react-bootstrap";
-import { RockPaperScissorBackground, Slot, Rock, Paper, Scissor } from "../styles/RockPaperScissors.styles";
+import { RockPaperScissorBackground, Slot, Rock, Paper, Scissor, chatButton } from "../styles/RockPaperScissors.styles";
 import { useHistory } from 'react-router-dom';
 import ChatModal from 'react-modal'
-import chatImg from '../images/chat_button_img.png'
+import chatImg from '../images/chat_button_img.svg'
 
 
 
@@ -255,10 +255,12 @@ export default function RockPaperScissor(props) {
                 </Modal.Footer>
             </Modal>
             <RockPaperScissorBackground>
+                <RockPaperScissorBackground>
                 <Slot hoverColor='#ff124f' onClick={() => { sendData('rock', props.location.state.player) }}><Rock>🧱</Rock></Slot>
                 <Slot hoverColor='#7a04eb' onClick={() => { sendData('paper', props.location.state.player) }}><Paper>📜</Paper></Slot>
                 <Slot hoverColor='#ff00a0' onClick={() => { sendData('scissor', props.location.state.player) }}><Scissor>✂️</Scissor></Slot>
-                <button onClick={(e) => { setChatModalOpen(true) }}><img src={chatImg} ></img></button>
+                </RockPaperScissorBackground>
+                <chatButton onClick={(e) => { setChatModalOpen(true) }}><img src={chatImg}  width='80em'></img></chatButton>
                 <ChatModal
                     isOpen={isChatModalOpen}
                     style={{

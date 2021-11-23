@@ -26,7 +26,7 @@ export const Slot = styled.button `
     }
 `;
 
-export const Rock = styled.h2 ` 
+export const Rock = styled.div ` 
     font-size: 100px;
     transition-property: font-size;
     transition-duration: .6s;
@@ -113,3 +113,7 @@ export const Scissor = styled.div `
         }
 `;
 
+export const chatButton = styled.button ` 
+    border: none;
+    max-width: 10%;
+`;
