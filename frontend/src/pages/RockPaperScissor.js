@@ -255,9 +255,9 @@ export default function RockPaperScissor(props) {
                 </Modal.Footer>
             </Modal>
             <RockPaperScissorBackground>
-                <Slot onClick={() => { sendData('rock', props.location.state.player) }}><Rock>🧱</Rock></Slot>
-                <Slot onClick={() => { sendData('paper', props.location.state.player) }}><Paper>📜</Paper></Slot>
-                <Slot onClick={() => { sendData('scissor', props.location.state.player) }}><Scissor>✂️</Scissor></Slot>
+                <Slot hoverColor='#ff124f' onClick={() => { sendData('rock', props.location.state.player) }}><Rock>🧱</Rock></Slot>
+                <Slot hoverColor='#7a04eb' onClick={() => { sendData('paper', props.location.state.player) }}><Paper>📜</Paper></Slot>
+                <Slot hoverColor='#ff00a0' onClick={() => { sendData('scissor', props.location.state.player) }}><Scissor>✂️</Scissor></Slot>
                 <button onClick={(e) => { setChatModalOpen(true) }}><img src={chatImg} ></img></button>
                 <ChatModal
                     isOpen={isChatModalOpen}
