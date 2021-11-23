@@ -20,9 +20,13 @@ export const GameboxStart = styled.div`
     justify-content: center;
     align-items: center;
     margin-bottom: 200px;
+    transition-property: transform, background-color, color;
+    transition-duration: .3s;
+    transition-timing-function: cubic-bezier(0.37, 0, 0.63, 1);
 
     &:hover{
-        background-color: #6BEA34;
+        background-color: #fe75fe;
+        transform: scale(1.1);
     }
 `;
 
@@ -39,9 +43,13 @@ export const GameboxJoin = styled.div`
     justify-content: center;
     align-items: center;
     margin-top: 200px;
+    transition-property: transform, background-color, color;
+    transition-duration: .3s;
+    transition-timing-function: cubic-bezier(0.37, 0, 0.63, 1);
 
     &:hover{
-        background-color: #FF5733;
+        background-color: #ff124f;
+        transform: scale(1.1);
     }
 `;
 
@@ -58,9 +66,13 @@ export const GameboxWatch = styled.div`
     justify-content: center;
     align-items: center;
     margin-bottom: 200px;
+    transition-property: transform, background-color, color;
+    transition-duration: .3s;
+    transition-timing-function: cubic-bezier(0.37, 0, 0.63, 1);
 
     &:hover{
-        background-color: #6BEA34;
+        background-color: #ff00a0;
+        transform: scale(1.1);
     }
 `;
 

@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import React from "react";
 
 
+
 const Navbar = (props) => {
     const history = useHistory();
     const routeChange = (path) => {
@@ -74,14 +75,7 @@ const Navbar = (props) => {
                     </ul>
                 </div>
 
-                {/* <div className="d-flex flex-row-reverse">
-                    <div className="p-2 nav-item">Tollywood</div>
-                    <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a className="dropdown-item nav-item" href="#">Tollywood</a>
-                        <a className="dropdown-item" href="#">Hollywood</a>
-                        <a className="dropdown-item" href="#">Bollyywood</a>
-                    </div>
-                </div> */}
+
             </div>
         </nav>
     );
