@@ -1,84 +1,192 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
+import { w3cwebsocket as W3CWebSocket } from "websocket";
+import { Modal, Button } from "react-bootstrap";
+import { useHistory } from 'react-router-dom';
 import { Board, Clear, GameInfo } from '../styles/Minesweeper.styles';
 import MinesweeperCell from './MinesweeperCell';
+import ChatModal from 'react-modal'
+import chatImg from '../images/chat_button_img.png'
+
+console.log('start')
+var room_code = this.props.roomNumber
+let socket = new W3CWebSocket('ws://localhost:8000/ws/game/' + room_code)
+setTimeout(() => { console.log("connecting..."); }, 1000);
+
+let currentTurn = true;
+let chat_messages = ""
 
 
 export default class MinesweeperBody extends React.Component {
+
     state = {
         boardData: this.initalizeBoardData(this.props.height, this.props.width, this.props.mines),
         gameWon: false,
         mineCount: this.props.mines,
+        room_code : this.props.roomNumber //room code pulled from start game screen
     };
 
-    // const [show, setShow] = useState(false);
-    // const handleClose = () => setShow(false);
+/*********************************Multiplayer Functionality*********************************************/
 
-    // const [isOver, setIsOver] = useState(false);
-    // const[message, setMessage] = useState(null);
+    //initialize board
+    constructor(state) {   
+        super(state);
+    
+         // messaging modal variables
+        const [modalIsopen, setModalIsOpen] = useState(false)
 
-    // useEffect(() => {
-    //     if (isOver) {
-    //     setShow(true);
-    //     }
-    // }, [isOver]);
+        const [isChatModalOpen, setChatModalOpen] = useState(false)
+        const [chatMsg, setChatMsg] = useState("")
+        const [msgs, setMsgs] = useState("")
 
+        //end of game modal show variables
+        const [show, setShow] = useState(false);
+        //modal handles close
+        const handleClose = () => setShow(false);
 
-    // const history = useHistory();
+        //variable for game is over
+        const [isOver, setIsOver] = useState(false);
+        //variable message when game is over
+        const[message, setMessage] = useState(null);
 
-    // const routeChange = () => { //for end of game
-    //     resetGame();
-    //     let path = 'game-selection';
-    //     history.push(path);
-    // }
+        //modal pops up when game is over
+        useEffect(() => {
+            if (isOver) {
+            setShow(true);
+            }
+        }, [isOver]);
 
-    // var room_code = props.roomNumber
-    // var player = props.playColor
-    // console.log('start')
-    // let socket = new W3CWebSocket('ws://localhost:8000/ws/game/' + room_code)
-    // setTimeout(() => { console.log("connecting..."); }, 1000);
+        //route history
+        const history = useHistory();
 
-    // useEffect(() => {
-    //     socket.onopen = function (e) {
-    //         console.log('Socket connected')
-    //     }
+        //take user to game selection screen when game is over
+        const routeChange = () => { //for end of game
+            resetGame();
+            let path = 'game-selection';
+            const userDetails = {
+                username: localStorage.getItem("username"),
+                isGuest: localStorage.getItem("isGuest")
+            }
+            history.push(path, userDetails);
+        }
+        //connect server
+        useEffect(() => {
+            socket.onopen = function (e) {
+                console.log('Socket connected')
+            }
 
-    //     socket.onmessage = function (e) {
-    //         var data = JSON.parse(e.data)
-    //         console.log(data)
+            socket.onmessage = function (e) {
+                var data = JSON.parse(e.data)
+                console.log(data)
 
-    //         if (data.payload.reset === "reset") {
-    //             console.log("in reset")
-    //             resetGamePlayers[data.payload.player] = data.payload.reset;
-    //             checkForResetOrNewGame();
-    //             return;
-    //         }
-    //         if (data.payload.reset === "change") {
-    //             routeChange();
-    //             return;
-    //         }
+                if (data.msg_type !== undefined) {
+                    chat_messages += data.player + ':' + data.chatMsg + '\n'
+                    setMsgs(chat_messages)
+                }
 
-    //         if (data.payload.type == 'end' && data.payload.player !== player) {
-    //             //alert("Sorry! you lost")
-    //             setMessage("Sorry! You lost");
-    //             //options page
-    //             setIsOver(!isOver);
-    //         } else if (data.payload.type == 'over') {
-    //             //alert("Game over! game end no one won")
-    //             setMessage("Game over! No one won");
-    //             //options page
-    //             setIsOver(!isOver);
-    //         } else if (data.payload.type == 'running' && data.payload.player !== player) {
-    //             setAnotherUserText(data.payload.index, data.payload.player)
-    //         }
+                //reset game
+                if (data.payload.reset === "reset") {
+                    console.log("in reset")
+                    resetGamePlayers[data.payload.player] = data.payload.reset;
+                    checkForResetOrNewGame();
+                    return;
+                }
+                //select another game
+                if (data.payload.reset === "change") {
+                    routeChange();
+                    return;
+                }
 
-    //     }
+                if (props.location.state.player == "viewer") {
 
-    //     socket.onclose = function (e) {
-    //         console.log('Socket closed')
-    //     }
-    // }, []);
+                    if (data.state === 'p1') {
+                        alert("Player one wins.")
+                        return
+                    } else if (data.state === 'p2') {
+                        alert("Player two wins.")
+                        return
+                    } 
+                }
+                if (data.state === props.location.state.player) {
+                    currentTurn = true
+                    setMessage("You won!");
+                    setIsOver(true);
+                    return
+                } else if ((data.state === 'p2' && props.location.state.player === 'p1') || (data.state === 'p1' && props.location.state.player === 'p2')) {
+                    currentTurn = true
+                    setMessage("You lost!");
+                    setIsOver(true);
+                    return
+                }
 
+            }
 
+            //todo p1 or p2 wins
+
+            socket.onclose = function (e) {
+                console.log('Socket closed')
+            }
+
+        }, []);
+    }
+
+    
+
+    //end of useEffect
+
+    /** End of Game Modal Functions */
+
+    resetGame() {
+        currentTurn = true;
+        if (show) {
+            setShow(!show);
+        }
+        setIsOver(false);
+    }
+
+    selectResetGame() {
+        let reset = 'reset';
+        resetGamePlayers[player] = reset;
+        var data = {
+            'player': player,
+            'reset': reset
+        }
+        socket.send(JSON.stringify({
+            data
+        }))
+        checkForResetOrNewGame();
+        if (show) {
+            setShow(!show);
+        }
+    }
+
+    selectRouteChange() {
+        let reset = 'change';
+        resetGamePlayers[player] = reset;
+        var data = {
+            'player': player,
+            'reset': reset
+        }
+        socket.send(JSON.stringify({
+            data
+        }))
+        setTimeout(() => { console.log("Routing..."); }, 2000);
+        routeChange();
+    }
+
+    checkForResetOrNewGame() {
+        console.log("checkForResetOrNewGame");
+        if (resetGamePlayers.p1 !== undefined && resetGamePlayers.p2 !== undefined) {
+            if (resetGamePlayers.p1 === "reset" && resetGamePlayers.p2 === "reset") {
+                console.log("resetting")
+                resetGame();
+            } else {
+                console.log("routing")
+                routeChange();
+            }
+        }
+    }
+
+/********************************************************************************************/
     // get mines
     getMines(data) {
         let mineArray = [];
@@ -269,7 +377,11 @@ export default class MinesweeperBody extends React.Component {
         // check if mine. game over if true
         if (this.state.boardData[x][y].isMine) {
             this.revealBoard();
-            alert("game over");
+            var data = { 'type': 'end', 'player': player }
+            socket.send(JSON.stringify({ data }))
+            //alert("game over");
+            setMessage("Game Over");
+            setIsOver(!isOver);
         }
 
         let updatedData = this.state.boardData;
@@ -283,7 +395,11 @@ export default class MinesweeperBody extends React.Component {
         if (this.getHidden(updatedData).length === this.props.mines) {
             win = true;
             this.revealBoard();
-            alert("You Win");
+            var data = { 'type': 'end', 'player': player }
+            socket.send(JSON.stringify({ data }))
+            //alert("You Win");
+            setMessage("You Win");
+            setIsOver(!isOver);
         }
 
         this.setState({
@@ -316,7 +432,10 @@ export default class MinesweeperBody extends React.Component {
             win = (JSON.stringify(mineArray) === JSON.stringify(FlagArray));
             if (win) {
                 this.revealBoard();
-                alert("You Win");
+                var data = { 'type': 'end', 'player': player }
+                socket.send(JSON.stringify({ data }))
+                setMessage("You Win");
+                //alert("You Win");
             }
         }
 
@@ -363,7 +482,7 @@ export default class MinesweeperBody extends React.Component {
     render() {
         return (
             <>
-                {/* <Modal show={show} onHide={handleClose}>
+                <Modal show={show} onHide={handleClose}>
                 <Modal.Title>{message}</Modal.Title>
                 <Modal.Footer>
                     <Button variant="primary" onClick={selectResetGame}>
@@ -373,8 +492,11 @@ export default class MinesweeperBody extends React.Component {
                   Play another game
                 </Button>
               </Modal.Footer>
-            </Modal> */}
+            </Modal>
                 <Board>
+                    <ScoreBoard>
+                        Room Number : {props.roomNumber}
+                    </ScoreBoard>
                     <GameInfo>
                         <span>Mines: {this.state.mineCount}</span><br />
                         <span>{this.state.gameWon ? "You Win" : ""}</span>
