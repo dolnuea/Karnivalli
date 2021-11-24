@@ -23,16 +23,30 @@ export const StartButton = styled.button`
 `;
 
 export const WelcomeWindow = styled.div `
-    height: 240px;
-    width: 460px;
+    height: 480px;
+    width: 930px;
     background-color: rgb(255, 230, 239, 0.7);
     color: rgb(255, 195, 15);
     border-top-right-radius: 0px;
     border-bottom-left-radius: 0px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: center;
     align-items: center;
-    margin-top: 25vh;
+    margin-top: 10vh;
     
 `
 
+export const WelcomeColumnLeft = styled.div `
+    padding-left: 20px;
+    
+`;
+
+
+export const WelcomeColumnRight = styled.div `
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+
+`;

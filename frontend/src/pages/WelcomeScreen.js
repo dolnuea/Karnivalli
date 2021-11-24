@@ -2,9 +2,10 @@ import React from "react";
 import { ReactDOM } from "react";
 import { useHistory } from 'react-router-dom';
 import StartOrJoinScreen from "./StartOrJoinScreen.js";
-import { StartButton, WelcomeWindow } from "../styles/Welcome.styles";
+import { StartButton, WelcomeWindow, WelcomeColumnLeft, WelcomeColumnRight } from "../styles/Welcome.styles";
 import Navbar from "../Navbar";
 
+import tvSVG from '../images/hotPinkTV.svg';
 
 
 function WelcomeScreen(props) {
@@ -26,14 +27,21 @@ function WelcomeScreen(props) {
                 <Navbar state={props.location} />
 
                 <WelcomeWindow>
-                    <h1>
-                        Welcome to Karnivali!
-                    </h1>
+                    <WelcomeColumnLeft>
+                        <h1>
+                            Welcome to Karnivali!
+                        </h1>
 
-                    <StartButton hoverColor='rgb(88, 24, 69, 0.7)' onClick={routeChange}>
-                        Click Here to Start!
-                    </StartButton>
+                        <StartButton hoverColor='rgb(88, 24, 69, 0.7)' onClick={routeChange}>
+                            Click Here to Start!
+                        </StartButton>
+                    </WelcomeColumnLeft>
+                        
+                    <WelcomeColumnRight>
+                        <img src={tvSVG} width='60%'></img>
+                    </WelcomeColumnRight>
                 </WelcomeWindow>
+
             </div>
         );
     } else {

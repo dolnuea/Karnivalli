@@ -13,7 +13,7 @@ const Navbar = (props) => {
 
     const user = props.state.state
     return (
-        <nav className='navbar navbar-expand-md navbar-light bg-primary mb-4'
+        <nav className='navbar navbar-expand-md navbar-light bg-dark mb-4'
         >
             <div className='container d-flex justify-content-between'>
                 <img
@@ -28,7 +28,7 @@ const Navbar = (props) => {
                     <ul className='navbar-nav ml-auto'>
                         <li className='nav-item'
                             style={{ display: user.isGuest ? "none" : true }}>
-                            <Button className='btn btn-dark' onClick={() => {
+                            <Button className='btn btn-info' onClick={() => {
                                 routeChange("welcome")
                             }}>
                                 Home
@@ -36,7 +36,7 @@ const Navbar = (props) => {
                         </li>
                         <li className='nav-item'
                             style={{ display: user.isGuest ? "none" : true }}>
-                            <Button className='btn btn-dark' onClick={() => {
+                            <Button className='btn btn-info' onClick={() => {
                                 routeChange("userProfile")
                             }}>
                                 {user.username}
@@ -46,7 +46,7 @@ const Navbar = (props) => {
                             className='nav-item mr-md-3'
                             style={{ display: user.isGuest ? true : "none" }}
                         >
-                            <Button className='btn btn-dark' onClick={() => {
+                            <Button className='btn btn-info' onClick={() => {
                                 routeChange("")
                             }}>
                                 Login
@@ -56,7 +56,7 @@ const Navbar = (props) => {
                             className='nav-item'
                             style={{ display: user.isGuest ? true : "none" }}
                         >
-                            <Button className='btn btn-dark' onClick={() => {
+                            <Button className='btn btn-info' onClick={() => {
                                 routeChange("sign-up")
                             }}>
                                 Signup
@@ -66,7 +66,7 @@ const Navbar = (props) => {
                             className='nav-item'
                             style={{ display: user.isGuest ? "none" : true }}
                         >
-                            <Button className='btn btn-dark' onClick={() => {
+                            <Button className='btn btn-info' onClick={() => {
                                 routeChange("logout")
                             }}>
                                 Logout
