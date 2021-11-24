@@ -39,8 +39,60 @@ export const WelcomeWindow = styled.div `
     
 `
 
-export const WelcomeColumnLeft = styled.div `
-    padding-left: 20px;
+export const ImageSVG = styled.img `
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    max-width: 300px;
+    max-height: 300px;
+
+    &:nth-child(1) {
+        bottom: 150px;
+        right: 75px;
+        animation-name: shakeit;
+        animation-duration: 1s;
+        animation-iteration-count: infinite;
+
+        @keyframes shakeit {
+            0% {left: 0px; top: -30px}
+            25% {left: 10px; top: -25px}
+            50% {left: -10px; top: -35px}
+            75% {left: -10px; top: -28px}
+            100% {left: 0px; top: -30px}
+        }
+    }
+
+    &:nth-child(2) {
+        top: 150px;
+        right: 10px;
+        animation: secondmove 2s infinite;
+
+        @keyframes secondmove {
+            50% {transform: rotate(45deg);}
+        }
+    }
+    
+    &:nth-child(3) {
+        top: 50px;
+        left: 50px;
+
+        animation: thirdmove 2s infinite;
+
+        @keyframes thirdmove {
+            50% {transform: rotate(45deg);}
+        }
+    }
+
+    &:nth-child(4) {
+        top: 20px;
+        left: -100px;
+
+        animation: forthmove 2s infinite;
+
+        @keyframes forthmove {
+            50% {transform: rotate(45deg);}
+        }
+    }
     
 `;
 
@@ -54,10 +106,30 @@ export const WelcomeColumnRight = styled.div `
 
 `;
 
-export const ImageSVG = styled.img `
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    max-width: 300px;
-    max-height: 300px;
+
+export const WelcomeColumnLeft = styled.div `
+    padding-left: 20px;
+
+`;
+
+export const TitleTextShake = styled.h1 `
+    font-weight: bold;
+
+    // transition-duration: .5s;
+    // transition-property: color;
+
+    // &:hover{
+    //     color: #120458;
+    // }
+
+
+    animation: colorchange 10s infinite;
+
+        @keyframes colorchange {
+            25% {color: #ff124f}
+            50% {color: #ff00a0}
+            50% {color: #c441c4}
+            75% {color: #7a04eb}
+            100% {color: #120458}
+        }
 `;

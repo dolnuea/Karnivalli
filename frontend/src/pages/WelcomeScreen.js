@@ -1,8 +1,9 @@
 import React from "react";
 import { ReactDOM } from "react";
 import { useHistory } from 'react-router-dom';
+
 import StartOrJoinScreen from "./StartOrJoinScreen.js";
-import { StartButton, WelcomeWindow, WelcomeColumnLeft, WelcomeColumnRight, ImageSVG } from "../styles/Welcome.styles";
+import { StartButton, WelcomeWindow, WelcomeColumnLeft, WelcomeColumnRight, ImageSVG, TitleTextShake } from "../styles/Welcome.styles";
 import Navbar from "../Navbar";
 
 import tvSVG from '../images/hotPinkTV.svg';
@@ -30,9 +31,9 @@ function WelcomeScreen(props) {
 
                 <WelcomeWindow>
                     <WelcomeColumnLeft>
-                        <h1>
+                        <TitleTextShake>
                             Welcome to Karnivali!
-                        </h1>
+                        </TitleTextShake>
 
                         <StartButton hoverColor='rgb(88, 24, 69, 0.7)' onClick={routeChange}>
                             Click Here to Start!
@@ -40,10 +41,10 @@ function WelcomeScreen(props) {
                     </WelcomeColumnLeft>
                         
                     <WelcomeColumnRight>
-                        <ImageSVG src={tvSVG} ></ImageSVG>
-                        <ImageSVG src={redController} ></ImageSVG>
-                        <ImageSVG src={blueController} ></ImageSVG>
-                        <ImageSVG src={purpleController} ></ImageSVG>
+                        <ImageSVG src={tvSVG} alt='tv image'></ImageSVG>
+                        <ImageSVG src={redController} alt='red controller'></ImageSVG>
+                        <ImageSVG src={blueController} alt='blue controller'></ImageSVG>
+                        <ImageSVG src={purpleController} alt='purple controller'></ImageSVG>
                     </WelcomeColumnRight>
                 </WelcomeWindow>
 
