@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { Modal, Button } from "react-bootstrap";
-import { RockPaperScissorBackground, Slot, Rock, Paper, Scissor, chatButton } from "../styles/RockPaperScissors.styles";
+import { RockPaperScissorBackground, Slot, Rock, Paper, Scissor, chatButton, chatModalButton } from "../styles/RockPaperScissors.styles";
 import { useHistory } from 'react-router-dom';
 import ChatModal from 'react-modal'
 import chatImg from '../images/chat_button_img.svg'
@@ -278,20 +278,24 @@ export default function RockPaperScissor(props) {
                 // portalClassName={ } // Can mention the class name from .css class.
 
                 >
-                    <textarea id="chat_area" cols="50" rows="20" value={msgs} style={{ borderRadius: '5px', padding: '5px', backgroundColor: '#F1E5AC' }}></textarea><br></br>
+                    <textarea id="chat_area" cols="50" rows="20" value={msgs} style={{ borderRadius: '5px', padding: '5px', backgroundColor: '#F1E5AC',  }}></textarea><br></br>
                     <input type="text" id="chat_input" placeholder="Type here"
                         value={chatMsg}
                         onChange={(e) => { setChatMsg(e.target.value) }}
-                        style={{ borderRadius: '5px', margin: '3px' }}
+                        style={{ borderRadius: '5px', margin: '3px', width:'65%' }}
                         onKeyPress={(e) => { if (e.key === 'Enter') sendChatData(props.location.state.player) }}>
                     </input>
                     <button
                         onClick={() => { sendChatData(props.location.state.player) }}
-                        style={{ backgroundColor: '#ADD8E6', borderRadius: '5px' }}>
+                        style={{ backgroundColor: 'whitesmoke', borderRadius: '30px', width:'33%', border:'solid 2px #120458', color:'#120458', fontWeight:'bold'}}
+                        // break button out in styled components
+                        >
                         Send
                     </button>
                     <br></br>
-                    <button onClick={() => { setChatModalOpen(false) }} style={{ backgroundColor: 'red', borderRadius: '5px', margin: '3px' }}>Close Chat</button>
+                    
+                    <button onClick={() => { setChatModalOpen(false) }} style={{ backgroundColor: 'whitesmoke', borderRadius: '30px', margin: '3px', border:'solid 2px #ff124f', width:'98%', color:'#ff124f', fontWeight:'bold' }}>Close Chat</button>
+                        
                 </ChatModal>
 
             </RockPaperScissorBackground>

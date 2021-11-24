@@ -116,4 +116,11 @@ export const Scissor = styled.div `
 export const chatButton = styled.button ` 
     border: none;
     max-width: 10%;
+
+`;
+
+
+export const chatModalButton = styled.button `
+    backgroundColor: '#7a04eb';
+    borderRadius: '5px'
 `;
