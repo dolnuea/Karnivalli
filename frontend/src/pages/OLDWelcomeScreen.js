@@ -2,13 +2,11 @@ import React from "react";
 import { ReactDOM } from "react";
 import { useHistory } from 'react-router-dom';
 import StartOrJoinScreen from "./StartOrJoinScreen.js";
-import { StartButton, WelcomeWindow, WelcomeColumnLeft, WelcomeColumnRight, ImageSVG } from "../styles/Welcome.styles";
+import { StartButton, WelcomeWindow, WelcomeColumnLeft, WelcomeColumnRight } from "../styles/Welcome.styles";
 import Navbar from "../Navbar";
 
 import tvSVG from '../images/hotPinkTV.svg';
-import redController from "../images/filledBrightRedController.svg"
-import blueController from "../images/filledDarkBlueController.svg"
-import purpleController from "../images/filledLightBlueController.svg"
+
 
 function WelcomeScreen(props) {
 
@@ -40,10 +38,7 @@ function WelcomeScreen(props) {
                     </WelcomeColumnLeft>
                         
                     <WelcomeColumnRight>
-                        <ImageSVG src={tvSVG} ></ImageSVG>
-                        <ImageSVG src={redController} ></ImageSVG>
-                        <ImageSVG src={blueController} ></ImageSVG>
-                        <ImageSVG src={purpleController} ></ImageSVG>
+                        <img src={tvSVG} width='60%'></img>
                     </WelcomeColumnRight>
                 </WelcomeWindow>
 

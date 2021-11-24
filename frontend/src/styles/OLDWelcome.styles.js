@@ -1,4 +1,3 @@
-
 import styled from 'styled-components';
 
 
@@ -15,7 +14,6 @@ export const StartButton = styled.button`
     transition-property: transform, background-color, color;
     transition-duration: .3s;
     transition-timing-function: cubic-bezier(0.37, 0, 0.63, 1);
-    cursor:pointer;
 
     &:hover{
         
@@ -49,15 +47,6 @@ export const WelcomeColumnRight = styled.div `
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 7rem;
-    position: relative;
 
-`;
 
-export const ImageSVG = styled.img `
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    max-width: 300px;
-    max-height: 300px;
 `;
