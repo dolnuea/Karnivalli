@@ -3,7 +3,7 @@ import { ReactDOM } from "react";
 import { useHistory } from 'react-router-dom';
 
 import StartOrJoinScreen from "./StartOrJoinScreen.js";
-import { StartButton, WelcomeWindow, WelcomeColumnLeft, WelcomeColumnRight, ImageSVG } from "../styles/Welcome.styles";
+import { StartButton, WelcomeWindow, WelcomeColumnLeft, WelcomeColumnRight, ImageSVG, TitleTextShake } from "../styles/Welcome.styles";
 import Navbar from "../Navbar";
 
 import tvSVG from '../images/hotPinkTV.svg';
@@ -31,9 +31,9 @@ function WelcomeScreen(props) {
 
                 <WelcomeWindow>
                     <WelcomeColumnLeft>
-                        <h1>
+                        <TitleTextShake>
                             Welcome to Karnivali!
-                        </h1>
+                        </TitleTextShake>
 
                         <StartButton hoverColor='rgb(88, 24, 69, 0.7)' onClick={routeChange}>
                             Click Here to Start!
