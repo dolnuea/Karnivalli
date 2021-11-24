@@ -47,30 +47,58 @@ export const ImageSVG = styled.img `
     max-height: 300px;
 
     &:nth-child(1) {
-        bottom: 100px;
+        bottom: 150px;
         right: 75px;
+        animation-name: shakeit;
+        animation-duration: 1s;
+        animation-iteration-count: infinite;
+
+        @keyframes shakeit {
+            0% {left: 0px; top: -30px}
+            25% {left: 10px; top: -25px}
+            50% {left: -10px; top: -35px}
+            75% {left: -10px; top: -28px}
+            100% {left: 0px; top: -30px}
+        }
     }
 
     &:nth-child(2) {
         top: 150px;
         right: 10px;
+        animation: mymove 2s infinite;
+
+        @keyframes mymove {
+            50% {transform: rotate(45deg);}
+        }
     }
     
     &:nth-child(3) {
         top: 50px;
         left: 50px;
+
+        animation: mymove 2s infinite;
+
+        @keyframes mymove {
+            50% {transform: rotate(45deg);}
+        }
     }
 
     &:nth-child(4) {
         top: 20px;
         left: -100px;
+
+        animation: mymove 2s infinite;
+
+        @keyframes mymove {
+            50% {transform: rotate(45deg);}
+        }
     }
     
 `;
 
 export const WelcomeColumnLeft = styled.div `
     padding-left: 20px;
-    
+
 `;
 
 

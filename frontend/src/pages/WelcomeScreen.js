@@ -1,7 +1,7 @@
 import React from "react";
 import { ReactDOM } from "react";
 import { useHistory } from 'react-router-dom';
-import { motion } from 'framer-motion';
+
 import StartOrJoinScreen from "./StartOrJoinScreen.js";
 import { StartButton, WelcomeWindow, WelcomeColumnLeft, WelcomeColumnRight, ImageSVG } from "../styles/Welcome.styles";
 import Navbar from "../Navbar";
