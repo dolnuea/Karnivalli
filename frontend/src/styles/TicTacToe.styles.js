@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import backgroundImage from '../images/fire vs.gif';
+import backgroundImage from '../images/fire_vs.gif';
 
 
 export const Header = styled.h1` 
