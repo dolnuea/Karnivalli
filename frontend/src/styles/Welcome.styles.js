@@ -39,6 +39,35 @@ export const WelcomeWindow = styled.div `
     
 `
 
+export const ImageSVG = styled.img `
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    max-width: 300px;
+    max-height: 300px;
+
+    &:nth-child(1) {
+        bottom: 100px;
+        right: 75px;
+    }
+
+    &:nth-child(2) {
+        top: 150px;
+        right: 10px;
+    }
+    
+    &:nth-child(3) {
+        top: 50px;
+        left: 50px;
+    }
+
+    &:nth-child(4) {
+        top: 20px;
+        left: -100px;
+    }
+    
+`;
+
 export const WelcomeColumnLeft = styled.div `
     padding-left: 20px;
     
@@ -54,10 +83,3 @@ export const WelcomeColumnRight = styled.div `
 
 `;
 
-export const ImageSVG = styled.img `
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    max-width: 300px;
-    max-height: 300px;
-`;
