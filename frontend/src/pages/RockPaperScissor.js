@@ -264,37 +264,41 @@ export default function RockPaperScissor(props) {
                 <ChatModal
                     isOpen={isChatModalOpen}
                     style={{
+                        
                         overlay: {
                             width: '500px',
                             height: '700px',
                             padding: '0px',
-                            top: '0px'
+                            top: '0px',
+                            borderRadius: '30px'
                         },
                         content: {
-                            padding: '10px'
+                            padding: '10px',
+                            backgroundColor: 'transparent',
+                            border: 'none'
                         }
                     }}
 
                 // portalClassName={ } // Can mention the class name from .css class.
 
                 >
-                    <textarea id="chat_area" cols="50" rows="20" value={msgs} style={{ borderRadius: '5px', padding: '5px', backgroundColor: '#F1E5AC',  }}></textarea><br></br>
+                    <textarea id="chat_area" cols="50" rows="20" value={msgs} style={{ borderRadius: '15px', padding: '5px', backgroundColor: 'rgb(122, 4, 235, 0.4)', border:'none', color:"#120458" }}></textarea><br></br>
                     <input type="text" id="chat_input" placeholder="Type here"
                         value={chatMsg}
                         onChange={(e) => { setChatMsg(e.target.value) }}
-                        style={{ borderRadius: '5px', margin: '3px', width:'65%' }}
+                        style={{ borderRadius: '12px', margin: '3px', width:'65%', border:'none', backgroundColor: 'rgb(122, 4, 235, 0.5)', color:"#120458", padding: '5px', fontWeight:'bold' }}
                         onKeyPress={(e) => { if (e.key === 'Enter') sendChatData(props.location.state.player) }}>
                     </input>
                     <button
                         onClick={() => { sendChatData(props.location.state.player) }}
-                        style={{ backgroundColor: 'whitesmoke', borderRadius: '30px', width:'33%', border:'solid 2px #120458', color:'#120458', fontWeight:'bold'}}
+                        style={{ backgroundColor: 'whitesmoke', borderRadius: '30px', width:'33%', border:'solid 2px #120458', color:'#120458', fontWeight:'bold', padding: '5px', }}
                         // break button out in styled components
                         >
                         Send
                     </button>
                     <br></br>
                     
-                    <button onClick={() => { setChatModalOpen(false) }} style={{ backgroundColor: 'whitesmoke', borderRadius: '30px', margin: '3px', border:'solid 2px #ff124f', width:'98%', color:'#ff124f', fontWeight:'bold' }}>Close Chat</button>
+                    <button onClick={() => { setChatModalOpen(false) }} style={{ backgroundColor: 'whitesmoke', borderRadius: '30px', margin: '3px', border:'solid 2px #ff124f', width:'98%', color:'#ff124f', fontWeight:'bold', padding: '5px', paddingTop: '12px', paddingBottom: '12px',marginTop: '5px' }}>Close Chat</button>
                         
                 </ChatModal>
 
