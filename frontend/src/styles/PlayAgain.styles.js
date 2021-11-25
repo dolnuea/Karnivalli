@@ -36,6 +36,8 @@ export const PlayAgainWinLose = styled.div `
             100% {border-radius: 0em;}
         }
     }
+
+    // this should be removed
 `;
 
 
