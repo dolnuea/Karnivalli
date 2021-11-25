@@ -3,14 +3,21 @@ import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { Modal, Button } from "react-bootstrap";
 import { useHistory } from 'react-router-dom';
 import { Board, BoardContainer, Body, Game, ScoreBoard, Slot } from '../styles/TicTacToe.styles';
+import axiosInstance from '../axios';
 
 let defaultColor = 'grey'
+let otherPlayerJoined = false
 let gameState = [defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor]
 let currentTurn = true
 let resetGamePlayers = {}
+let otherPlayerName = "Guest"
+let isOtherPlayerGuest = false
+let game_session_id = null
 
 
 const TicTacToeBody = (props) => {
+
+    
 
     const [box1, setBox1] = useState(defaultColor)
     const [box2, setBox2] = useState(defaultColor)
@@ -44,12 +51,11 @@ const TicTacToeBody = (props) => {
     const routeChange = () => { //for end of game
         resetGame();
         let path = 'game-selection';
-        // const userDetails = {
-        //     username: localStorage.getItem("username"),
-        //     isGuest: localStorage.getItem("isGuest")
-        // }
-        // history.push(path, userDetails);
-        history.push(path);
+        const userDetails = {
+            username: props.username,
+            isGuest: props.isGuest
+        }
+        history.push(path, userDetails);
     }
 
     var room_code = props.roomNumber
@@ -61,6 +67,12 @@ const TicTacToeBody = (props) => {
     useEffect(() => {
         socket.onopen = function () {
             console.log('Socket connected')
+            if (props.player === "p2" && otherPlayerJoined === false) {
+                var data = data = { 'type': 'joined', 'playerName': props.username, 'isGuest': props.isGuest, 'player': props.player }
+                //socket.send(JSON.stringify({ data }))
+                sendMessage(socket, JSON.stringify({ data }))
+                
+            }
         }
 
         socket.onmessage = function (e) {
@@ -72,6 +84,69 @@ const TicTacToeBody = (props) => {
             //     setMsgs(chat_messages)
             // }
 
+            if (data.payload.type === "joined") {
+
+                if (otherPlayerJoined) {
+                    return;
+                }
+
+                if (props.player === data.payload.player) {
+                    return;
+                }
+
+                if (!data.payload.isGuest && data.payload.playerName === props.username) {
+                    return;
+                }
+
+                otherPlayerName = data.payload.playerName
+                isOtherPlayerGuest = data.payload.isGuest
+
+                if (data.payload.isGuest && !otherPlayerJoined) {
+                    var data = data = { 'type': 'joined', 'playerName': props.username, 'isGuest': props.isGuest }
+                    //socket.send(JSON.stringify({ data }))
+                    sendMessage(socket, JSON.stringify({ data }))
+                    otherPlayerJoined = true
+                    alert("Your opponent just joined. He joined as a guest");
+                    return;
+                }
+
+                if (props.isGuest) {
+                    var data = data = { 'type': 'joined', 'playerName': props.username, 'isGuest': props.isGuest }
+                    //socket.send(JSON.stringify({ data }))
+                    sendMessage(socket, JSON.stringify({ data }))
+                    otherPlayerJoined = true
+                    alert("Your opponent just joined, his name is " + otherPlayerName);
+                    return;
+                }
+
+                if (data.payload.game_session_id === undefined) {
+                    axiosInstance
+                        .post(`gamedata/create_game/`, {
+                            owner: props.username,
+                            game: "tic-tac-toe",
+                            status: "InProgress",
+                            opponent: otherPlayerName
+                        })
+                        .then((res) => {
+                            console.log("Inside then.........................")
+                            console.log("game session id : "+res.data.game_session_id)
+                            console.log(res)
+                            game_session_id = res.data.game_session_id
+                            if (props.player === "p1") {
+                                var data = data = { 'type': 'joined', 'playerName': props.username, 'isGuest': props.isGuest, 'game_session_id': game_session_id }
+                                socket.send(JSON.stringify({ data }))
+                            }
+                        });
+                } else {
+                    console.log("game session id : else block : " + data.payload.game_session_id)
+                    game_session_id = data.payload.game_session_id
+                }
+
+                otherPlayerJoined = true
+                alert("Your opponent just joined, his name is " + otherPlayerName);
+                return;
+            }
+            
             if (data.payload.reset === "reset") {
                 console.log("in reset")
                 resetGamePlayers[data.payload.player] = data.payload.reset;
@@ -90,11 +165,28 @@ const TicTacToeBody = (props) => {
 
             if (data.payload.type == 'end' && data.payload.player !== player) {
                 //alert("Sorry! you lost")
+                otherPlayerJoined = false;
                 setMessage("Sorry! You lost");
+
+                if (!props.isGuest && !isOtherPlayerGuest) { 
+                    axiosInstance
+                        .post(`gamedata/createOrUpdate_game_score/`, {
+                            owner: props.username,
+                            game: "tic-tac-toe",
+                            score: 100
+                        })
+                        .then((res) => {
+                            console.log("Score successfully added")
+                        });
+                }
+               
+
+
                 //options page
                 setIsOver(!isOver);
             } else if (data.payload.type == 'over') {
                 //alert("Game over! game end no one won")
+                otherPlayerJoined = false;
                 setMessage("Game over! No one won");
                 //options page
                 setIsOver(!isOver);
@@ -109,11 +201,57 @@ const TicTacToeBody = (props) => {
         }
     }, []);
 
+    function isConnected(socket) {
+        console.log(socket.readyState)
+        console.log(W3CWebSocket.OPEN)
+        if (socket.readyState !== W3CWebSocket.OPEN) {
+            setTimeout(() => { console.log("connecting..."); }, 10000);
+            return isConnected(socket);
+        } else {
+            return true;
+        }
+    }
+    
+    const waitForOpenConnection = (socket) => {
+        return new Promise((resolve, reject) => {
+            const maxNumberOfAttempts = 10
+            const intervalTime = 200 //ms
 
+            let currentAttempt = 0
+            const interval = setInterval(() => {
+                if (currentAttempt > maxNumberOfAttempts - 1) {
+                    clearInterval(interval)
+                    reject(new Error('Maximum number of attempts exceeded'))
+                } else if (socket.readyState === socket.OPEN) {
+                    clearInterval(interval)
+                    resolve()
+                }
+                currentAttempt++
+            }, intervalTime)
+        })
+    }
+
+    const sendMessage = async (socket, msg) => {
+        if (socket.readyState !== socket.OPEN) {
+            try {
+                await waitForOpenConnection(socket)
+                socket.send(msg)
+            } catch (err) { console.error(err) }
+        } else {
+            socket.send(msg)
+        }
+    }
     console.log('end')
 
     console.log(gameState)
-
+    /*
+    if (props.player === "p2") {
+        if (isConnected(socket)) {
+            var data = data = { 'type': 'joined', 'playerName': localStorage.getItem('userName'), 'isGuest': localStorage.getItem('isGuest') }
+            socket.send(JSON.stringify({ data }))
+        }
+    }
+    */
     function checkGameEnd() {
 
         if (player == "viewer") {
@@ -129,8 +267,20 @@ const TicTacToeBody = (props) => {
 
         if (count >= 9) {
             var data = { 'type': 'over' }
-            socket.send(JSON.stringify({ data }))
+            //socket.send(JSON.stringify({ data }))
+            sendMessage(socket, JSON.stringify({ data }))
             //alert("Game ends in a draw!!")
+            otherPlayerJoined = false;
+            if (!props.isGuest && !isOtherPlayerGuest) {
+                axiosInstance
+                    .post(`gamedata/update_game/`, {
+                        game_session_id: game_session_id,
+                        status: "draw"
+                    })
+                    .then((res) => {
+                        console.log("Status Updated")
+                    });
+            }
             setMessage("Game ends in a draw!");
             setIsOver(!isOver);
             //options page
@@ -164,8 +314,33 @@ const TicTacToeBody = (props) => {
 
         if (won) {
             var data = { 'type': 'end', 'player': player }
-            socket.send(JSON.stringify({ data }))
+            //socket.send(JSON.stringify({ data }))
+            sendMessage(socket, JSON.stringify({ data }))
             //alert("Good job!, You won")
+            otherPlayerJoined = false;
+
+            if (!props.isGuest && !isOtherPlayerGuest) {
+                axiosInstance
+                    .post(`gamedata/createOrUpdate_game_score/`, {
+                        owner: props.username,
+                        game: "tic-tac-toe",
+                        score: -100
+                    })
+                    .then((res) => {
+                        console.log("Score successfully added")
+                    });
+
+                axiosInstance
+                    .post(`gamedata/update_game/`, {
+                        game_session_id: game_session_id,
+                        status: props.username
+                    })
+                    .then((res) => {
+                        console.log("Status Updated")
+                    });
+
+            }
+
             setMessage("Good job! You won");
             setIsOver(!isOver);
         } else {
@@ -181,6 +356,13 @@ const TicTacToeBody = (props) => {
             alert("Well that would be cheating...")
             return;
         }
+        console.log(socket.readyState)
+        if (otherPlayerJoined === false) {
+            alert("Please wait for the other player to join...")
+            return;
+        }
+
+        
 
         var data = {
             'player': player,
@@ -205,9 +387,8 @@ const TicTacToeBody = (props) => {
             setBoxStateValues()
             console.log(gameState)
 
-            socket.send(JSON.stringify({
-                data
-            }))
+            //socket.send(JSON.stringify({data}))
+            sendMessage(socket, JSON.stringify({ data }))
             checkWon(value, player)
         } else {
             alert("You cannot fill this space")
@@ -250,6 +431,8 @@ const TicTacToeBody = (props) => {
 
         setBoxStateValues();
         currentTurn = true;
+        otherPlayerJoined = true;
+        resetGamePlayers = {}
         if (show) {
             setShow(!show);
         }
@@ -264,9 +447,8 @@ const TicTacToeBody = (props) => {
             'player': player,
             'reset': reset
         }
-        socket.send(JSON.stringify({
-            data
-        }))
+        //socket.send(JSON.stringify({data}))
+        sendMessage(socket, JSON.stringify({ data }))
         checkForResetOrNewGame();
         if (show) {
             setShow(!show);
@@ -281,9 +463,8 @@ const TicTacToeBody = (props) => {
             'player': player,
             'reset': reset
         }
-        socket.send(JSON.stringify({
-            data
-        }))
+        //socket.send(JSON.stringify({data}))
+        sendMessage(socket, JSON.stringify({ data }))
         setTimeout(() => { console.log("Routing..."); }, 2000);
         routeChange();
     }
@@ -295,6 +476,7 @@ const TicTacToeBody = (props) => {
             if (resetGamePlayers['#FFC30F'] === "reset" && resetGamePlayers['#581845'] === "reset") {
                 console.log("resetting")
                 resetGame();
+
             } else {
                 console.log("routing")
                 routeChange();

@@ -21,7 +21,7 @@ urlpatterns = [
     # Enpoint: api/gamedata/update_game/
     # example:
     # {
-    #    "owgame_session_idner": 2,
+    #    "game_session_id": 2,
     #    "status": "draw"
     # }
     path('update_game/', GameDataUpdate.as_view(), name="update_gamedata"),

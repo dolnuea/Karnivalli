@@ -13,7 +13,9 @@ function GameSelectionScreen(props) {
         let path = 'start-or-join';
         history.push({
             pathname: path,
-            state: game
+            state: game,
+            username: props.location.state.username,
+            isGuest: props.location.state.isGuest
         });
     }
 

@@ -18,7 +18,7 @@ const TicTacToe = (props) => {
     return (
         <Background>
             <Header>TIC TAC TOE</Header>
-            <TicTacToeBody roomNumber={props.location.state.roomCode} playColor={playerColor} />
+            <TicTacToeBody roomNumber={props.location.state.roomCode} playColor={playerColor} player={player} username={props.location.state.username} isGuest={props.location.state.isGuest} />
         </Background>
     );
 }

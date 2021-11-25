@@ -8,9 +8,11 @@ function GameCard(props) {
     // }
 
     const game = props.game
-
+    console.log(game)
+    const playerName = props.playerName
+    console.log(playerName)
     const getImageUrl = (game_name) => {
-        if (game_name === "rps") {
+        if (game_name === "rock-paper-scissor") {
             return "https://media.istockphoto.com/vectors/rock-paper-scissors-vector-illustration-vector-id1056840214?k=20&m=1056840214&s=170667a&w=0&h=XHMBHLV9gIpRoEvQfa4eMN-h2hfAqXx0gZ88YuU9Tmk="
         }
         else if (game_name === "tic-tac-toe") {
@@ -25,7 +27,7 @@ function GameCard(props) {
     }
 
     return (
-        <div class="col-sm-3 my-2">
+        <div className ="col-sm-3 my-2">
             <div className="card"
             // style={{ width: '12rem' }}
             >
@@ -35,8 +37,13 @@ function GameCard(props) {
                     alt="No Pic" />
 
                 <div className="card-body">
-                    <h5 className="card-title">opponent: {game.opponent}</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">Result: {game.status}</h6>
+                    <h5 className="card-title">opponent: {playerName === game.owner ? game.opponent : game.owner}</h5>
+                    <h6 className="card-subtitle mb-2 text-muted">Result:
+                        {
+                            game.status === playerName ? "Won" : (game.status === "draw" ? "draw" : (game.status === "InProgress" ? "InProgress" : "Lost"))
+                        }
+
+                    </h6>
                 </div>
             </div>
         </div>

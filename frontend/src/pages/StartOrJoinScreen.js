@@ -31,13 +31,16 @@ function StartOrJoinScreen(props) {""
       }
 
     console.log("startGame", roomCode);
+    console.log("username", props.location.username);
     let path = selectedGame;
     history.push(path);
     history.push({
       pathname: path,
       state: {
           roomCode: roomCode,
-          player: "p1"
+          player: "p1",
+          username: props.location.username,
+          isGuest: props.location.isGuest
       }
   });
 };
@@ -49,13 +52,16 @@ const routeChangeJoin = () => {
   }
 
   console.log("joinRoom", roomCode);
+  console.log("username", props.location.username);
   let path = selectedGame;
   
   history.push({
       pathname: path,
       state: {
           roomCode: roomCode,
-          player: "p2"
+          player: "p2",
+          username: props.location.username,
+          isGuest: props.location.isGuest
       }
   });
  };
