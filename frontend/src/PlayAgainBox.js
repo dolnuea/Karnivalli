@@ -1,6 +1,8 @@
-import { PlayAgainScreen, PlayAgainWinLose, ReplayGameBox } from "./styles/PlayAgain.styles";
+import { PlayAgainScreen, PlayAgainWinLose, ReplayGameBox, ReplayIconSVG, GameSelectIconSVG } from "./styles/PlayAgain.styles";
 import { useHistory } from 'react-router-dom';
 
+import replayIcon from './images/hollowBlueReplay.svg'
+import quitIcon from './images/_darkBlueController.svg'
 
 const redAlert = () => {
     alert("Let's party!")
@@ -22,12 +24,15 @@ function PlayAgainBox(props) {
     return (
         <PlayAgainScreen>
             <PlayAgainWinLose onClick={routeChange} >
+                <ReplayIconSVG src={replayIcon} alt='replay icon' width="50%"></ReplayIconSVG>
                 <h1>
-                    You Won/Lost/Tied! Play again?
+                    Click to Play Again
                 </h1>
+
             </PlayAgainWinLose>
 
             <ReplayGameBox onClick={gameRouteChange} >
+                <GameSelectIconSVG src={quitIcon} alt='quit icon' width="100%"></GameSelectIconSVG>
                 <h1>
                     Game Select Screen
                 </h1>
