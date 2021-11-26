@@ -7,144 +7,183 @@ import MinesweeperCell from './MinesweeperCell';
 import ChatModal from 'react-modal'
 import chatImg from '../images/chat_button_img.png'
 
-console.log('start')
-var room_code = this.props.roomNumber
-let socket = new W3CWebSocket('ws://localhost:8000/ws/game/' + room_code)
-setTimeout(() => { console.log("connecting..."); }, 1000);
 
 let currentTurn = true;
-let chat_messages = ""
+let resetGamePlayers = {}
+let gameWon = false;
 
+const MinesweeperBody = (props) => {
 
-export default class MinesweeperBody extends React.Component {
-
-    state = {
-        boardData: this.initalizeBoardData(this.props.height, this.props.width, this.props.mines),
-        gameWon: false,
-        mineCount: this.props.mines,
-        room_code : this.props.roomNumber //room code pulled from start game screen
-    };
+    let boardData = initalizeBoardData(props.height, props.width, props.mines);
+    let mineCount = props.mines;
+    
 
 /*********************************Multiplayer Functionality*********************************************/
 
-    //initialize board
-    constructor(state) {   
-        super(state);
-    
-         // messaging modal variables
-        const [modalIsopen, setModalIsOpen] = useState(false)
+    //end of game modal show variables
+    const [show, setShow] = useState(false);
+    //modal handles close
+    const handleClose = () => setShow(false);
 
-        const [isChatModalOpen, setChatModalOpen] = useState(false)
-        const [chatMsg, setChatMsg] = useState("")
-        const [msgs, setMsgs] = useState("")
+    //variable for game is over
+    const [isOver, setIsOver] = useState(false);
+    //variable message when game is over
+    const[message, setMessage] = useState(null);
 
-        //end of game modal show variables
-        const [show, setShow] = useState(false);
-        //modal handles close
-        const handleClose = () => setShow(false);
-
-        //variable for game is over
-        const [isOver, setIsOver] = useState(false);
-        //variable message when game is over
-        const[message, setMessage] = useState(null);
-
-        //modal pops up when game is over
-        useEffect(() => {
-            if (isOver) {
-            setShow(true);
-            }
-        }, [isOver]);
-
-        //route history
-        const history = useHistory();
-
-        //take user to game selection screen when game is over
-        const routeChange = () => { //for end of game
-            resetGame();
-            let path = 'game-selection';
-            const userDetails = {
-                username: localStorage.getItem("username"),
-                isGuest: localStorage.getItem("isGuest")
-            }
-            history.push(path, userDetails);
+    //modal pops up when game is over
+    useEffect(() => {
+        if (isOver) {
+        setShow(true);
         }
-        //connect server
-        useEffect(() => {
-            socket.onopen = function (e) {
-                console.log('Socket connected')
-            }
+    }, [isOver]);
 
-            socket.onmessage = function (e) {
-                var data = JSON.parse(e.data)
-                console.log(data)
+    // messaging modal variables
+    // const [modalIsopen, setModalIsOpen] = useState(false)
 
-                if (data.msg_type !== undefined) {
-                    chat_messages += data.player + ':' + data.chatMsg + '\n'
-                    setMsgs(chat_messages)
-                }
+    // const [isChatModalOpen, setChatModalOpen] = useState(false)
+    // const [chatMsg, setChatMsg] = useState("")
+    // const [msgs, setMsgs] = useState("")
 
-                //reset game
-                if (data.payload.reset === "reset") {
-                    console.log("in reset")
-                    resetGamePlayers[data.payload.player] = data.payload.reset;
-                    checkForResetOrNewGame();
-                    return;
-                }
-                //select another game
-                if (data.payload.reset === "change") {
-                    routeChange();
-                    return;
-                }
+    //route history
+    const history = useHistory();
 
-                if (props.location.state.player == "viewer") {
+    //take user to game selection screen when game is over
+    const routeChange = () => { //for end of game
+        resetGame();
+        let path = 'game-selection';
+        const userDetails = {
+            username: localStorage.getItem("username"),
+            isGuest: localStorage.getItem("isGuest")
+        }
+        history.push(path, userDetails);
+    }
 
-                    if (data.state === 'p1') {
-                        alert("Player one wins.")
-                        return
-                    } else if (data.state === 'p2') {
-                        alert("Player two wins.")
-                        return
-                    } 
-                }
-                if (data.state === props.location.state.player) {
-                    currentTurn = true
-                    setMessage("You won!");
-                    setIsOver(true);
-                    return
-                } else if ((data.state === 'p2' && props.location.state.player === 'p1') || (data.state === 'p1' && props.location.state.player === 'p2')) {
-                    currentTurn = true
-                    setMessage("You lost!");
-                    setIsOver(true);
-                    return
-                }
+    console.log('start')
+    var room_code = props.roomNumber
+    let socket = new W3CWebSocket('ws://localhost:8000/ws/game/' + room_code)
+    setTimeout(() => { console.log("connecting..."); }, 1000);
 
-            }
+    //let chat_messages = ""
 
-            //todo p1 or p2 wins
+    //connect server
+    useEffect(() => {
+        socket.onopen = function (e) {
+            console.log('Socket connected')
+    }
 
+    socket.onmessage = function (e) {
+        var data = JSON.parse(e.data)
+        console.log(data)
+
+        // if (data.msg_type !== undefined) {
+        //     chat_messages += data.player + ':' + data.chatMsg + '\n'
+        //     setMsgs(chat_messages)
+        // }
+
+        //reset game
+        if (data.payload.reset === "reset") {
+            console.log("in reset")
+            resetGamePlayers[data.payload.player] = data.payload.reset;
+            checkForResetOrNewGame();
+            return;
+        }
+        //select another game
+        if (data.payload.reset === "change") {
+            routeChange();
+            return;
+        }
+
+        // if (data.payload.type == 'end' && player == "viewer") {
+        //     alert("Game ended!!");
+        //     return;
+        // }
+
+        let player = props.location.state.player;
+
+        if (player === "viewer") {
+
+            if (data.state === 'p1') {
+                alert("Player one wins.")
+                return
+            } else if (data.state === 'p2') {
+                alert("Player two wins.")
+                return
+            } 
+        }
+
+        // if (data.payload.type === 'end' && player === "viewer") {
+        //     alert("Game ended!!");
+        //     return;
+        // }
+
+        if (data.state === player) {
+            currentTurn = true;
+            setMessage("You won!");
+            setIsOver(true);
+            return
+        } 
+        else if ((data.state === 'p2' && player === 'p1') || (data.state === 'p1' && player === 'p2')) {
+            currentTurn = true;
+            setMessage("You lost!");
+            setIsOver(true);
+            return
+        }
             socket.onclose = function (e) {
                 console.log('Socket closed')
             }
 
-        }, []);
-    }
+        }
+    }, []);
 
-    
+    console.log('end')
+
+    function sendData(player, boardData){
+        if (props.location.state.player === "viewer") {
+            alert("Well, that would be cheating...")
+            return;
+        }
+
+        var data = {
+            'player': player,
+            'state': 'progress',
+            'reset': ''
+        }
+
+        if (currentTurn === false) {
+            alert("Please wait for your opponent's turn!")
+            return
+        } else {
+            currentTurn = false
+        }
+        socket.send(JSON.stringify({
+            data
+        }))
+        //call won function
+        renderBoard(boardData, player)
+    }
 
     //end of useEffect
 
+    //add sendData function for game progress, wait for opposition, cant fill sapce, cheating
+
     /** End of Game Modal Functions */
 
-    resetGame() {
+    function resetGame() {
+        console.log('reset game');
+        boardData = initalizeBoardData(props.height, props.width, props.mines);
+        gameWon = false;
+        mineCount = props.mines;
         currentTurn = true;
+        //todo reset game
         if (show) {
             setShow(!show);
         }
         setIsOver(false);
     }
 
-    selectResetGame() {
+    function selectResetGame() {
         let reset = 'reset';
+        let player = props.location.state.player;
         resetGamePlayers[player] = reset;
         var data = {
             'player': player,
@@ -159,8 +198,9 @@ export default class MinesweeperBody extends React.Component {
         }
     }
 
-    selectRouteChange() {
+    function selectRouteChange() {
         let reset = 'change';
+        let player = props.location.state.player;
         resetGamePlayers[player] = reset;
         var data = {
             'player': player,
@@ -173,7 +213,7 @@ export default class MinesweeperBody extends React.Component {
         routeChange();
     }
 
-    checkForResetOrNewGame() {
+    function checkForResetOrNewGame() {
         console.log("checkForResetOrNewGame");
         if (resetGamePlayers.p1 !== undefined && resetGamePlayers.p2 !== undefined) {
             if (resetGamePlayers.p1 === "reset" && resetGamePlayers.p2 === "reset") {
@@ -186,9 +226,19 @@ export default class MinesweeperBody extends React.Component {
         }
     }
 
+    // function sendChatData(player) {
+    //     socket.send(JSON.stringify({
+    //         msg_type: "chat_msg",
+    //         player,
+    //         chatMsg
+    //     }))
+
+    //     setChatMsg("")
+    // }
+
 /********************************************************************************************/
     // get mines
-    getMines(data) {
+    function getMines(data) {
         let mineArray = [];
 
         data.map(datarow => {
@@ -203,7 +253,7 @@ export default class MinesweeperBody extends React.Component {
     }
 
     // get Flags
-    getFlags(data) {
+    function getFlags(data) {
         let mineArray = [];
 
         data.map(datarow => {
@@ -218,7 +268,7 @@ export default class MinesweeperBody extends React.Component {
     }
 
     // get Hidden cells
-    getHidden(data) {
+    function getHidden(data) {
         let mineArray = [];
 
         data.map(datarow => {
@@ -233,7 +283,7 @@ export default class MinesweeperBody extends React.Component {
     }
 
     // Gets initial board data
-    initalizeBoardData(height, width, mines) {
+    function initalizeBoardData(height, width, mines) {
         let data = [];
 
         for (let i = 0; i < height; i++) {
@@ -271,7 +321,7 @@ export default class MinesweeperBody extends React.Component {
             for (let j = 0; j < width; j++) {
                 if (data[i][j].isMine !== true) {
                     let mine = 0;
-                    const area = this.traverseBoard(data[i][j].x, data[i][j].y, data);
+                    const area = traverseBoard(data[i][j].x, data[i][j].y, data);
                     area.map(value => {
                         if (value.isMine) {
                             mine++;
@@ -293,7 +343,7 @@ export default class MinesweeperBody extends React.Component {
 
 
     // looks for neighbouring cells and returns them
-    traverseBoard(x, y, data) {
+    function traverseBoard(x, y, data) {
         const el = [];
 
         //up
@@ -302,7 +352,7 @@ export default class MinesweeperBody extends React.Component {
         }
 
         //down
-        if (x < this.props.height - 1) {
+        if (x < props.height - 1) {
             el.push(data[x + 1][y]);
         }
 
@@ -312,7 +362,7 @@ export default class MinesweeperBody extends React.Component {
         }
 
         //right
-        if (y < this.props.width - 1) {
+        if (y < props.width - 1) {
             el.push(data[x][y + 1]);
         }
 
@@ -322,17 +372,17 @@ export default class MinesweeperBody extends React.Component {
         }
 
         // top right
-        if (x > 0 && y < this.props.width - 1) {
+        if (x > 0 && y < props.width - 1) {
             el.push(data[x - 1][y + 1]);
         }
 
         // bottom right
-        if (x < this.props.height - 1 && y < this.props.width - 1) {
+        if (x < props.height - 1 && y < props.width - 1) {
             el.push(data[x + 1][y + 1]);
         }
 
         // bottom left
-        if (x < this.props.height - 1 && y > 0) {
+        if (x < props.height - 1 && y > 0) {
             el.push(data[x + 1][y - 1]);
         }
 
@@ -340,26 +390,25 @@ export default class MinesweeperBody extends React.Component {
     }
 
     // reveals the whole board
-    revealBoard() {
-        let updatedData = this.state.boardData;
+    function revealBoard() {
+        let updatedData = boardData;
         updatedData.map((datarow) => {
             datarow.map((dataitem) => {
                 dataitem.isRevealed = true;
             });
         });
-        this.setState({
-            boardData: updatedData
-        })
+        boardData = updatedData;
+        //setBoardData(boardData);
     }
 
     /* reveal logic for empty cell */
-    revealEmpty(x, y, data) {
-        let area = this.traverseBoard(x, y, data);
+    function revealEmpty(x, y, data) {
+        let area = traverseBoard(x, y, data);
         area.map(value => {
             if (!value.isRevealed && (value.isEmpty || !value.isMine)) {
                 data[value.x][value.y].isRevealed = true;
                 if (value.isEmpty) {
-                    this.revealEmpty(value.x, value.y, data);
+                    revealEmpty(value.x, value.y, data);
                 }
             }
         });
@@ -368,51 +417,50 @@ export default class MinesweeperBody extends React.Component {
 
     // Handle User Events
 
-    handleCellClick(x, y) {
+    //todo data used twice
+    function handleCellClick(x, y, player) {
         let win = false;
 
         // check if revealed. return if true.
-        if (this.state.boardData[x][y].isRevealed) return null;
+        if (boardData[x][y].isRevealed) return null;
 
         // check if mine. game over if true
-        if (this.state.boardData[x][y].isMine) {
-            this.revealBoard();
-            var data = { 'type': 'end', 'player': player }
+        if (boardData[x][y].isMine) {
+            revealBoard();
+            var data = { 'state': 'end', 'player': props.location.state.player }
             socket.send(JSON.stringify({ data }))
             //alert("game over");
             setMessage("Game Over");
             setIsOver(!isOver);
         }
 
-        let updatedData = this.state.boardData;
+        let updatedData = boardData;
         updatedData[x][y].isFlagged = false;
         updatedData[x][y].isRevealed = true;
 
         if (updatedData[x][y].isEmpty) {
-            updatedData = this.revealEmpty(x, y, updatedData);
+            updatedData = revealEmpty(x, y, updatedData);
         }
 
-        if (this.getHidden(updatedData).length === this.props.mines) {
+        if (getHidden(updatedData).length === props.mines) {
             win = true;
-            this.revealBoard();
-            var data = { 'type': 'end', 'player': player }
+            revealBoard();
+            var data = { 'state': player, 'player': player }
             socket.send(JSON.stringify({ data }))
             //alert("You Win");
             setMessage("You Win");
             setIsOver(!isOver);
         }
 
-        this.setState({
-            boardData: updatedData,
-            mineCount: this.props.mines - this.getFlags(updatedData).length,
-            gameWon: win,
-        });
+        boardData = updatedData;
+        mineCount = props.mines - getFlags(updatedData).length;
+        gameWon = win;
     }
 
-    handleContextMenu(e, x, y) {
+    function handleContextMenu(e, x, y, player) {
         e.preventDefault();
-        let updatedData = this.state.boardData;
-        let mines = this.state.mineCount;
+        let updatedData = boardData;
+        let mines = mineCount;
         let win = false;
 
         // check if already revealed
@@ -427,26 +475,24 @@ export default class MinesweeperBody extends React.Component {
         }
 
         if (mines === 0) {
-            const mineArray = this.getMines(updatedData);
-            const FlagArray = this.getFlags(updatedData);
+            const mineArray = getMines(updatedData);
+            const FlagArray = getFlags(updatedData);
             win = (JSON.stringify(mineArray) === JSON.stringify(FlagArray));
             if (win) {
-                this.revealBoard();
-                var data = { 'type': 'end', 'player': player }
+                revealBoard();
+                var data = { 'state': 'end', 'player': player }
                 socket.send(JSON.stringify({ data }))
                 setMessage("You Win");
                 //alert("You Win");
             }
         }
 
-        this.setState({
-            boardData: updatedData,
-            mineCount: mines,
-            gameWon: win,
-        });
+        boardData = updatedData;
+        mineCount = mines;
+        gameWon = win;
     }
 
-    renderBoard(data) {
+    function renderBoard(data, player) {
         console.log(data)
 
         return data.map((dataRow) => {
@@ -456,8 +502,8 @@ export default class MinesweeperBody extends React.Component {
                         return (
                             <td key={dataItem.x * dataRow.length + dataItem.y}>
                                 <MinesweeperCell
-                                    onClick={() => this.handleCellClick(dataItem.x, dataItem.y)}
-                                    cMenu={(e) => this.handleContextMenu(e, dataItem.x, dataItem.y)}
+                                    onClick={() => handleCellClick(dataItem.x, dataItem.y, player)}
+                                    cMenu={(e) => handleContextMenu(e, dataItem.x, dataItem.y, player)}
                                     value={dataItem}
                                 />
                                 {(dataRow[dataRow.length - 1] === dataItem) ? <Clear /> : ""}
@@ -469,41 +515,39 @@ export default class MinesweeperBody extends React.Component {
     }
 
     // Component methods
-    componentWillReceiveProps(nextProps) {
-        if (JSON.stringify(this.props) !== JSON.stringify(nextProps)) {
+    function componentWillReceiveProps(nextProps) {
+        if (JSON.stringify(props) !== JSON.stringify(nextProps)) {
+
             this.setState({
-                boardData: this.initBoardData(nextProps.height, nextProps.width, nextProps.mines),
+                boardData: initalizeBoardData(nextProps.height, nextProps.width, nextProps.mines),
                 gameWon: false,
                 mineCount: nextProps.mines,
             });
         }
     }
-
-    render() {
-        return (
-            <>
-                <Modal show={show} onHide={handleClose}>
-                <Modal.Title>{message}</Modal.Title>
-                <Modal.Footer>
-                    <Button variant="primary" onClick={selectResetGame}>
-                  Play again!
-                </Button>
-                    <Button variant="secondary" onClick={selectRouteChange}>
-                  Play another game
-                </Button>
-              </Modal.Footer>
-            </Modal>
-                <Board>
-                    <ScoreBoard>
-                        Room Number : {props.roomNumber}
-                    </ScoreBoard>
-                    <GameInfo>
-                        <span>Mines: {this.state.mineCount}</span><br />
-                        <span>{this.state.gameWon ? "You Win" : ""}</span>
-                    </GameInfo>
-                    {this.renderBoard(this.state.boardData)}
-                </Board>
-            </>
-        );
-    }
+    
+    return (
+        <>
+            <Modal show={show} onHide={handleClose}>
+            <Modal.Title>{message}</Modal.Title>
+            <Modal.Footer>
+                <Button variant="primary" onClick={selectResetGame}>
+              Play again!
+            </Button>
+                <Button variant="secondary" onClick={selectRouteChange}>
+              Play another game
+            </Button>
+          </Modal.Footer>
+        </Modal>
+            <Board>
+                <GameInfo>
+                    <span>Mines: {mineCount}</span><br />
+                    <span>{gameWon ? "You Win" : ""}</span>
+                </GameInfo>
+                {sendData(boardData, props.location.state.player)}
+            </Board>
+        </>
+    );
 }
+
+export default MinesweeperBody;
