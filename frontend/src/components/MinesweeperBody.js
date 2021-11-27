@@ -517,7 +517,7 @@ const MinesweeperBody = (props) => {
         if (boardData[x][y].isRevealed) {
             alert("This cell is already revealed!");
             console.log("This cell is already revealed!");
-            return null;
+            return;
         }
 
         // check if mine. game over if true
@@ -535,16 +535,17 @@ const MinesweeperBody = (props) => {
             console.log("BOOM! Game Over!");
             setMessage("Game Over");
             setIsOver(!isOver);
+            return;
         }
 
-        let updatedData = boardData;
-
+        let updatedData = [...boardData];
+        
         //reveal cells
         updatedData[x][y].isFlagged = false;
         updatedData[x][y].isRevealed = true;
 
         console.log("cell at " + x + "," + y + " revealed " + updatedData[x][y].isRevealed);
-
+        console.log(updatedData);
         if (updatedData[x][y].isEmpty) {
             console.log("Empty cell revealed");
             updatedData = revealEmpty(x, y, updatedData);
@@ -577,6 +578,7 @@ const MinesweeperBody = (props) => {
 
         console.log("cell at " + x + "," + y + " clicked by " + player);
         console.log("handle click done");
+        setboardData(updatedData);
     }
 
     /**
@@ -652,13 +654,14 @@ const MinesweeperBody = (props) => {
                                     cMenu={(e) => handleContextMenu(e, dataItem.x, dataItem.y, player)}
                                     value={dataItem}
                                 />
-                                {(dataRow[dataRow.length - 1] === dataItem) ? <Clear /> : ""}
+                                {(dataRow[dataRow.length - 1] === dataItem) ? <Clear/> : ""}
                             </td>);
                     })}
                 </tr>
             )
         });
     }
+    console.log("render board done!")
     return (
         <>
             <Modal show={show} onHide={handleClose}>
