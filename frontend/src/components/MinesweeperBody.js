@@ -4,9 +4,11 @@ import { Modal, Button } from "react-bootstrap";
 import { useHistory } from 'react-router-dom';
 import { Board, Clear, GameInfo } from '../styles/Minesweeper.styles';
 import MinesweeperCell from './MinesweeperCell';
+import useSound from 'use-sound';
+import mineSound from '../sounds/mine.mp3';
+
 // import ChatModal from 'react-modal'
 // import chatImg from '../images/chat_button_img.png'
-
 
 let currentTurn = true;
 let resetGamePlayers = {}
@@ -30,6 +32,9 @@ const MinesweeperBody = (props) => {
     const [isOver, setIsOver] = useState(false);
     //variable message when game is over
     const[message, setMessage] = useState(null);
+
+    //mine explosion sound effect
+    const [play] = useSound(mineSound);
 
     //modal pops up when game is over
     useEffect(() => {
@@ -81,7 +86,7 @@ const MinesweeperBody = (props) => {
 
     socket.onmessage = function (e) {
         var data = JSON.parse(e.data);
-        console.log("data" + data);
+        console.log(data);
 
         // if (data.msg_type !== undefined) {
         //     chat_messages += data.player + ':' + data.chatMsg + '\n'
@@ -150,6 +155,15 @@ const MinesweeperBody = (props) => {
     function swapTurns() {
         currentTurn = !currentTurn;
         console.log("swapping turns...")
+    }
+
+    /**
+     * 
+     * @param {*} ws websocket connection
+     * @returns check if connection is open
+     */
+    function isOpen(ws) { 
+        return ws.readyState === ws.OPEN 
     }
 
     // /**
@@ -482,11 +496,11 @@ const MinesweeperBody = (props) => {
             return;
         }
 
-        if (currentTurn === false) {
-                alert("Please wait for your opponent's turn!")
-                console.log("Current turn " + currentTurn);
-                return
-        } 
+        // if (currentTurn === false) {
+        //         alert("Please wait for your opponent's turn!")
+        //         console.log("Current turn " + currentTurn);
+        //         return
+        // } 
 
         var data = {
             'player' : player,
@@ -502,45 +516,44 @@ const MinesweeperBody = (props) => {
         // check if revealed. return if true.
         if (boardData[x][y].isRevealed) {
             alert("This cell is already revealed!");
+            console.log("This cell is already revealed!");
             return null;
         }
-        console.log("cell at " + x + "," + y + " clicked by " + player);
 
         // check if mine. game over if true
         if (boardData[x][y].isMine) {
             revealBoard();
-            // var data = {'player': player, 'state': 'end', 'reset': '' }
-            socket.send(JSON.stringify({ 
-                'player': player, 
-                'state': opponent, 
-                'board' : boardData,
-                'reset': '' 
-            }))
 
-            console.log("Game Over!");
+            data = {'player': player, 'state': opponent,'board' : boardData, 'reset': '' }
+            
+            // socket.send(JSON.stringify({ 
+            //     data
+            // }))
 
+            //play sound effect
+            play();
+            console.log("BOOM! Game Over!");
             setMessage("Game Over");
             setIsOver(!isOver);
         }
 
         let updatedData = boardData;
+        //reveal cells
         updatedData[x][y].isFlagged = false;
         updatedData[x][y].isRevealed = true;
 
         if (updatedData[x][y].isEmpty) {
+            console.log("Empty cell revealed");
             updatedData = revealEmpty(x, y, updatedData);
         }
 
         if (getHidden(updatedData).length === props.mines) {
             win = true;
             revealBoard();
-            // var data = {'player': player, 'state': player, 'reset': '' }
-            socket.send(JSON.stringify({ 
-                'player': player,
-                'state': player,
-                'board' : boardData,
-                'reset': '' 
-            }))
+            data = {'player': player, 'state': player,'board' : boardData, 'reset': '' }
+            // socket.send(JSON.stringify({ 
+            //     data
+            // }))
             console.log("You Win!");
             setMessage("You Win");
             setIsOver(!isOver);
@@ -551,6 +564,7 @@ const MinesweeperBody = (props) => {
         setGameWon(win);
         setMineCount(props.mines - getFlags(updatedData).length);    
 
+        if (!isOpen(socket)) return;
         socket.send(JSON.stringify(data));
     }
 
@@ -578,6 +592,7 @@ const MinesweeperBody = (props) => {
             mines--;
         }
 
+        //check win
         if (mines === 0) {
             const mineArray = getMines(updatedData);
             const FlagArray = getFlags(updatedData);
@@ -601,6 +616,7 @@ const MinesweeperBody = (props) => {
         setboardData(updatedData);
         setGameWon(win);
         setMineCount(mines);
+        console.log("cell at " + x + "," + y + " clicked by " + player);
     }
 
     /**
@@ -630,7 +646,6 @@ const MinesweeperBody = (props) => {
             )
         });
     }
-    
     return (
         <>
             <Modal show={show} onHide={handleClose}>
