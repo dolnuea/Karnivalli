@@ -37,7 +37,7 @@ export default class Minesweeper extends React.Component {
         const { height, width, mines } = this.state;
         return (
             <MinesweeperContainer>
-                <MinesweeperBody height={height} width={width} mines={mines} roomNumber={this.props.location.state.roomCode} />
+                <MinesweeperBody height={height} width={width} mines={mines} roomNumber={this.props.location.state.roomCode} player = {this.props.location.state.player} />
             </MinesweeperContainer>
         );
     }

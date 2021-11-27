@@ -4,21 +4,22 @@ import { Modal, Button } from "react-bootstrap";
 import { useHistory } from 'react-router-dom';
 import { Board, Clear, GameInfo } from '../styles/Minesweeper.styles';
 import MinesweeperCell from './MinesweeperCell';
-import ChatModal from 'react-modal'
-import chatImg from '../images/chat_button_img.png'
+// import ChatModal from 'react-modal'
+// import chatImg from '../images/chat_button_img.png'
 
 
 let currentTurn = true;
 let resetGamePlayers = {}
-let gameWon = false;
 
 const MinesweeperBody = (props) => {
 
-    let boardData = initalizeBoardData(props.height, props.width, props.mines);
-    let mineCount = props.mines;
-    
+    /**********************************Minesweeper variables******************************************/
 
-/*********************************Multiplayer Functionality*********************************************/
+    // let boardData = initalizeBoardData(props.height, props.width, props.mines);
+    const [boardData, setboardData] = useState(initalizeBoardData(props.height, props.width, props.mines));
+    // let mineCount = props.mines;
+    const[mineCount, setMineCount] = useState(props.mines);
+    const[gameWon, setGameWon] = useState(false);
 
     //end of game modal show variables
     const [show, setShow] = useState(false);
@@ -57,9 +58,12 @@ const MinesweeperBody = (props) => {
         }
         history.push(path, userDetails);
     }
-
+    /*******************************************************************************************************/
+    /*********************************Multiplayer Functionality*********************************************/
     console.log('start')
     var room_code = props.roomNumber
+    var player = props.player;
+
     let socket = new W3CWebSocket('ws://localhost:8000/ws/game/' + room_code)
     setTimeout(() => { console.log("connecting..."); }, 1000);
 
@@ -70,6 +74,7 @@ const MinesweeperBody = (props) => {
         socket.onopen = function (e) {
             console.log('Socket connected')
     }
+
 
     socket.onmessage = function (e) {
         var data = JSON.parse(e.data)
@@ -97,8 +102,6 @@ const MinesweeperBody = (props) => {
         //     alert("Game ended!!");
         //     return;
         // }
-
-        let player = props.location.state.player;
 
         if (player === "viewer") {
 
@@ -131,14 +134,19 @@ const MinesweeperBody = (props) => {
             socket.onclose = function (e) {
                 console.log('Socket closed')
             }
-
         }
     }, []);
 
     console.log('end')
 
-    function sendData(player, boardData){
-        if (props.location.state.player === "viewer") {
+    /**
+     * Send data in multiplayer game session
+     * @param {*} player 
+     * @param {*} boardData 
+     * @returns 
+     */
+    function sendData(boardData, player){
+        if (player === "viewer") {
             alert("Well, that would be cheating...")
             return;
         }
@@ -158,32 +166,31 @@ const MinesweeperBody = (props) => {
         socket.send(JSON.stringify({
             data
         }))
+
         //call won function
         renderBoard(boardData, player)
     }
 
-    //end of useEffect
-
-    //add sendData function for game progress, wait for opposition, cant fill sapce, cheating
-
-    /** End of Game Modal Functions */
-
+    /**
+     * Reset game
+     */
     function resetGame() {
         console.log('reset game');
-        boardData = initalizeBoardData(props.height, props.width, props.mines);
-        gameWon = false;
-        mineCount = props.mines;
+        setboardData(initalizeBoardData(props.height, props.width, props.mines));
+        setGameWon(false);
+        setMineCount(props.mines);
         currentTurn = true;
-        //todo reset game
         if (show) {
             setShow(!show);
         }
         setIsOver(false);
     }
 
+    /**
+     * Check if game is over: reset or new game
+     */
     function selectResetGame() {
         let reset = 'reset';
-        let player = props.location.state.player;
         resetGamePlayers[player] = reset;
         var data = {
             'player': player,
@@ -198,9 +205,11 @@ const MinesweeperBody = (props) => {
         }
     }
 
+    /**
+     * Change game
+     */
     function selectRouteChange() {
         let reset = 'change';
-        let player = props.location.state.player;
         resetGamePlayers[player] = reset;
         var data = {
             'player': player,
@@ -213,6 +222,9 @@ const MinesweeperBody = (props) => {
         routeChange();
     }
 
+    /**
+     * Check if game is over: reset or new game
+     */
     function checkForResetOrNewGame() {
         console.log("checkForResetOrNewGame");
         if (resetGamePlayers.p1 !== undefined && resetGamePlayers.p2 !== undefined) {
@@ -237,7 +249,12 @@ const MinesweeperBody = (props) => {
     // }
 
 /********************************************************************************************/
-    // get mines
+/************************************Game Functions******************************************/
+    /**
+     * get mines
+     * @param {*} data board data
+     * @returns array of mines
+     */
     function getMines(data) {
         let mineArray = [];
 
@@ -252,7 +269,11 @@ const MinesweeperBody = (props) => {
         return mineArray;
     }
 
-    // get Flags
+    /**
+     * get Flags
+     * @param {*} data board data
+     * @returns flagged cells
+     */
     function getFlags(data) {
         let mineArray = [];
 
@@ -267,7 +288,11 @@ const MinesweeperBody = (props) => {
         return mineArray;
     }
 
-    // get Hidden cells
+    /**
+     * get Hidden cells
+     * @param {*} data board data
+     * @returns hidden cells
+     */
     function getHidden(data) {
         let mineArray = [];
 
@@ -282,7 +307,13 @@ const MinesweeperBody = (props) => {
         return mineArray;
     }
 
-    // Gets initial board data
+    /**
+     * Gets initial board data
+     * @param {*} height 
+     * @param {*} width 
+     * @param {*} mines 
+     * @returns minesweeper board
+     */
     function initalizeBoardData(height, width, mines) {
         let data = [];
 
@@ -314,7 +345,6 @@ const MinesweeperBody = (props) => {
         }
 
         // get neighbours
-
         let updatedData = data;
 
         for (let i = 0; i < height; i++) {
@@ -341,8 +371,13 @@ const MinesweeperBody = (props) => {
         return data;
     }
 
-
-    // looks for neighbouring cells and returns them
+    /**
+     * Looks for neighbouring cells and returns them
+     * @param {*} x horizontal position
+     * @param {*} y vertical position
+     * @param {*} data board data
+     * @returns array of neighbouring cells
+     */
     function traverseBoard(x, y, data) {
         const el = [];
 
@@ -389,7 +424,9 @@ const MinesweeperBody = (props) => {
         return el;
     }
 
-    // reveals the whole board
+    /**
+     * Reveals the whole board
+     */
     function revealBoard() {
         let updatedData = boardData;
         updatedData.map((datarow) => {
@@ -397,11 +434,18 @@ const MinesweeperBody = (props) => {
                 dataitem.isRevealed = true;
             });
         });
-        boardData = updatedData;
-        //setBoardData(boardData);
+        // boardData = updatedData;
+        setboardData(updatedData);
     }
 
-    /* reveal logic for empty cell */
+     
+    /**
+     * reveal logic for empty cell
+     * @param {*} x horizontal position
+     * @param {*} y vertical position
+     * @param {*} data board data
+     * @returns empty cell
+     */
     function revealEmpty(x, y, data) {
         let area = traverseBoard(x, y, data);
         area.map(value => {
@@ -415,9 +459,14 @@ const MinesweeperBody = (props) => {
         return data;
     }
 
-    // Handle User Events
-
     //todo data used twice
+    /**
+     * Handle User Events
+     * @param {*} x horizontal position
+     * @param {*} y vertical position
+     * @param {*} player 
+     * @returns updated board data
+     */
     function handleCellClick(x, y, player) {
         let win = false;
 
@@ -427,7 +476,7 @@ const MinesweeperBody = (props) => {
         // check if mine. game over if true
         if (boardData[x][y].isMine) {
             revealBoard();
-            var data = { 'state': 'end', 'player': props.location.state.player }
+            var data = { 'state': 'end', 'player': player }
             socket.send(JSON.stringify({ data }))
             //alert("game over");
             setMessage("Game Over");
@@ -452,11 +501,19 @@ const MinesweeperBody = (props) => {
             setIsOver(!isOver);
         }
 
-        boardData = updatedData;
-        mineCount = props.mines - getFlags(updatedData).length;
-        gameWon = win;
+        // boardData = updatedData;
+        setboardData(updatedData);
+        setGameWon(win);
+        setMineCount(props.mines - getFlags(updatedData).length);
     }
 
+    /**
+     * 
+     * @param {*} e 
+     * @param {*} x horizontal position
+     * @param {*} y vertical position
+     * @param {*} player 
+     */
     function handleContextMenu(e, x, y, player) {
         e.preventDefault();
         let updatedData = boardData;
@@ -487,11 +544,18 @@ const MinesweeperBody = (props) => {
             }
         }
 
-        boardData = updatedData;
-        mineCount = mines;
-        gameWon = win;
+        // boardData = updatedData;
+        setboardData(updatedData);
+        setGameWon(win);
+        setMineCount(mines);
     }
 
+    /**
+     * 
+     * @param {*} data board data
+     * @param {*} player 
+     * @returns rendered board
+     */
     function renderBoard(data, player) {
         console.log(data)
 
@@ -513,18 +577,6 @@ const MinesweeperBody = (props) => {
             )
         });
     }
-
-    // Component methods
-    function componentWillReceiveProps(nextProps) {
-        if (JSON.stringify(props) !== JSON.stringify(nextProps)) {
-
-            this.setState({
-                boardData: initalizeBoardData(nextProps.height, nextProps.width, nextProps.mines),
-                gameWon: false,
-                mineCount: nextProps.mines,
-            });
-        }
-    }
     
     return (
         <>
@@ -541,10 +593,10 @@ const MinesweeperBody = (props) => {
         </Modal>
             <Board>
                 <GameInfo>
-                    <span>Mines: {mineCount}</span><br />
-                    <span>{gameWon ? "You Win" : ""}</span>
+                    Mines: {mineCount} <br />
+                    {gameWon ? "You Win" : ""}
                 </GameInfo>
-                {sendData(boardData, props.location.state.player)}
+                {renderBoard(boardData, player)}
             </Board>
         </>
     );
