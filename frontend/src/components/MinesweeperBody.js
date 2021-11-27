@@ -490,7 +490,7 @@ const MinesweeperBody = (props) => {
      * @returns updated board data
      */
     function handleCellClick(x, y, player) {
-
+        console.log("handleCellClick");
         if (player === "viewer") {
             alert("Well, that would be cheating...")
             return;
@@ -538,14 +538,19 @@ const MinesweeperBody = (props) => {
         }
 
         let updatedData = boardData;
+
         //reveal cells
         updatedData[x][y].isFlagged = false;
         updatedData[x][y].isRevealed = true;
+
+        console.log("cell at " + x + "," + y + " revealed " + updatedData[x][y].isRevealed);
 
         if (updatedData[x][y].isEmpty) {
             console.log("Empty cell revealed");
             updatedData = revealEmpty(x, y, updatedData);
         }
+
+        console.log("check1");
 
         if (getHidden(updatedData).length === props.mines) {
             win = true;
@@ -558,18 +563,24 @@ const MinesweeperBody = (props) => {
             setMessage("You Win");
             setIsOver(!isOver);
         }
+        console.log("check2");
 
         // boardData = updatedData;
         setboardData(updatedData);
         setGameWon(win);
         setMineCount(props.mines - getFlags(updatedData).length);    
 
-        if (!isOpen(socket)) return;
-        socket.send(JSON.stringify(data));
+        console.log("check3");
+
+        // if (!isOpen(socket)) return;
+        // socket.send(JSON.stringify(data));
+
+        console.log("cell at " + x + "," + y + " clicked by " + player);
+        console.log("handle click done");
     }
 
     /**
-     * 
+     * Right click handler
      * @param {*} e 
      * @param {*} x horizontal position
      * @param {*} y vertical position
@@ -577,6 +588,9 @@ const MinesweeperBody = (props) => {
      */
     function handleContextMenu(e, x, y, player) {
         e.preventDefault();
+
+        console.log("handleContextMenu");
+
         let updatedData = boardData;
         let mines = mineCount;
         let win = false;
@@ -600,12 +614,12 @@ const MinesweeperBody = (props) => {
             if (win) {
                 revealBoard();
                 // var data = {'player': player, 'state': player, 'reset': '' }
-                socket.send(JSON.stringify({ 
-                    'player': player,
-                    'state': player,
-                    'board' : boardData,
-                    'reset': ''
-                }))
+                // socket.send(JSON.stringify({ 
+                //     'player': player,
+                //     'state': player,
+                //     'board' : boardData,
+                //     'reset': ''
+                // }))
                 console.log("You Win!");
                 setMessage("You Win");
                 setIsOver(!isOver);
@@ -616,7 +630,6 @@ const MinesweeperBody = (props) => {
         setboardData(updatedData);
         setGameWon(win);
         setMineCount(mines);
-        console.log("cell at " + x + "," + y + " clicked by " + player);
     }
 
     /**
