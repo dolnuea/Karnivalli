@@ -64,6 +64,9 @@ const MinesweeperBody = (props) => {
     var room_code = props.roomNumber
     var player = props.player;
 
+    console.log("room : " + room_code);
+    console.log("player : " + player);
+
     let socket = new W3CWebSocket('ws://localhost:8000/ws/game/' + room_code)
     setTimeout(() => { console.log("connecting..."); }, 1000);
 
@@ -75,6 +78,7 @@ const MinesweeperBody = (props) => {
             console.log('Socket connected')
     }
 
+    console.log("Hello world");
 
     socket.onmessage = function (e) {
         var data = JSON.parse(e.data)
@@ -580,6 +584,7 @@ const MinesweeperBody = (props) => {
                                     onClick={() => handleCellClick(dataItem.x, dataItem.y, player)}
                                     cMenu={(e) => handleContextMenu(e, dataItem.x, dataItem.y, player)}
                                     value={dataItem}
+                                    currentTurn={true}
                                 />
                                 {(dataRow[dataRow.length - 1] === dataItem) ? <Clear /> : ""}
                             </td>);
@@ -604,6 +609,8 @@ const MinesweeperBody = (props) => {
         </Modal>
             <Board>
                 <GameInfo>
+                    Room number : {room_code}<br/>
+                    Player : {player}<br/>
                     Mines: {mineCount} <br />
                     {gameWon ? "You Win" : ""}
                 </GameInfo>
