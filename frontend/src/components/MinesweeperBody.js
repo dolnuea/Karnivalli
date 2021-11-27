@@ -485,6 +485,7 @@ const MinesweeperBody = (props) => {
 
         if (currentTurn === false) {
             alert("Please wait for your opponent's turn!")
+            console.log("Current turn " + currentTurn);
             return
         } else {
             currentTurn = false
