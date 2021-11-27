@@ -166,9 +166,6 @@ const MinesweeperBody = (props) => {
         socket.send(JSON.stringify({
             data
         }))
-
-        //call won function
-        renderBoard(boardData, player)
     }
 
     /**
@@ -468,17 +465,32 @@ const MinesweeperBody = (props) => {
      * @returns updated board data
      */
     function handleCellClick(x, y, player) {
+
+        if (player === "viewer") {
+            alert("Well, that would be cheating...")
+            return;
+        }
+
         let win = false;
 
         // check if revealed. return if true.
-        if (boardData[x][y].isRevealed) return null;
+        if (boardData[x][y].isRevealed) {
+            alert("You already clicked that cell!");
+            return null;
+        }
+
+        if (currentTurn === false) {
+            alert("Please wait for your opponent's turn!")
+            return
+        } else {
+            currentTurn = false
+        }
 
         // check if mine. game over if true
         if (boardData[x][y].isMine) {
             revealBoard();
-            var data = { 'state': 'end', 'player': player }
+            var data = {'player': player, 'state': 'end', 'reset': '' }
             socket.send(JSON.stringify({ data }))
-            //alert("game over");
             setMessage("Game Over");
             setIsOver(!isOver);
         }
@@ -494,9 +506,8 @@ const MinesweeperBody = (props) => {
         if (getHidden(updatedData).length === props.mines) {
             win = true;
             revealBoard();
-            var data = { 'state': player, 'player': player }
+            var data = {'player': player, 'state': player, 'reset': '' }
             socket.send(JSON.stringify({ data }))
-            //alert("You Win");
             setMessage("You Win");
             setIsOver(!isOver);
         }
@@ -537,10 +548,10 @@ const MinesweeperBody = (props) => {
             win = (JSON.stringify(mineArray) === JSON.stringify(FlagArray));
             if (win) {
                 revealBoard();
-                var data = { 'state': 'end', 'player': player }
+                var data = {'player': player, 'state': player, 'reset': '' }
                 socket.send(JSON.stringify({ data }))
                 setMessage("You Win");
-                //alert("You Win");
+                setIsOver(!isOver);
             }
         }
 
