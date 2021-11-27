@@ -63,6 +63,7 @@ const MinesweeperBody = (props) => {
     console.log('start')
     var room_code = props.roomNumber
     var player = props.player;
+    var opponent = (player === 'p1') ? 'p2' : (player === 'p2') ? 'p1' : null;
 
     console.log("room : " + room_code);
     console.log("player : " + player);
@@ -110,9 +111,11 @@ const MinesweeperBody = (props) => {
         if (player === "viewer") {
 
             if (data.state === 'p1') {
+                revealBoard(data.payload.board);
                 alert("Player one wins.")
                 return
             } else if (data.state === 'p2') {
+                revealBoard(data.payload.board);
                 alert("Player two wins.")
                 return
             } 
@@ -124,15 +127,17 @@ const MinesweeperBody = (props) => {
         // }
 
         if (data.state === player) {
+            revealBoard(data.payload.board);
             currentTurn = true;
             setMessage("You won!");
-            setIsOver(true);
+            setIsOver(!isOver);
             return
         } 
         else if ((data.state === 'p2' && player === 'p1') || (data.state === 'p1' && player === 'p2')) {
+            revealBoard(data.payload.board);
             currentTurn = true;
             setMessage("You lost!");
-            setIsOver(true);
+            setIsOver(!isOver);
             return
         }
             socket.onclose = function (e) {
@@ -143,34 +148,34 @@ const MinesweeperBody = (props) => {
 
     console.log('end')
 
-    /**
-     * Send data in multiplayer game session
-     * @param {*} player 
-     * @param {*} boardData 
-     * @returns 
-     */
-    function sendData(boardData, player){
-        if (player === "viewer") {
-            alert("Well, that would be cheating...")
-            return;
-        }
+    // /**
+    //  * Send data in multiplayer game session
+    //  * @param {*} player 
+    //  * @param {*} boardData 
+    //  * @returns 
+    //  */
+    // function sendData(boardData, player){
+    //     if (player === "viewer") {
+    //         alert("Well, that would be cheating...")
+    //         return;
+    //     }
 
-        var data = {
-            'player': player,
-            'state': 'progress',
-            'reset': ''
-        }
+    //     var data = {
+    //         'player': player,
+    //         'state': 'progress',
+    //         'reset': ''
+    //     }
 
-        if (currentTurn === false) {
-            alert("Please wait for your opponent's turn!")
-            return
-        } else {
-            currentTurn = false
-        }
-        socket.send(JSON.stringify({
-            data
-        }))
-    }
+    //     if (currentTurn === false) {
+    //         alert("Please wait for your opponent's turn!")
+    //         return
+    //     } else {
+    //         currentTurn = false
+    //     }
+    //     socket.send(JSON.stringify({
+    //         data
+    //     }))
+    // }
 
     /**
      * Reset game
@@ -460,7 +465,6 @@ const MinesweeperBody = (props) => {
         return data;
     }
 
-    //todo data used twice
     /**
      * Handle User Events
      * @param {*} x horizontal position
@@ -494,8 +498,13 @@ const MinesweeperBody = (props) => {
         // check if mine. game over if true
         if (boardData[x][y].isMine) {
             revealBoard();
-            var data = {'player': player, 'state': 'end', 'reset': '' }
-            socket.send(JSON.stringify({ data }))
+            // var data = {'player': player, 'state': 'end', 'reset': '' }
+            socket.send(JSON.stringify({ 
+                'player': player, 
+                'state': opponent, 
+                'board' : boardData,
+                'reset': '' 
+            }))
             setMessage("Game Over");
             setIsOver(!isOver);
         }
@@ -508,11 +517,18 @@ const MinesweeperBody = (props) => {
             updatedData = revealEmpty(x, y, updatedData);
         }
 
+        console.log(updatedData);
+
         if (getHidden(updatedData).length === props.mines) {
             win = true;
             revealBoard();
-            var data = {'player': player, 'state': player, 'reset': '' }
-            socket.send(JSON.stringify({ data }))
+            // var data = {'player': player, 'state': player, 'reset': '' }
+            socket.send(JSON.stringify({ 
+                'player': player,
+                'state': player,
+                'board' : boardData,
+                'reset': '' 
+            }))
             setMessage("You Win");
             setIsOver(!isOver);
         }
@@ -553,8 +569,13 @@ const MinesweeperBody = (props) => {
             win = (JSON.stringify(mineArray) === JSON.stringify(FlagArray));
             if (win) {
                 revealBoard();
-                var data = {'player': player, 'state': player, 'reset': '' }
-                socket.send(JSON.stringify({ data }))
+                // var data = {'player': player, 'state': player, 'reset': '' }
+                socket.send(JSON.stringify({ 
+                    'player': player,
+                    'state': player,
+                    'board' : boardData,
+                    'reset': ''
+                }))
                 setMessage("You Win");
                 setIsOver(!isOver);
             }
