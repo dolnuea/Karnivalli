@@ -60,13 +60,13 @@ const MinesweeperBody = (props) => {
     }
     /*******************************************************************************************************/
     /*********************************Multiplayer Functionality*********************************************/
-    console.log('start')
     var room_code = props.roomNumber
     var player = props.player;
     var opponent = (player === 'p1') ? 'p2' : (player === 'p2') ? 'p1' : null;
 
     console.log("room : " + room_code);
     console.log("player : " + player);
+    console.log("opponent : " + opponent);
 
     let socket = new W3CWebSocket('ws://localhost:8000/ws/game/' + room_code)
     setTimeout(() => { console.log("connecting..."); }, 1000);
@@ -79,11 +79,9 @@ const MinesweeperBody = (props) => {
             console.log('Socket connected')
     }
 
-    console.log("Hello world");
-
     socket.onmessage = function (e) {
-        var data = JSON.parse(e.data)
-        console.log(data)
+        var data = JSON.parse(e.data);
+        console.log("data" + data);
 
         // if (data.msg_type !== undefined) {
         //     chat_messages += data.player + ':' + data.chatMsg + '\n'
@@ -92,7 +90,7 @@ const MinesweeperBody = (props) => {
 
         //reset game
         if (data.payload.reset === "reset") {
-            console.log("in reset")
+            console.log("resetting...")
             resetGamePlayers[data.payload.player] = data.payload.reset;
             checkForResetOrNewGame();
             return;
@@ -140,13 +138,19 @@ const MinesweeperBody = (props) => {
             setIsOver(!isOver);
             return
         }
+        else if (data.payload.state === 'running' && data.payload.player !== player) {
+            swapTurns();
+        }
             socket.onclose = function (e) {
                 console.log('Socket closed')
             }
         }
     }, []);
 
-    console.log('end')
+    function swapTurns() {
+        currentTurn = !currentTurn;
+        console.log("swapping turns...")
+    }
 
     // /**
     //  * Send data in multiplayer game session
@@ -321,6 +325,7 @@ const MinesweeperBody = (props) => {
      * @returns minesweeper board
      */
     function initalizeBoardData(height, width, mines) {
+        console.log("initalizeBoardData");
         let data = [];
 
         for (let i = 0; i < height; i++) {
@@ -372,8 +377,6 @@ const MinesweeperBody = (props) => {
         }
 
         data = updatedData;
-
-        console.log(data);
         return data;
     }
 
@@ -479,21 +482,29 @@ const MinesweeperBody = (props) => {
             return;
         }
 
+        if (currentTurn === false) {
+                alert("Please wait for your opponent's turn!")
+                console.log("Current turn " + currentTurn);
+                return
+        } 
+
+        var data = {
+            'player' : player,
+            'state' : 'running',
+            'board' : boardData,
+            'reset' : ''
+        }
+
+        currentTurn = false
+
         let win = false;
 
         // check if revealed. return if true.
         if (boardData[x][y].isRevealed) {
-            alert("You already clicked that cell!");
+            alert("This cell is already revealed!");
             return null;
         }
-
-        if (currentTurn === false) {
-            alert("Please wait for your opponent's turn!")
-            console.log("Current turn " + currentTurn);
-            return
-        } else {
-            currentTurn = false
-        }
+        console.log("cell at " + x + "," + y + " clicked by " + player);
 
         // check if mine. game over if true
         if (boardData[x][y].isMine) {
@@ -505,6 +516,9 @@ const MinesweeperBody = (props) => {
                 'board' : boardData,
                 'reset': '' 
             }))
+
+            console.log("Game Over!");
+
             setMessage("Game Over");
             setIsOver(!isOver);
         }
@@ -517,8 +531,6 @@ const MinesweeperBody = (props) => {
             updatedData = revealEmpty(x, y, updatedData);
         }
 
-        console.log(updatedData);
-
         if (getHidden(updatedData).length === props.mines) {
             win = true;
             revealBoard();
@@ -529,6 +541,7 @@ const MinesweeperBody = (props) => {
                 'board' : boardData,
                 'reset': '' 
             }))
+            console.log("You Win!");
             setMessage("You Win");
             setIsOver(!isOver);
         }
@@ -536,7 +549,9 @@ const MinesweeperBody = (props) => {
         // boardData = updatedData;
         setboardData(updatedData);
         setGameWon(win);
-        setMineCount(props.mines - getFlags(updatedData).length);
+        setMineCount(props.mines - getFlags(updatedData).length);    
+
+        socket.send(JSON.stringify(data));
     }
 
     /**
@@ -576,6 +591,7 @@ const MinesweeperBody = (props) => {
                     'board' : boardData,
                     'reset': ''
                 }))
+                console.log("You Win!");
                 setMessage("You Win");
                 setIsOver(!isOver);
             }
@@ -594,7 +610,7 @@ const MinesweeperBody = (props) => {
      * @returns rendered board
      */
     function renderBoard(data, player) {
-        console.log(data)
+        console.log("render board!")
 
         return data.map((dataRow) => {
             return (
@@ -606,7 +622,6 @@ const MinesweeperBody = (props) => {
                                     onClick={() => handleCellClick(dataItem.x, dataItem.y, player)}
                                     cMenu={(e) => handleContextMenu(e, dataItem.x, dataItem.y, player)}
                                     value={dataItem}
-                                    currentTurn={true}
                                 />
                                 {(dataRow[dataRow.length - 1] === dataItem) ? <Clear /> : ""}
                             </td>);
@@ -631,8 +646,6 @@ const MinesweeperBody = (props) => {
         </Modal>
             <Board>
                 <GameInfo>
-                    Room number : {room_code}<br/>
-                    Player : {player}<br/>
                     Mines: {mineCount} <br />
                     {gameWon ? "You Win" : ""}
                 </GameInfo>
