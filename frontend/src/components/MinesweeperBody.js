@@ -104,16 +104,20 @@ const MinesweeperBody = (props) => {
             // }
 
             if (data.payload.type === "joined") {
+                console.log("other player joined")
 
                 if (otherPlayerJoined) {
+                    console.log("other player already joined")
                     return;
                 }
 
                 if (props.player === data.payload.player) {
+                    console.log("player is same as other player")
                     return;
                 }
 
                 if (!data.payload.isGuest && data.payload.playerName === props.username) {
+                    console.log("player is same as other player")
                     return;
                 }
 
@@ -121,8 +125,8 @@ const MinesweeperBody = (props) => {
                 isOtherPlayerGuest = data.payload.isGuest
 
                 if (data.payload.isGuest && !otherPlayerJoined) {
+                    console.log("other player is guest")
                     var data = data = { 'type': 'joined', 'playerName': props.username, 'isGuest': props.isGuest }
-                    //socket.send(JSON.stringify({ data }))
                     sendMessage(socket, JSON.stringify({ data }))
                     otherPlayerJoined = true
                     alert("Your opponent just joined. They joined as a guest");
@@ -130,6 +134,7 @@ const MinesweeperBody = (props) => {
                 }
 
                 if (props.isGuest) {
+                    console.log("player is guest")
                     var data = data = { 'type': 'joined', 'playerName': props.username, 'isGuest': props.isGuest }
                     //socket.send(JSON.stringify({ data }))
                     sendMessage(socket, JSON.stringify({ data }))
