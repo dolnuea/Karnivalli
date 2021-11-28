@@ -3,6 +3,7 @@ import '../styles/Minesweeper.styles.css'
 
 export default class MinesweeperCell extends React.Component {
     getValue(){
+
         if (!this.props.value.isRevealed){
             return this.props.value.isFlagged ? "🚩" : null;
         }
@@ -16,6 +17,7 @@ export default class MinesweeperCell extends React.Component {
     }
 
     render(){
+        console.log("reveal cells!");
         let className = "cell" + (this.props.value.isRevealed ? "" : " cell-hidden") + (this.props.value.isMine ? " is-mine" : "") + (this.props.value.isFlagged ? " is-flag" : "");
 
         return (

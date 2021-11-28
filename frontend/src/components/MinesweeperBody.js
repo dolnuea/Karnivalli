@@ -1,86 +1,285 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
+import { w3cwebsocket as W3CWebSocket } from "websocket";
+import { Modal, Button } from "react-bootstrap";
+import { useHistory } from 'react-router-dom';
 import { Board, Clear, GameInfo } from '../styles/Minesweeper.styles';
 import MinesweeperCell from './MinesweeperCell';
+import useSound from 'use-sound';
+import mineSound from '../sounds/mine.mp3';
 
+// import ChatModal from 'react-modal'
+// import chatImg from '../images/chat_button_img.png'
 
-export default class MinesweeperBody extends React.Component {
-    state = {
-        boardData: this.initalizeBoardData(this.props.height, this.props.width, this.props.mines),
-        gameWon: false,
-        mineCount: this.props.mines,
-    };
+let currentTurn = true;
+let resetGamePlayers = {}
 
-    // const [show, setShow] = useState(false);
-    // const handleClose = () => setShow(false);
+const MinesweeperBody = (props) => {
 
-    // const [isOver, setIsOver] = useState(false);
-    // const[message, setMessage] = useState(null);
+    /**********************************Minesweeper variables******************************************/
 
-    // useEffect(() => {
-    //     if (isOver) {
-    //     setShow(true);
+    // let boardData = initalizeBoardData(props.height, props.width, props.mines);
+    const [boardData, setboardData] = useState(initalizeBoardData(props.height, props.width, props.mines));
+    // let mineCount = props.mines;
+    const[mineCount, setMineCount] = useState(props.mines);
+    const[gameWon, setGameWon] = useState(false);
+
+    //end of game modal show variables
+    const [show, setShow] = useState(false);
+    //modal handles close
+    const handleClose = () => setShow(false);
+
+    //variable for game is over
+    const [isOver, setIsOver] = useState(false);
+    //variable message when game is over
+    const[message, setMessage] = useState(null);
+
+    //mine explosion sound effect
+    const [play] = useSound(mineSound);
+
+    //modal pops up when game is over
+    useEffect(() => {
+        if (isOver) {
+        setShow(true);
+        }
+    }, [isOver]);
+
+    // messaging modal variables
+    // const [modalIsopen, setModalIsOpen] = useState(false)
+
+    // const [isChatModalOpen, setChatModalOpen] = useState(false)
+    // const [chatMsg, setChatMsg] = useState("")
+    // const [msgs, setMsgs] = useState("")
+
+    //route history
+    const history = useHistory();
+
+    //take user to game selection screen when game is over
+    const routeChange = () => { //for end of game
+        resetGame();
+        let path = 'game-selection';
+        const userDetails = {
+            username: localStorage.getItem("username"),
+            isGuest: localStorage.getItem("isGuest")
+        }
+        history.push(path, userDetails);
+    }
+    /*******************************************************************************************************/
+    /*********************************Multiplayer Functionality*********************************************/
+    var room_code = props.roomNumber
+    var player = props.player;
+    var opponent = (player === 'p1') ? 'p2' : (player === 'p2') ? 'p1' : null;
+
+    console.log("room : " + room_code);
+    console.log("player : " + player);
+    console.log("opponent : " + opponent);
+
+    let socket = new W3CWebSocket('ws://localhost:8000/ws/game/' + room_code)
+    setTimeout(() => { console.log("connecting..."); }, 1000);
+
+    //let chat_messages = ""
+
+    //connect server
+    useEffect(() => {
+        socket.onopen = function (e) {
+            console.log('Socket connected')
+    }
+
+    socket.onmessage = function (e) {
+        var data = JSON.parse(e.data);
+        console.log(data);
+
+        // if (data.msg_type !== undefined) {
+        //     chat_messages += data.player + ':' + data.chatMsg + '\n'
+        //     setMsgs(chat_messages)
+        // }
+
+        //reset game
+        if (data.payload.reset === "reset") {
+            console.log("resetting...")
+            resetGamePlayers[data.payload.player] = data.payload.reset;
+            checkForResetOrNewGame();
+            return;
+        }
+        //select another game
+        if (data.payload.reset === "change") {
+            routeChange();
+            return;
+        }
+
+        // if (data.payload.type == 'end' && player == "viewer") {
+        //     alert("Game ended!!");
+        //     return;
+        // }
+
+        if (player === "viewer") {
+
+            if (data.state === 'p1') {
+                revealBoard(data.payload.board);
+                alert("Player one wins.")
+                return
+            } else if (data.state === 'p2') {
+                revealBoard(data.payload.board);
+                alert("Player two wins.")
+                return
+            } 
+        }
+
+        // if (data.payload.type === 'end' && player === "viewer") {
+        //     alert("Game ended!!");
+        //     return;
+        // }
+
+        if (data.state === player) {
+            revealBoard(data.payload.board);
+            currentTurn = true;
+            setMessage("You won!");
+            setIsOver(!isOver);
+            return
+        } 
+        else if ((data.state === 'p2' && player === 'p1') || (data.state === 'p1' && player === 'p2')) {
+            revealBoard(data.payload.board);
+            currentTurn = true;
+            setMessage("You lost!");
+            setIsOver(!isOver);
+            return
+        }
+        else if (data.payload.state === 'running' && data.payload.player !== player) {
+            swapTurns();
+        }
+            socket.onclose = function (e) {
+                console.log('Socket closed')
+            }
+        }
+    }, []);
+
+    function swapTurns() {
+        currentTurn = !currentTurn;
+        console.log("swapping turns...")
+    }
+
+    /**
+     * 
+     * @param {*} ws websocket connection
+     * @returns check if connection is open
+     */
+    function isOpen(ws) { 
+        return ws.readyState === ws.OPEN 
+    }
+
+    // /**
+    //  * Send data in multiplayer game session
+    //  * @param {*} player 
+    //  * @param {*} boardData 
+    //  * @returns 
+    //  */
+    // function sendData(boardData, player){
+    //     if (player === "viewer") {
+    //         alert("Well, that would be cheating...")
+    //         return;
     //     }
-    // }, [isOver]);
 
+    //     var data = {
+    //         'player': player,
+    //         'state': 'progress',
+    //         'reset': ''
+    //     }
 
-    // const history = useHistory();
-
-    // const routeChange = () => { //for end of game
-    //     resetGame();
-    //     let path = 'game-selection';
-    //     history.push(path);
+    //     if (currentTurn === false) {
+    //         alert("Please wait for your opponent's turn!")
+    //         return
+    //     } else {
+    //         currentTurn = false
+    //     }
+    //     socket.send(JSON.stringify({
+    //         data
+    //     }))
     // }
 
-    // var room_code = props.roomNumber
-    // var player = props.playColor
-    // console.log('start')
-    // let socket = new W3CWebSocket('ws://localhost:8000/ws/game/' + room_code)
-    // setTimeout(() => { console.log("connecting..."); }, 1000);
+    /**
+     * Reset game
+     */
+    function resetGame() {
+        console.log('reset game');
+        setboardData(initalizeBoardData(props.height, props.width, props.mines));
+        setGameWon(false);
+        setMineCount(props.mines);
+        currentTurn = true;
+        if (show) {
+            setShow(!show);
+        }
+        setIsOver(false);
+    }
 
-    // useEffect(() => {
-    //     socket.onopen = function (e) {
-    //         console.log('Socket connected')
-    //     }
+    /**
+     * Check if game is over: reset or new game
+     */
+    function selectResetGame() {
+        let reset = 'reset';
+        resetGamePlayers[player] = reset;
+        var data = {
+            'player': player,
+            'reset': reset
+        }
+        socket.send(JSON.stringify({
+            data
+        }))
+        checkForResetOrNewGame();
+        if (show) {
+            setShow(!show);
+        }
+    }
 
-    //     socket.onmessage = function (e) {
-    //         var data = JSON.parse(e.data)
-    //         console.log(data)
+    /**
+     * Change game
+     */
+    function selectRouteChange() {
+        let reset = 'change';
+        resetGamePlayers[player] = reset;
+        var data = {
+            'player': player,
+            'reset': reset
+        }
+        socket.send(JSON.stringify({
+            data
+        }))
+        setTimeout(() => { console.log("Routing..."); }, 2000);
+        routeChange();
+    }
 
-    //         if (data.payload.reset === "reset") {
-    //             console.log("in reset")
-    //             resetGamePlayers[data.payload.player] = data.payload.reset;
-    //             checkForResetOrNewGame();
-    //             return;
-    //         }
-    //         if (data.payload.reset === "change") {
-    //             routeChange();
-    //             return;
-    //         }
+    /**
+     * Check if game is over: reset or new game
+     */
+    function checkForResetOrNewGame() {
+        console.log("checkForResetOrNewGame");
+        if (resetGamePlayers.p1 !== undefined && resetGamePlayers.p2 !== undefined) {
+            if (resetGamePlayers.p1 === "reset" && resetGamePlayers.p2 === "reset") {
+                console.log("resetting")
+                resetGame();
+            } else {
+                console.log("routing")
+                routeChange();
+            }
+        }
+    }
 
-    //         if (data.payload.type == 'end' && data.payload.player !== player) {
-    //             //alert("Sorry! you lost")
-    //             setMessage("Sorry! You lost");
-    //             //options page
-    //             setIsOver(!isOver);
-    //         } else if (data.payload.type == 'over') {
-    //             //alert("Game over! game end no one won")
-    //             setMessage("Game over! No one won");
-    //             //options page
-    //             setIsOver(!isOver);
-    //         } else if (data.payload.type == 'running' && data.payload.player !== player) {
-    //             setAnotherUserText(data.payload.index, data.payload.player)
-    //         }
+    // function sendChatData(player) {
+    //     socket.send(JSON.stringify({
+    //         msg_type: "chat_msg",
+    //         player,
+    //         chatMsg
+    //     }))
 
-    //     }
+    //     setChatMsg("")
+    // }
 
-    //     socket.onclose = function (e) {
-    //         console.log('Socket closed')
-    //     }
-    // }, []);
-
-
-    // get mines
-    getMines(data) {
+/********************************************************************************************/
+/************************************Game Functions******************************************/
+    /**
+     * get mines
+     * @param {*} data board data
+     * @returns array of mines
+     */
+    function getMines(data) {
         let mineArray = [];
 
         data.map(datarow => {
@@ -94,8 +293,12 @@ export default class MinesweeperBody extends React.Component {
         return mineArray;
     }
 
-    // get Flags
-    getFlags(data) {
+    /**
+     * get Flags
+     * @param {*} data board data
+     * @returns flagged cells
+     */
+    function getFlags(data) {
         let mineArray = [];
 
         data.map(datarow => {
@@ -109,8 +312,12 @@ export default class MinesweeperBody extends React.Component {
         return mineArray;
     }
 
-    // get Hidden cells
-    getHidden(data) {
+    /**
+     * get Hidden cells
+     * @param {*} data board data
+     * @returns hidden cells
+     */
+    function getHidden(data) {
         let mineArray = [];
 
         data.map(datarow => {
@@ -124,8 +331,15 @@ export default class MinesweeperBody extends React.Component {
         return mineArray;
     }
 
-    // Gets initial board data
-    initalizeBoardData(height, width, mines) {
+    /**
+     * Gets initial board data
+     * @param {*} height 
+     * @param {*} width 
+     * @param {*} mines 
+     * @returns minesweeper board
+     */
+    function initalizeBoardData(height, width, mines) {
+        console.log("initalizeBoardData");
         let data = [];
 
         for (let i = 0; i < height; i++) {
@@ -156,14 +370,13 @@ export default class MinesweeperBody extends React.Component {
         }
 
         // get neighbours
-
         let updatedData = data;
 
         for (let i = 0; i < height; i++) {
             for (let j = 0; j < width; j++) {
                 if (data[i][j].isMine !== true) {
                     let mine = 0;
-                    const area = this.traverseBoard(data[i][j].x, data[i][j].y, data);
+                    const area = traverseBoard(data[i][j].x, data[i][j].y, data);
                     area.map(value => {
                         if (value.isMine) {
                             mine++;
@@ -178,14 +391,17 @@ export default class MinesweeperBody extends React.Component {
         }
 
         data = updatedData;
-
-        console.log(data);
         return data;
     }
 
-
-    // looks for neighbouring cells and returns them
-    traverseBoard(x, y, data) {
+    /**
+     * Looks for neighbouring cells and returns them
+     * @param {*} x horizontal position
+     * @param {*} y vertical position
+     * @param {*} data board data
+     * @returns array of neighbouring cells
+     */
+    function traverseBoard(x, y, data) {
         const el = [];
 
         //up
@@ -194,7 +410,7 @@ export default class MinesweeperBody extends React.Component {
         }
 
         //down
-        if (x < this.props.height - 1) {
+        if (x < props.height - 1) {
             el.push(data[x + 1][y]);
         }
 
@@ -204,7 +420,7 @@ export default class MinesweeperBody extends React.Component {
         }
 
         //right
-        if (y < this.props.width - 1) {
+        if (y < props.width - 1) {
             el.push(data[x][y + 1]);
         }
 
@@ -214,89 +430,171 @@ export default class MinesweeperBody extends React.Component {
         }
 
         // top right
-        if (x > 0 && y < this.props.width - 1) {
+        if (x > 0 && y < props.width - 1) {
             el.push(data[x - 1][y + 1]);
         }
 
         // bottom right
-        if (x < this.props.height - 1 && y < this.props.width - 1) {
+        if (x < props.height - 1 && y < props.width - 1) {
             el.push(data[x + 1][y + 1]);
         }
 
         // bottom left
-        if (x < this.props.height - 1 && y > 0) {
+        if (x < props.height - 1 && y > 0) {
             el.push(data[x + 1][y - 1]);
         }
 
         return el;
     }
 
-    // reveals the whole board
-    revealBoard() {
-        let updatedData = this.state.boardData;
+    /**
+     * Reveals the whole board
+     */
+    function revealBoard() {
+        let updatedData = boardData;
         updatedData.map((datarow) => {
             datarow.map((dataitem) => {
                 dataitem.isRevealed = true;
             });
         });
-        this.setState({
-            boardData: updatedData
-        })
+        // boardData = updatedData;
+        setboardData(updatedData);
     }
 
-    /* reveal logic for empty cell */
-    revealEmpty(x, y, data) {
-        let area = this.traverseBoard(x, y, data);
+     
+    /**
+     * reveal logic for empty cell
+     * @param {*} x horizontal position
+     * @param {*} y vertical position
+     * @param {*} data board data
+     * @returns empty cell
+     */
+    function revealEmpty(x, y, data) {
+        let area = traverseBoard(x, y, data);
         area.map(value => {
             if (!value.isRevealed && (value.isEmpty || !value.isMine)) {
                 data[value.x][value.y].isRevealed = true;
                 if (value.isEmpty) {
-                    this.revealEmpty(value.x, value.y, data);
+                    revealEmpty(value.x, value.y, data);
                 }
             }
         });
         return data;
     }
 
-    // Handle User Events
+    /**
+     * Handle User Events
+     * @param {*} x horizontal position
+     * @param {*} y vertical position
+     * @param {*} player 
+     * @returns updated board data
+     */
+    function handleCellClick(x, y, player) {
+        console.log("handleCellClick");
+        if (player === "viewer") {
+            alert("Well, that would be cheating...")
+            return;
+        }
 
-    handleCellClick(x, y) {
+        // if (currentTurn === false) {
+        //         alert("Please wait for your opponent's turn!")
+        //         console.log("Current turn " + currentTurn);
+        //         return
+        // } 
+
+        var data = {
+            'player' : player,
+            'state' : 'running',
+            'board' : boardData,
+            'reset' : ''
+        }
+
+        currentTurn = false
+
         let win = false;
 
         // check if revealed. return if true.
-        if (this.state.boardData[x][y].isRevealed) return null;
-
-        // check if mine. game over if true
-        if (this.state.boardData[x][y].isMine) {
-            this.revealBoard();
-            alert("game over");
+        if (boardData[x][y].isRevealed) {
+            alert("This cell is already revealed!");
+            console.log("This cell is already revealed!");
+            return;
         }
 
-        let updatedData = this.state.boardData;
+        // check if mine. game over if true
+        if (boardData[x][y].isMine) {
+            revealBoard();
+
+            data = {'player': player, 'state': opponent,'board' : boardData, 'reset': '' }
+            
+            // socket.send(JSON.stringify({ 
+            //     data
+            // }))
+
+            //play sound effect
+            play();
+            console.log("BOOM! Game Over!");
+            setMessage("Game Over");
+            setIsOver(!isOver);
+            return;
+        }
+
+        let updatedData = [...boardData];
+        
+        //reveal cells
         updatedData[x][y].isFlagged = false;
         updatedData[x][y].isRevealed = true;
 
+        console.log("cell at " + x + "," + y + " revealed " + updatedData[x][y].isRevealed);
+        console.log(updatedData);
         if (updatedData[x][y].isEmpty) {
-            updatedData = this.revealEmpty(x, y, updatedData);
+            console.log("Empty cell revealed");
+            updatedData = revealEmpty(x, y, updatedData);
         }
 
-        if (this.getHidden(updatedData).length === this.props.mines) {
+        console.log("check1");
+
+        if (getHidden(updatedData).length === props.mines) {
             win = true;
-            this.revealBoard();
-            alert("You Win");
+            revealBoard();
+            data = {'player': player, 'state': player,'board' : boardData, 'reset': '' }
+            // socket.send(JSON.stringify({ 
+            //     data
+            // }))
+            console.log("You Win!");
+            setMessage("You Win");
+            setIsOver(!isOver);
         }
+        console.log("check2");
 
-        this.setState({
-            boardData: updatedData,
-            mineCount: this.props.mines - this.getFlags(updatedData).length,
-            gameWon: win,
-        });
+        // boardData = updatedData;
+        setboardData(updatedData);
+        setGameWon(win);
+        setMineCount(props.mines - getFlags(updatedData).length);    
+
+        console.log("check3");
+
+        // if (!isOpen(socket)) return;
+        // socket.send(JSON.stringify(data));
+
+        console.log("cell at " + x + "," + y + " clicked by " + player);
+        console.log("handle click done");
+        setboardData(updatedData);
     }
 
-    handleContextMenu(e, x, y) {
+    /**
+     * Right click handler
+     * @param {*} e 
+     * @param {*} x horizontal position
+     * @param {*} y vertical position
+     * @param {*} player 
+     */
+    function handleContextMenu(e, x, y, player) {
         e.preventDefault();
-        let updatedData = this.state.boardData;
-        let mines = this.state.mineCount;
+
+        console.log("handleContextMenu");
+
+        let updatedData = boardData;
+        let mines = mineCount;
         let win = false;
 
         // check if already revealed
@@ -310,25 +608,40 @@ export default class MinesweeperBody extends React.Component {
             mines--;
         }
 
+        //check win
         if (mines === 0) {
-            const mineArray = this.getMines(updatedData);
-            const FlagArray = this.getFlags(updatedData);
+            const mineArray = getMines(updatedData);
+            const FlagArray = getFlags(updatedData);
             win = (JSON.stringify(mineArray) === JSON.stringify(FlagArray));
             if (win) {
-                this.revealBoard();
-                alert("You Win");
+                revealBoard();
+                // var data = {'player': player, 'state': player, 'reset': '' }
+                // socket.send(JSON.stringify({ 
+                //     'player': player,
+                //     'state': player,
+                //     'board' : boardData,
+                //     'reset': ''
+                // }))
+                console.log("You Win!");
+                setMessage("You Win");
+                setIsOver(!isOver);
             }
         }
 
-        this.setState({
-            boardData: updatedData,
-            mineCount: mines,
-            gameWon: win,
-        });
+        // boardData = updatedData;
+        setboardData(updatedData);
+        setGameWon(win);
+        setMineCount(mines);
     }
 
-    renderBoard(data) {
-        console.log(data)
+    /**
+     * 
+     * @param {*} data board data
+     * @param {*} player 
+     * @returns rendered board
+     */
+    function renderBoard(data, player) {
+        console.log("render board!")
 
         return data.map((dataRow) => {
             return (
@@ -337,51 +650,40 @@ export default class MinesweeperBody extends React.Component {
                         return (
                             <td key={dataItem.x * dataRow.length + dataItem.y}>
                                 <MinesweeperCell
-                                    onClick={() => this.handleCellClick(dataItem.x, dataItem.y)}
-                                    cMenu={(e) => this.handleContextMenu(e, dataItem.x, dataItem.y)}
+                                    onClick={() => handleCellClick(dataItem.x, dataItem.y, player)}
+                                    cMenu={(e) => handleContextMenu(e, dataItem.x, dataItem.y, player)}
                                     value={dataItem}
                                 />
-                                {(dataRow[dataRow.length - 1] === dataItem) ? <Clear /> : ""}
+                                {(dataRow[dataRow.length - 1] === dataItem) ? <Clear/> : ""}
                             </td>);
                     })}
                 </tr>
             )
         });
     }
-
-    // Component methods
-    componentWillReceiveProps(nextProps) {
-        if (JSON.stringify(this.props) !== JSON.stringify(nextProps)) {
-            this.setState({
-                boardData: this.initBoardData(nextProps.height, nextProps.width, nextProps.mines),
-                gameWon: false,
-                mineCount: nextProps.mines,
-            });
-        }
-    }
-
-    render() {
-        return (
-            <>
-                {/* <Modal show={show} onHide={handleClose}>
-                <Modal.Title>{message}</Modal.Title>
-                <Modal.Footer>
-                    <Button variant="primary" onClick={selectResetGame}>
-                  Play again!
-                </Button>
-                    <Button variant="secondary" onClick={selectRouteChange}>
-                  Play another game
-                </Button>
-              </Modal.Footer>
-            </Modal> */}
-                <Board>
-                    <GameInfo>
-                        <span>Mines: {this.state.mineCount}</span><br />
-                        <span>{this.state.gameWon ? "You Win" : ""}</span>
-                    </GameInfo>
-                    {this.renderBoard(this.state.boardData)}
-                </Board>
-            </>
-        );
-    }
+    console.log("render board done!")
+    return (
+        <>
+            <Modal show={show} onHide={handleClose}>
+            <Modal.Title>{message}</Modal.Title>
+            <Modal.Footer>
+                <Button variant="primary" onClick={selectResetGame}>
+              Play again!
+            </Button>
+                <Button variant="secondary" onClick={selectRouteChange}>
+              Play another game
+            </Button>
+          </Modal.Footer>
+        </Modal>
+            <Board>
+                <GameInfo>
+                    Mines: {mineCount} <br />
+                    {gameWon ? "You Win" : ""}
+                </GameInfo>
+                {renderBoard(boardData, player)}
+            </Board>
+        </>
+    );
 }
+
+export default MinesweeperBody;
