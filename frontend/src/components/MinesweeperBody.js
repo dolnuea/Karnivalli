@@ -558,6 +558,7 @@ const MinesweeperBody = (props) => {
         return data;
     }
 
+    /***********************************************************************************************/
     /************************************Render Game Board******************************************/
     /**
      * Handle User Events
@@ -765,7 +766,7 @@ const MinesweeperBody = (props) => {
      */
     function renderBoard(data, player) {
         console.log("render board!")
-        currentTurn = true;
+        currentTurn = true; //swap current turn
 
         return data.map((dataRow) => {
             return (
