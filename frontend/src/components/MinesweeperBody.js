@@ -6,12 +6,18 @@ import { Board, Clear, GameInfo } from '../styles/Minesweeper.styles';
 import MinesweeperCell from './MinesweeperCell';
 import useSound from 'use-sound';
 import mineSound from '../sounds/mine.mp3';
+import axiosInstance from '../axios';
 
 // import ChatModal from 'react-modal'
 // import chatImg from '../images/chat_button_img.png'
 
 let currentTurn = true;
 let resetGamePlayers = {}
+let otherPlayerJoined = false
+let otherPlayerName = "Guest"
+let isOtherPlayerGuest = false
+let game_session_id = null
+let chat_messages = ""
 
 const MinesweeperBody = (props) => {
 
@@ -21,7 +27,6 @@ const MinesweeperBody = (props) => {
     const [boardData, setboardData] = useState(initalizeBoardData(props.height, props.width, props.mines));
     // let mineCount = props.mines;
     const[mineCount, setMineCount] = useState(props.mines);
-    const[gameWon, setGameWon] = useState(false);
 
     //end of game modal show variables
     const [show, setShow] = useState(false);
@@ -58,11 +63,12 @@ const MinesweeperBody = (props) => {
         resetGame();
         let path = 'game-selection';
         const userDetails = {
-            username: localStorage.getItem("username"),
-            isGuest: localStorage.getItem("isGuest")
+            username: props.username,
+            isGuest: props.isGuest
         }
         history.push(path, userDetails);
     }
+
     /*******************************************************************************************************/
     /*********************************Multiplayer Functionality*********************************************/
     var room_code = props.roomNumber
@@ -76,138 +82,208 @@ const MinesweeperBody = (props) => {
     let socket = new W3CWebSocket('ws://localhost:8000/ws/game/' + room_code)
     setTimeout(() => { console.log("connecting..."); }, 1000);
 
-    //let chat_messages = ""
-
     //connect server
     useEffect(() => {
-        socket.onopen = function (e) {
+        socket.onopen = function () {
             console.log('Socket connected')
-    }
-
-    socket.onmessage = function (e) {
-        var data = JSON.parse(e.data);
-        console.log(data);
-
-        // if (data.msg_type !== undefined) {
-        //     chat_messages += data.player + ':' + data.chatMsg + '\n'
-        //     setMsgs(chat_messages)
-        // }
-
-        //reset game
-        if (data.payload.reset === "reset") {
-            console.log("resetting...")
-            resetGamePlayers[data.payload.player] = data.payload.reset;
-            checkForResetOrNewGame();
-            return;
-        }
-        //select another game
-        if (data.payload.reset === "change") {
-            routeChange();
-            return;
-        }
-
-        // if (data.payload.type == 'end' && player == "viewer") {
-        //     alert("Game ended!!");
-        //     return;
-        // }
-
-        if (player === "viewer") {
-
-            if (data.state === 'p1') {
-                revealBoard(data.payload.board);
-                alert("Player one wins.")
-                return
-            } else if (data.state === 'p2') {
-                revealBoard(data.payload.board);
-                alert("Player two wins.")
-                return
-            } 
-        }
-
-        // if (data.payload.type === 'end' && player === "viewer") {
-        //     alert("Game ended!!");
-        //     return;
-        // }
-
-        if (data.state === player) {
-            revealBoard(data.payload.board);
-            currentTurn = true;
-            setMessage("You won!");
-            setIsOver(!isOver);
-            return
-        } 
-        else if ((data.state === 'p2' && player === 'p1') || (data.state === 'p1' && player === 'p2')) {
-            revealBoard(data.payload.board);
-            currentTurn = true;
-            setMessage("You lost!");
-            setIsOver(!isOver);
-            return
-        }
-        else if (data.payload.state === 'running' && data.payload.player !== player) {
-            swapTurns();
-        }
-            socket.onclose = function (e) {
-                console.log('Socket closed')
+            if (props.player === "p2" && otherPlayerJoined === false) {
+                var data = data = { 'type': 'joined', 'playerName': props.username, 'isGuest': props.isGuest, 'player': props.player }
+                //socket.send(JSON.stringify({ data }))
+                sendMessage(socket, JSON.stringify({ data }))
             }
+        }
+
+        // Handle messages received from the server
+        socket.onmessage = function (e) {
+            var data = JSON.parse(e.data)
+            console.log(data)
+
+            // if (data.msg_type !== undefined) {
+            //     chat_messages += ':' + data.chatMsg + '\n'
+            //     setMsgs(chat_messages)
+            // }
+
+            if (data.payload.type === "joined") {
+
+                if (otherPlayerJoined) {
+                    return;
+                }
+
+                if (props.player === data.payload.player) {
+                    return;
+                }
+
+                if (!data.payload.isGuest && data.payload.playerName === props.username) {
+                    return;
+                }
+
+                otherPlayerName = data.payload.playerName
+                isOtherPlayerGuest = data.payload.isGuest
+
+                if (data.payload.isGuest && !otherPlayerJoined) {
+                    var data = data = { 'type': 'joined', 'playerName': props.username, 'isGuest': props.isGuest }
+                    //socket.send(JSON.stringify({ data }))
+                    sendMessage(socket, JSON.stringify({ data }))
+                    otherPlayerJoined = true
+                    alert("Your opponent just joined. They joined as a guest");
+                    return;
+                }
+
+                if (props.isGuest) {
+                    var data = data = { 'type': 'joined', 'playerName': props.username, 'isGuest': props.isGuest }
+                    //socket.send(JSON.stringify({ data }))
+                    sendMessage(socket, JSON.stringify({ data }))
+                    otherPlayerJoined = true
+                    alert("Your opponent just joined, Their name is " + otherPlayerName);
+                    return;
+                }
+
+                if (data.payload.game_session_id === undefined) {
+                    axiosInstance
+                        .post(`gamedata/create_game/`, {
+                            owner: props.username,
+                            game: "minesweeper",
+                            status: "InProgress",
+                            opponent: otherPlayerName
+                        })
+                        .then((res) => {
+                            console.log("Inside then.........................")
+                            console.log("game session id : "+res.data.game_session_id)
+                            console.log(res)
+                            game_session_id = res.data.game_session_id
+                            if (props.player === "p1") {
+                                var data = data = { 'type': 'joined', 'playerName': props.username, 'isGuest': props.isGuest, 'game_session_id': game_session_id }
+                                socket.send(JSON.stringify({ data }))
+                            }
+                        });
+                } else {
+                    console.log("game session id : else block : " + data.payload.game_session_id)
+                    game_session_id = data.payload.game_session_id
+                }
+
+                otherPlayerJoined = true
+                alert("Your opponent just joined, his name is " + otherPlayerName);
+                return;
+            }
+
+            //reset
+            if (data.payload.reset === "reset") {
+                console.log("in reset")
+                resetGamePlayers[data.payload.player] = data.payload.reset;
+                checkForResetOrNewGame();
+                return;
+            }
+
+            //change game
+            if (data.payload.reset === "change") {
+                routeChange();
+                return;
+            }
+
+            //game end
+            if (data.payload.type === 'end' && player === "viewer") {
+                alert("Game ended!!");
+                return;
+            }
+
+            if (data.payload.type === 'end' && data.payload.player !== player) {
+                otherPlayerJoined = false;
+                setMessage("Sorry! You lost");
+
+                if (!props.isGuest && !isOtherPlayerGuest) { 
+                    axiosInstance
+                        .post(`gamedata/createOrUpdate_game_score/`, {
+                            owner: props.username,
+                            game: "minesweeper",
+                            score: 100
+                        })
+                        .then((res) => {
+                            console.log("Score successfully added")
+                        });
+                }
+               
+                //options page
+                setIsOver(!isOver);
+
+            } else if (data.payload.type === 'over') {
+                otherPlayerJoined = false;
+                setMessage("Game over!");
+                setIsOver(!isOver); //options page
+
+            } else if (data.payload.type === 'running' && data.payload.player !== player) {
+                //update other player's board?
+                //setAnotherUserText(data.payload.index, data.payload.player)
+                renderBoard(data.payload.board, data.payload.player)
+            }
+        }
+
+        socket.onclose = function () {
+            console.log('Socket closed')
         }
     }, []);
 
-    function swapTurns() {
-        currentTurn = !currentTurn;
-        console.log("swapping turns...")
+
+    function isConnected(socket) {
+        console.log(socket.readyState)
+        console.log(W3CWebSocket.OPEN)
+        if (socket.readyState !== W3CWebSocket.OPEN) {
+            setTimeout(() => { console.log("connecting..."); }, 10000);
+            return isConnected(socket);
+        } else {
+            return true;
+        }
+    }
+    
+    const waitForOpenConnection = (socket) => {
+        return new Promise((resolve, reject) => {
+            const maxNumberOfAttempts = 10
+            const intervalTime = 200 //ms
+
+            let currentAttempt = 0
+            const interval = setInterval(() => {
+                if (currentAttempt > maxNumberOfAttempts - 1) {
+                    clearInterval(interval)
+                    reject(new Error('Maximum number of attempts exceeded'))
+                } else if (socket.readyState === socket.OPEN) {
+                    clearInterval(interval)
+                    resolve()
+                }
+                currentAttempt++
+            }, intervalTime)
+        })
     }
 
-    /**
-     * 
-     * @param {*} ws websocket connection
-     * @returns check if connection is open
-     */
-    function isOpen(ws) { 
-        return ws.readyState === ws.OPEN 
-    }
+    const sendMessage = async (socket, msg) => {
+        if (socket.readyState !== socket.OPEN) {
+            try {
+                await waitForOpenConnection(socket)
+                socket.send(msg)
+            } catch (err) { console.error(err) }
+        } else {
+            socket.send(msg)
+        }
+    } 
 
-    // /**
-    //  * Send data in multiplayer game session
-    //  * @param {*} player 
-    //  * @param {*} boardData 
-    //  * @returns 
-    //  */
-    // function sendData(boardData, player){
-    //     if (player === "viewer") {
-    //         alert("Well, that would be cheating...")
-    //         return;
-    //     }
-
-    //     var data = {
-    //         'player': player,
-    //         'state': 'progress',
-    //         'reset': ''
-    //     }
-
-    //     if (currentTurn === false) {
-    //         alert("Please wait for your opponent's turn!")
-    //         return
-    //     } else {
-    //         currentTurn = false
-    //     }
-    //     socket.send(JSON.stringify({
-    //         data
-    //     }))
-    // }
 
     /**
      * Reset game
      */
     function resetGame() {
-        console.log('reset game');
-        setboardData(initalizeBoardData(props.height, props.width, props.mines));
-        setGameWon(false);
+        // reset game board
+        resetGameBoard();
         setMineCount(props.mines);
+        resetGamePlayers = {};
+        otherPlayerJoined = true;
         currentTurn = true;
         if (show) {
             setShow(!show);
         }
         setIsOver(false);
+    }
+
+    function resetGameBoard(){
+        let resetBoard = initalizeBoardData(props.height, props.width, props.mines)
+        setboardData(resetBoard);
     }
 
     /**
@@ -251,8 +327,8 @@ const MinesweeperBody = (props) => {
      */
     function checkForResetOrNewGame() {
         console.log("checkForResetOrNewGame");
-        if (resetGamePlayers.p1 !== undefined && resetGamePlayers.p2 !== undefined) {
-            if (resetGamePlayers.p1 === "reset" && resetGamePlayers.p2 === "reset") {
+        if (resetGamePlayers['p1'] !== undefined && resetGamePlayers['p2'] !== undefined) {
+            if (resetGamePlayers['p1'] === "reset" && resetGamePlayers['p2'] === "reset") {
                 console.log("resetting")
                 resetGame();
             } else {
@@ -482,6 +558,7 @@ const MinesweeperBody = (props) => {
         return data;
     }
 
+    /************************************Render Game Board******************************************/
     /**
      * Handle User Events
      * @param {*} x horizontal position
@@ -491,27 +568,31 @@ const MinesweeperBody = (props) => {
      */
     function handleCellClick(x, y, player) {
         console.log("handleCellClick");
+
         if (player === "viewer") {
             alert("Well, that would be cheating...")
             return;
         }
 
-        // if (currentTurn === false) {
-        //         alert("Please wait for your opponent's turn!")
-        //         console.log("Current turn " + currentTurn);
-        //         return
-        // } 
+        console.log(socket.readyState)
+
+        if (otherPlayerJoined === false) {
+            alert("Please wait for the other player to join...")
+            return;
+        }
 
         var data = {
             'player' : player,
-            'state' : 'running',
+            'type' : 'running',
             'board' : boardData,
             'reset' : ''
         }
 
-        currentTurn = false
-
-        let win = false;
+        if (currentTurn === false) {
+                alert("Please wait for your opponent's turn!")
+                return
+        } 
+        else currentTurn = false;
 
         // check if revealed. return if true.
         if (boardData[x][y].isRevealed) {
@@ -522,17 +603,26 @@ const MinesweeperBody = (props) => {
 
         // check if mine. game over if true
         if (boardData[x][y].isMine) {
-            revealBoard();
-
-            data = {'player': player, 'state': opponent,'board' : boardData, 'reset': '' }
-            
-            // socket.send(JSON.stringify({ 
-            //     data
-            // }))
-
             //play sound effect
             play();
-            console.log("BOOM! Game Over!");
+            revealBoard();
+            console.log("BOOM! Game Over!")
+
+            var data = { 'type': 'over' };
+            sendMessage(socket, JSON.stringify({ data }))
+            otherPlayerJoined = false;
+
+            if (!props.isGuest && !isOtherPlayerGuest) {
+                axiosInstance
+                    .post(`gamedata/update_game/`, {
+                        game_session_id: game_session_id,
+                        status: "draw"
+                    })
+                    .then((res) => {
+                        console.log("Status Updated")
+                    });
+            }
+
             setMessage("Game Over");
             setIsOver(!isOver);
             return;
@@ -544,41 +634,57 @@ const MinesweeperBody = (props) => {
         updatedData[x][y].isFlagged = false;
         updatedData[x][y].isRevealed = true;
 
-        console.log("cell at " + x + "," + y + " revealed " + updatedData[x][y].isRevealed);
-        console.log(updatedData);
         if (updatedData[x][y].isEmpty) {
             console.log("Empty cell revealed");
             updatedData = revealEmpty(x, y, updatedData);
         }
 
-        console.log("check1");
+        let win = false;
 
         if (getHidden(updatedData).length === props.mines) {
+
             win = true;
             revealBoard();
-            data = {'player': player, 'state': player,'board' : boardData, 'reset': '' }
-            // socket.send(JSON.stringify({ 
-            //     data
-            // }))
-            console.log("You Win!");
+
+            var data = { 'type': 'end', 'player': player }
+            sendMessage(socket, JSON.stringify({ data }))
+
+            otherPlayerJoined = false;
+
+            if (!props.isGuest && !isOtherPlayerGuest) {
+                axiosInstance
+                    .post(`gamedata/createOrUpdate_game_score/`, {
+                        owner: props.username,
+                        game: "minesweeper",
+                        score: -100
+                    })
+                    .then((res) => {
+                        console.log("Score successfully added")
+                    });
+
+                axiosInstance
+                    .post(`gamedata/update_game/`, {
+                        game_session_id: game_session_id,
+                        status: props.username
+                    })
+                    .then((res) => {
+                        console.log("Status Updated")
+                    });
+
+            }
+
             setMessage("You Win");
             setIsOver(!isOver);
         }
-        console.log("check2");
 
-        // boardData = updatedData;
         setboardData(updatedData);
-        setGameWon(win);
-        setMineCount(props.mines - getFlags(updatedData).length);    
-
-        console.log("check3");
-
-        // if (!isOpen(socket)) return;
-        // socket.send(JSON.stringify(data));
+        setMineCount(props.mines - getFlags(updatedData).length);            
 
         console.log("cell at " + x + "," + y + " clicked by " + player);
         console.log("handle click done");
         setboardData(updatedData);
+
+        sendMessage(socket, JSON.stringify({ data }))
     }
 
     /**
@@ -615,14 +721,32 @@ const MinesweeperBody = (props) => {
             win = (JSON.stringify(mineArray) === JSON.stringify(FlagArray));
             if (win) {
                 revealBoard();
-                // var data = {'player': player, 'state': player, 'reset': '' }
-                // socket.send(JSON.stringify({ 
-                //     'player': player,
-                //     'state': player,
-                //     'board' : boardData,
-                //     'reset': ''
-                // }))
-                console.log("You Win!");
+
+                var data = { 'type': 'end', 'player': player }
+                sendMessage(socket, JSON.stringify({ data }))
+
+                if (!props.isGuest && !isOtherPlayerGuest) {
+                    axiosInstance
+                        .post(`gamedata/createOrUpdate_game_score/`, {
+                            owner: props.username,
+                            game: "minesweeper",
+                            score: -100
+                        })
+                        .then((res) => {
+                            console.log("Score successfully added")
+                        });
+    
+                    axiosInstance
+                        .post(`gamedata/update_game/`, {
+                            game_session_id: game_session_id,
+                            status: props.username
+                        })
+                        .then((res) => {
+                            console.log("Status Updated")
+                        });
+    
+                }
+
                 setMessage("You Win");
                 setIsOver(!isOver);
             }
@@ -630,7 +754,6 @@ const MinesweeperBody = (props) => {
 
         // boardData = updatedData;
         setboardData(updatedData);
-        setGameWon(win);
         setMineCount(mines);
     }
 
@@ -642,6 +765,7 @@ const MinesweeperBody = (props) => {
      */
     function renderBoard(data, player) {
         console.log("render board!")
+        currentTurn = true;
 
         return data.map((dataRow) => {
             return (
@@ -661,6 +785,8 @@ const MinesweeperBody = (props) => {
             )
         });
     }
+
+    /***********************************************************************************************/
     console.log("render board done!")
     return (
         <>
@@ -677,8 +803,7 @@ const MinesweeperBody = (props) => {
         </Modal>
             <Board>
                 <GameInfo>
-                    Mines: {mineCount} <br />
-                    {gameWon ? "You Win" : ""}
+                    Mines: {mineCount}
                 </GameInfo>
                 {renderBoard(boardData, player)}
             </Board>
