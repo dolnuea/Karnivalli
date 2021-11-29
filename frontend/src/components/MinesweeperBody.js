@@ -513,6 +513,7 @@ const MinesweeperBody = (props) => {
         console.log("handleCellClick");
         if (player === "viewer") {
             alert("Well, that would be cheating...")
+            playerWait();
             return;
         }
 
