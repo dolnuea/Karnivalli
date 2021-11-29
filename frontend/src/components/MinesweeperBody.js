@@ -87,7 +87,7 @@ const MinesweeperBody = (props) => {
         socket.onopen = function () {
             console.log('Socket connected')
             if (props.player === "p2" && otherPlayerJoined === false) {
-                var data = data = { 'type': 'joined', 'playerName': props.username, 'isGuest': props.isGuest, 'player': props.player }
+                var data = data = { 'type': 'joined', 'playerName': props.username, 'isGuest': props.isGuest, 'player': props.player, 'board' : boardData }
                 //socket.send(JSON.stringify({ data }))
                 sendMessage(socket, JSON.stringify({ data }))
             }
@@ -102,6 +102,11 @@ const MinesweeperBody = (props) => {
             //     chat_messages += ':' + data.chatMsg + '\n'
             //     setMsgs(chat_messages)
             // }
+
+            if(data.payload.board !== undefined) {
+            setboardData(data.payload.board);
+            updateBoard(data.payload.board);
+            }
 
             console.log('isguest ' + data.payload.isGuest)
 
@@ -242,6 +247,26 @@ const MinesweeperBody = (props) => {
         } else {
             return true;
         }
+    }
+
+    function updateBoard(data){
+        console.log("updating board...")
+
+        return data.map((dataRow) => {
+            return (
+                <tr>
+                    {dataRow.map((dataItem) => {
+                        return (
+                            <td key={dataItem.x * dataRow.length + dataItem.y}>
+                                <MinesweeperCell
+                                    value={dataItem}
+                                />
+                                {(dataRow[dataRow.length - 1] === dataItem) ? <Clear/> : ""}
+                            </td>);
+                    })}
+                </tr>
+            )
+        });
     }
     
     const waitForOpenConnection = (socket) => {
