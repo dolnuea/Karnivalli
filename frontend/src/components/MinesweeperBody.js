@@ -87,7 +87,7 @@ const MinesweeperBody = (props) => {
         socket.onopen = function () {
             console.log('Socket connected')
             if (props.player === "p2" && otherPlayerJoined === false) {
-                var data = data = { 'type': 'joined', 'playerName': props.username, 'isGuest': props.isGuest, 'player': props.player, 'board' : boardData }
+                var data = data = { 'type': 'joined', 'playerName': props.username, 'isGuest': props.isGuest, 'player': props.player, 'board' : boardData , 'winner' : ''}
                 //socket.send(JSON.stringify({ data }))
                 sendMessage(socket, JSON.stringify({ data }))
             }
@@ -219,13 +219,23 @@ const MinesweeperBody = (props) => {
                 //options page
                 setIsOver(!isOver);
 
-            } else if (data.payload.type === 'over') {
-                revealBoard(data.payload.board);
-                otherPlayerJoined = false;
-                setMessage("Game over!");
-                setIsOver(!isOver); //options page
+            } 
 
-            } else if (data.payload.type === 'running' && data.payload.player !== player) {
+            if (data.payload.type === 'over'){
+                otherPlayerJoined = false;
+
+                if(data.payload.winner === player){
+                    revealBoard(data.payload.board);
+                    setMessage("You won! You survived.");
+                    setIsOver(!isOver); 
+                }
+                else
+                {
+                    setMessage("Game over! You died.");
+                    setIsOver(!isOver); 
+                }
+            }
+            else if (data.payload.type === 'running' && data.payload.player !== player) {
                 //update other player's board?
                 //setAnotherUserText(data.payload.index, data.payload.player)
                 renderBoard(data.payload.board, data.payload.player)
@@ -561,8 +571,8 @@ const MinesweeperBody = (props) => {
     /**
      * Reveals the whole board
      */
-    function revealBoard() {
-        let updatedData = boardData;
+    function revealBoard(data = boardData) {
+        let updatedData = data;
         updatedData.map((datarow) => {
             datarow.map((dataitem) => {
                 dataitem.isRevealed = true;
@@ -637,7 +647,7 @@ const MinesweeperBody = (props) => {
             revealBoard();
             console.log("BOOM! Game Over!")
 
-            var data = { 'type': 'over' };
+            var data = { 'type': 'over', 'winner' : opponent};
             sendMessage(socket, JSON.stringify({ data }))
             otherPlayerJoined = false;
 
@@ -672,7 +682,8 @@ const MinesweeperBody = (props) => {
             'player' : player,
             'type' : 'running',
             'board' : updatedData,
-            'reset' : ''
+            'reset' : '',
+            'winner' : ''
         }
 
         let win = false;
@@ -682,7 +693,7 @@ const MinesweeperBody = (props) => {
             win = true;
             revealBoard();
 
-            var data = { 'type': 'end', 'player': player }
+            var data = { 'type': 'end', 'player': player, 'winner' : player, 'board' : updatedData};
             sendMessage(socket, JSON.stringify({ data }))
 
             otherPlayerJoined = false;
@@ -758,7 +769,7 @@ const MinesweeperBody = (props) => {
             if (win) {
                 revealBoard();
 
-                var data = { 'type': 'end', 'player': player, 'board' : updatedData }
+                var data = { 'type': 'end', 'player': player, 'board' : updatedData, 'winner' : player }
                 sendMessage(socket, JSON.stringify({ data }))
 
                 if (!props.isGuest && !isOtherPlayerGuest) {
