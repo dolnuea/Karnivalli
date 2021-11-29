@@ -103,6 +103,8 @@ const MinesweeperBody = (props) => {
             //     setMsgs(chat_messages)
             // }
 
+            console.log('isguest ' + data.payload.isGuest)
+
             if (data.payload.type === "joined") {
                 console.log("other player joined")
 
