@@ -8,8 +8,10 @@ export const Header = styled.h1`
 `
 
 export const Background = styled.div`
+
     background-image: url(${backgroundImage});
     background-size:cover;
+   
 `
 
 export const Body = styled.div`
@@ -18,7 +20,7 @@ export const Body = styled.div`
     box-sizing: border-box;
     height: 100vh;
     width: 100%;
-    display: flex;
+    display: transparent;
     justify-content: center;
     align-items: center;
     padding: 10px;
