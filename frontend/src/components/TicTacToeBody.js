@@ -5,6 +5,14 @@ import { useHistory } from 'react-router-dom';
 import { Board, BoardContainer, Body, Game, ScoreBoard, Slot } from '../styles/TicTacToe.styles';
 import axiosInstance from '../axios';
 
+import useSound from 'use-sound';
+import youWin from '../sounds/8youWin.mp3';
+import youLose from '../sounds/9youLose.mp3';
+import youTie from '../sounds/10youTied.mp3';
+import gameSelect from '../sounds/11gameSelect.mp3';
+import playAgain from '../sounds/12playAgain.mp3';
+import waitOpponent from '../sounds/13waitForOpponent.wav';
+
 let defaultColor = 'grey'
 let otherPlayerJoined = false
 let gameState = [defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor]
@@ -17,7 +25,13 @@ let game_session_id = null
 
 const TicTacToeBody = (props) => {
 
-    
+    // getting sounds setup
+    const [playerWon] = useSound(youWin);
+    const [playerLost] = useSound(youLose);
+    const [playerTied] = useSound(youTie);
+    const [goGameSelect] = useSound(gameSelect);
+    const [goPlayAgain] = useSound(playAgain);
+    const [playerWait] = useSound(waitOpponent);
 
     const [box1, setBox1] = useState(defaultColor)
     const [box2, setBox2] = useState(defaultColor)
@@ -67,6 +81,7 @@ const TicTacToeBody = (props) => {
     useEffect(() => {
         socket.onopen = function () {
             console.log('Socket connected')
+
             if (props.player === "p2" && otherPlayerJoined === false) {
                 var data = data = { 'type': 'joined', 'playerName': props.username, 'isGuest': props.isGuest, 'player': props.player }
                 //socket.send(JSON.stringify({ data }))
@@ -167,6 +182,7 @@ const TicTacToeBody = (props) => {
                 //alert("Sorry! you lost")
                 otherPlayerJoined = false;
                 setMessage("Sorry! You lost");
+                playerLost();
 
                 if (!props.isGuest && !isOtherPlayerGuest) { 
                     axiosInstance
@@ -188,6 +204,7 @@ const TicTacToeBody = (props) => {
                 //alert("Game over! game end no one won")
                 otherPlayerJoined = false;
                 setMessage("Game over! No one won");
+                playerTied();
                 //options page
                 setIsOver(!isOver);
             } else if (data.payload.type == 'running' && data.payload.player !== player) {
@@ -282,6 +299,7 @@ const TicTacToeBody = (props) => {
                     });
             }
             setMessage("Game ends in a draw!");
+            playerTied();
             setIsOver(!isOver);
             //options page
         }
@@ -342,6 +360,7 @@ const TicTacToeBody = (props) => {
             }
 
             setMessage("Good job! You won");
+            playerWon();
             setIsOver(!isOver);
         } else {
             //options page
@@ -359,6 +378,7 @@ const TicTacToeBody = (props) => {
         console.log(socket.readyState)
         if (otherPlayerJoined === false) {
             alert("Please wait for the other player to join...")
+            playerWait();
             return;
         }
 
@@ -497,10 +517,22 @@ const TicTacToeBody = (props) => {
             <Modal show={show} onHide={handleClose}>
                 <Modal.Title>{message}</Modal.Title>
                 <Modal.Footer>
-                    <Button variant="primary" onClick={selectResetGame}>
+                    <Button 
+                        variant="primary" 
+                        onClick={selectResetGame}
+                        onMouseEnter={() => {
+                            goPlayAgain();
+                        }}
+                        >
                         Play again!
                     </Button>
-                    <Button variant="secondary" onClick={selectRouteChange}>
+                    <Button 
+                        variant="secondary" 
+                        onClick={selectRouteChange}
+                        onMouseEnter={() => {
+                            goGameSelect();
+                        }}
+                        >
                         Play another game
                     </Button>
                 </Modal.Footer>

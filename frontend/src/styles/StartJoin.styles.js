@@ -20,13 +20,22 @@ export const GameboxStart = styled.div`
     justify-content: center;
     align-items: center;
     margin-bottom: 200px;
-    transition-property: transform, background-color, color;
+    transition-property: transform, background-color, color, border-radius;
     transition-duration: .3s;
     transition-timing-function: cubic-bezier(0.37, 0, 0.63, 1);
 
     &:hover{
         background-color: #fe75fe;
         transform: scale(1.1);
+
+        animation: pulse 1s;
+        animation-iteration-count: infinite;
+
+        @keyframes pulse {
+            0% {border-radius: 0em; opacity: 1;}
+            50% {border-radius: 2em; opacity: 0.7;}
+            100% {border-radius: 0em; opacity: 1;}
+        }
     }
 `;
 
@@ -43,13 +52,22 @@ export const GameboxJoin = styled.div`
     justify-content: center;
     align-items: center;
     margin-top: 200px;
-    transition-property: transform, background-color, color;
+    transition-property: transform, background-color, color, border-radius;
     transition-duration: .3s;
     transition-timing-function: cubic-bezier(0.37, 0, 0.63, 1);
 
     &:hover{
         background-color: #ff124f;
         transform: scale(1.1);
+
+        animation: pulse 1s;
+        animation-iteration-count: infinite;
+
+        @keyframes pulse {
+            0% {border-radius: 0em; opacity: 1;}
+            50% {border-radius: 2em; opacity: 0.7;}
+            100% {border-radius: 0em; opacity: 1;}
+        }
     }
 `;
 
@@ -66,13 +84,22 @@ export const GameboxWatch = styled.div`
     justify-content: center;
     align-items: center;
     margin-bottom: 200px;
-    transition-property: transform, background-color, color;
+    transition-property: transform, background-color, color, border-radius;
     transition-duration: .3s;
     transition-timing-function: cubic-bezier(0.37, 0, 0.63, 1);
 
     &:hover{
         background-color: #ff00a0;
         transform: scale(1.1);
+
+        animation: pulse 1s;
+        animation-iteration-count: infinite;
+
+        @keyframes pulse {
+            0% {border-radius: 0em; opacity: 1;}
+            50% {border-radius: 2em; opacity: 0.7;}
+            100% {border-radius: 0em; opacity: 1;}
+        }
     }
 `;
 
@@ -86,5 +113,5 @@ export const RoomModal = styled.div`
     input[type=text] {
         border: none;
     }
-    /* This modal doesn't work (you can't select anything or go back right now) Need to ask luna how to do it */
+    
 `;

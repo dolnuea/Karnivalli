@@ -4,7 +4,18 @@ import ticTacToeImage from '../images/tic-tac-toe.png';
 import RockPaperScissorsImage from '../images/rock-paper-scissors.png';
 import mineSweeperImage from '../images/minesweeper USE THIS ONE.svg';
 
+import useSound from 'use-sound';
+import chooseTicTacToe from '../sounds/2ticTacToe.mp3';
+import chooseRockPaperScissors from '../sounds/3rockPaperScissors.mp3';
+import chooseMinesweeper from '../sounds/4minesweeper.mp3';
+
 function GameSelectionScreen(props) {
+
+    // getting sounds setup
+    const [chooseTTT] = useSound(chooseTicTacToe);
+    const [chooseRPS] = useSound(chooseRockPaperScissors);
+    const [chooseMS] = useSound(chooseMinesweeper);
+
     // const { isGuest, username } = props.location.state
     const history = useHistory();
 
@@ -23,16 +34,35 @@ function GameSelectionScreen(props) {
         <div>
             {/* <Navbar state={props.location} /> */}
             <SelectionPanel>
-                <Panel hoverColor='#ff124f' onClick={() => routeChange('tic-tac-toe')}>
+                <Panel 
+                    hoverColor='#ff124f' 
+                    onClick={() => routeChange('tic-tac-toe')}
+                    onMouseEnter={() => {
+                        chooseTTT();
+                    }}
+                    >
                     <img src={ticTacToeImage} height='60%'></img>
                     <h1>TicTacToe</h1>
                 </Panel>
-                <Panel hoverColor='#7a04eb' onClick={() => routeChange('rock-paper-scissor')}>
+
+                <Panel 
+                    hoverColor='#c441c4' 
+                    onClick={() => routeChange('rock-paper-scissor')}
+                    onMouseEnter={() => {
+                        chooseRPS();
+                    }}
+                    >
                     <img src={RockPaperScissorsImage} height='60%'></img>
                     <h1>Rock Paper Scissors</h1>
                 </Panel>
 
-                <Panel hoverColor='#ff00a0' onClick={() => routeChange('minesweeper')}>
+                <Panel 
+                    hoverColor='#ff00a0' 
+                    onClick={() => routeChange('minesweeper')}
+                    onMouseEnter={() => {
+                        chooseMS();
+                    }}
+                    >
                     <img src={mineSweeperImage} height='60%'></img>
                     <h1>4D Minesweeper</h1>
 
