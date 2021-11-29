@@ -9,6 +9,7 @@ export const Header = styled.h1`
 
 export const Background = styled.div`
     background-image: url(${backgroundImage});
+    background-size:cover;
 `
 
 export const Body = styled.div`
