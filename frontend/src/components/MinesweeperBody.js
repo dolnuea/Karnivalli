@@ -187,11 +187,13 @@ const MinesweeperBody = (props) => {
 
             //game end
             if (data.payload.type === 'end' && player === "viewer") {
+                revealBoard(data.payload.board);
                 alert("Game ended!!");
                 return;
             }
 
             if (data.payload.type === 'end' && data.payload.player !== player) {
+                revealBoard(data.payload.board);
                 otherPlayerJoined = false;
                 setMessage("Sorry! You lost");
 
@@ -211,6 +213,7 @@ const MinesweeperBody = (props) => {
                 setIsOver(!isOver);
 
             } else if (data.payload.type === 'over') {
+                revealBoard(data.payload.board);
                 otherPlayerJoined = false;
                 setMessage("Game over!");
                 setIsOver(!isOver); //options page
@@ -587,13 +590,6 @@ const MinesweeperBody = (props) => {
             return;
         }
 
-        var data = {
-            'player' : player,
-            'type' : 'running',
-            'board' : boardData,
-            'reset' : ''
-        }
-
         if (currentTurn === false) {
                 alert("Please wait for your opponent's turn!")
                 return
@@ -643,6 +639,13 @@ const MinesweeperBody = (props) => {
         if (updatedData[x][y].isEmpty) {
             console.log("Empty cell revealed");
             updatedData = revealEmpty(x, y, updatedData);
+        }
+
+        var data = {
+            'player' : player,
+            'type' : 'running',
+            'board' : updatedData,
+            'reset' : ''
         }
 
         let win = false;
@@ -728,7 +731,7 @@ const MinesweeperBody = (props) => {
             if (win) {
                 revealBoard();
 
-                var data = { 'type': 'end', 'player': player }
+                var data = { 'type': 'end', 'player': player, 'board' : updatedData }
                 sendMessage(socket, JSON.stringify({ data }))
 
                 if (!props.isGuest && !isOtherPlayerGuest) {
