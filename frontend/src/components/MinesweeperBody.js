@@ -9,6 +9,13 @@ import useSound from 'use-sound';
 import mineSound from '../sounds/mine.mp3';
 import backgroundSound from '../sounds/18heartbeats.mp3';
 
+import youWin from '../sounds/8youWin.mp3';
+import youLose from '../sounds/9youLose.mp3';
+import youTie from '../sounds/10youTied.mp3';
+import gameSelect from '../sounds/11gameSelect.mp3';
+import playAgain from '../sounds/12playAgain.mp3';
+import waitOpponent from '../sounds/13waitForOpponent.wav';
+
 // import ChatModal from 'react-modal'
 // import chatImg from '../images/chat_button_img.png'
 
@@ -52,6 +59,14 @@ const MinesweeperBody = (props) => {
     // const [isChatModalOpen, setChatModalOpen] = useState(false)
     // const [chatMsg, setChatMsg] = useState("")
     // const [msgs, setMsgs] = useState("")
+
+    // getting sounds setup
+    const [playerWon] = useSound(youWin);
+    const [playerLost] = useSound(youLose);
+    const [playerTied] = useSound(youTie);
+    const [goGameSelect] = useSound(gameSelect);
+    const [goPlayAgain] = useSound(playAgain);
+    const [playerWait] = useSound(waitOpponent);
 
     //route history
     const history = useHistory();
@@ -136,6 +151,7 @@ const MinesweeperBody = (props) => {
             revealBoard(data.payload.board);
             currentTurn = true;
             setMessage("You won!");
+            playerWon();
             setIsOver(!isOver);
             return
         } 
@@ -143,6 +159,7 @@ const MinesweeperBody = (props) => {
             revealBoard(data.payload.board);
             currentTurn = true;
             setMessage("You lost!");
+            playerLost();
             setIsOver(!isOver);
             return
         }
@@ -673,11 +690,23 @@ const MinesweeperBody = (props) => {
             <Modal show={show} onHide={handleClose}>
             <Modal.Title>{message}</Modal.Title>
             <Modal.Footer>
-                <Button variant="primary" onClick={selectResetGame}>
-              Play again!
+                <Button 
+                    variant="primary" 
+                    onClick={selectResetGame}
+                    onMouseEnter={() => {
+                        goPlayAgain();
+                    }}
+                    >
+              Play again
             </Button>
-                <Button variant="secondary" onClick={selectRouteChange}>
-              Play another game
+                <Button 
+                    variant="secondary" 
+                    onClick={selectRouteChange}
+                    onMouseEnter={() => {
+                        goGameSelect();
+                    }}
+                    >
+              Game Select Screen
             </Button>
           </Modal.Footer>
         </Modal>
