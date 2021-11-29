@@ -2,6 +2,13 @@ import React from 'react';
 import TicTacToeBody from '../components/TicTacToeBody';
 import { Background, Header, HeaderBox } from '../styles/TicTacToe.styles';
 
+import useSound from 'use-sound';
+import youWin from '../sounds/8youWin.mp3';
+import youLose from '../sounds/9youLose.mp3';
+import youTie from '../sounds/10youTied.mp3';
+import gameSelect from '../sounds/11gameSelect.mp3';
+import playAgain from '../sounds/12playAgain.mp3';
+import waitOpponent from '../sounds/13waitForOpponent.wav';
 
 const TicTacToe = (props) => {
     console.log("TicTacToe")

@@ -534,7 +534,7 @@ const TicTacToeBody = (props) => {
                             goPlayAgain();
                         }}
                         >
-                        Play again!
+                        Play again
                     </Button>
                     <Button 
                         variant="secondary" 
@@ -543,7 +543,7 @@ const TicTacToeBody = (props) => {
                             goGameSelect();
                         }}
                         >
-                        Play another game
+                        Game Select Screen
                     </Button>
                 </Modal.Footer>
             </Modal>
