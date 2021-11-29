@@ -28,12 +28,12 @@ export const Panel = styled.div `
         background-color: ${(props) => props.hoverColor};
         transform: scale(1.15);
 
-        animation: pulse 1s;
+        animation: pulse 700ms;
         animation-iteration-count: infinite;
 
         @keyframes pulse {
             0% {border-radius: 0em; opacity: 1;}
-            50% {border-radius: 2em; opacity: 0.7;}
+            50% {border-radius: 2em; opacity: 0.75;}
             100% {border-radius: 0em; opacity: 1;}
         }
     }

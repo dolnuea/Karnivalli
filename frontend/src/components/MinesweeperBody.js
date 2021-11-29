@@ -4,8 +4,10 @@ import { Modal, Button } from "react-bootstrap";
 import { useHistory } from 'react-router-dom';
 import { Board, Clear, GameInfo } from '../styles/Minesweeper.styles';
 import MinesweeperCell from './MinesweeperCell';
+
 import useSound from 'use-sound';
 import mineSound from '../sounds/mine.mp3';
+import backgroundSound from '../sounds/18heartbeats.mp3';
 
 // import ChatModal from 'react-modal'
 // import chatImg from '../images/chat_button_img.png'
@@ -35,6 +37,7 @@ const MinesweeperBody = (props) => {
 
     //mine explosion sound effect
     const [play] = useSound(mineSound);
+    const [backgroundSoundtrack] = useSound(backgroundSound, { volume: 0.1 });
 
     //modal pops up when game is over
     useEffect(() => {
@@ -641,6 +644,9 @@ const MinesweeperBody = (props) => {
      * @returns rendered board
      */
     function renderBoard(data, player) {
+        
+        backgroundSoundtrack()
+        
         console.log("render board!")
 
         return data.map((dataRow) => {

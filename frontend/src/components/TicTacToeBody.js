@@ -13,6 +13,11 @@ import gameSelect from '../sounds/11gameSelect.mp3';
 import playAgain from '../sounds/12playAgain.mp3';
 import waitOpponent from '../sounds/13waitForOpponent.wav';
 
+import pressButton from '../sounds/14computerbeep.mp3';
+import pressButton2 from '../sounds/15computerbeep.mp3';
+import pressButton3 from '../sounds/16computerbeep.mp3';
+import pressButton4 from '../sounds/17computerbeep.mp3';
+
 let defaultColor = 'grey'
 let otherPlayerJoined = false
 let gameState = [defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor]
@@ -32,6 +37,11 @@ const TicTacToeBody = (props) => {
     const [goGameSelect] = useSound(gameSelect);
     const [goPlayAgain] = useSound(playAgain);
     const [playerWait] = useSound(waitOpponent);
+
+    const [gameButton] = useSound(pressButton, { volume: 0.1 });
+    const [gameButton2] = useSound(pressButton2, { volume: 0.1 });
+    const [gameButton3] = useSound(pressButton3, { volume: 0.1 });
+    const [gameButton4] = useSound(pressButton4, { volume: 0.1 });
 
     const [box1, setBox1] = useState(defaultColor)
     const [box2, setBox2] = useState(defaultColor)
@@ -545,15 +555,86 @@ const TicTacToeBody = (props) => {
                     </ScoreBoard>
                     <BoardContainer>
                         <Board>
-                            <Slot style={{ backgroundColor: box1 }} data-cell-index="0" onClick={() => { setText("0", player) }}></Slot>
-                            <Slot style={{ backgroundColor: box2 }} data-cell-index="1" onClick={() => { setText("1", player) }}></Slot>
-                            <Slot style={{ backgroundColor: box3 }} data-cell-index="2" onClick={() => { setText("2", player) }}></Slot>
-                            <Slot style={{ backgroundColor: box4 }} data-cell-index="3" onClick={() => { setText("3", player) }}></Slot>
-                            <Slot style={{ backgroundColor: box5 }} data-cell-index="4" onClick={() => { setText("4", player) }}></Slot>
-                            <Slot style={{ backgroundColor: box6 }} data-cell-index="5" onClick={() => { setText("5", player) }}></Slot>
-                            <Slot style={{ backgroundColor: box7 }} data-cell-index="6" onClick={() => { setText("6", player) }}></Slot>
-                            <Slot style={{ backgroundColor: box8 }} data-cell-index="7" onClick={() => { setText("7", player) }}></Slot>
-                            <Slot style={{ backgroundColor: box9 }} data-cell-index="8" onClick={() => { setText("8", player) }}></Slot>
+                            <Slot 
+                                style={{ backgroundColor: box1 }} 
+                                data-cell-index="0" 
+                                onClick={() => { setText("0", player) }}
+                                onMouseEnter={() => {
+                                    gameButton();
+                                }}
+                                ></Slot>
+
+                            <Slot 
+                                style={{ backgroundColor: box2 }} 
+                                data-cell-index="1" 
+                                onClick={() => { setText("1", player) }}
+                                onMouseEnter={() => {
+                                    gameButton2();
+                                }}
+                                ></Slot>
+
+                            <Slot 
+                                style={{ backgroundColor: box3 }} 
+                                data-cell-index="2" 
+                                onClick={() => { setText("2", player) }}
+                                onMouseEnter={() => {
+                                    gameButton3();
+                                }}
+                                ></Slot>
+
+                            <Slot 
+                                style={{ backgroundColor: box4 }} 
+                                data-cell-index="3" 
+                                onClick={() => { setText("3", player) }}
+                                onMouseEnter={() => {
+                                    gameButton4();
+                                }}
+                                ></Slot>
+
+                            <Slot 
+                                style={{ backgroundColor: box5 }} 
+                                data-cell-index="4" 
+                                onClick={() => { setText("4", player) }}
+                                onMouseEnter={() => {
+                                    gameButton();
+                                }}
+                                ></Slot>
+
+                            <Slot 
+                                style={{ backgroundColor: box6 }} 
+                                data-cell-index="5" 
+                                onClick={() => { setText("5", player) }}
+                                onMouseEnter={() => {
+                                    gameButton2();
+                                }}
+                                ></Slot>
+                                
+                            <Slot 
+                                style={{ backgroundColor: box7 }} 
+                                data-cell-index="6" 
+                                onClick={() => { setText("6", player) }}
+                                onMouseEnter={() => {
+                                    gameButton3();
+                                }}
+                                ></Slot>
+
+                            <Slot 
+                                style={{ backgroundColor: box8 }} 
+                                data-cell-index="7" 
+                                onClick={() => { setText("7", player) }}
+                                onMouseEnter={() => {
+                                    gameButton4();
+                                }}
+                                ></Slot>
+
+                            <Slot 
+                                style={{ backgroundColor: box9 }} 
+                                data-cell-index="8" 
+                                onClick={() => { setText("8", player) }}
+                                onMouseEnter={() => {
+                                    gameButton();
+                                }}
+                                ></Slot>
                         </Board>
                     </BoardContainer>
                 </Game>
