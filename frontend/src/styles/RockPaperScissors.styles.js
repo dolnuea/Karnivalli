@@ -1,12 +1,12 @@
 import styled from "styled-components";
-import backgroundImage from '../images/vs_two.gif';
-
+//import backgroundImage from '../images/vs_two.gif';
+/*
 export const backgroundImage = styled.div `
     background-image: url(${Background1});
     ackground-size:cover;
 
 `;
-
+*/
 export const RockPaperScissorBackground = styled.div ` 
     height: 100vh;
     width: 100%;
