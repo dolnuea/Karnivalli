@@ -239,7 +239,8 @@ const MinesweeperBody = (props) => {
                     setIsOver(!isOver); 
                 }
             }
-            else if (data.payload.type === 'running') {
+
+            if (data.payload.type === 'running') {
                 setboardData(data.payload.board);
                 updateBoard(data.payload.board);
 
@@ -656,7 +657,7 @@ const MinesweeperBody = (props) => {
             revealBoard();
             console.log("BOOM! Game Over!")
 
-            var data = { 'type': 'over', 'winner' : opponent};
+            var data = { 'type': 'over', 'winner' : opponent, 'board' : boardData };
             sendMessage(socket, JSON.stringify({ data }))
             otherPlayerJoined = false;
 
