@@ -14,8 +14,10 @@ import gameSelect from '../sounds/11gameSelect.mp3';
 import playAgain from '../sounds/12playAgain.mp3';
 import waitOpponent from '../sounds/13waitForOpponent.wav';
 
-import pressButton from '../sounds/15computerbeep.mp3';
-
+import pressButton from '../sounds/24comBeep.mp3';
+import pressRock from '../sounds/22powerUp.mp3';
+import pressPaper from '../sounds/25powerUp.mp3';
+import pressScissors from '../sounds/23powerUp.mp3';
 
 
 let currentTurn = true
@@ -59,7 +61,9 @@ export default function RockPaperScissor(props) {
     const [playerWait] = useSound(waitOpponent);
 
     const [gameButton] = useSound(pressButton, { volume: 0.05 });
-
+    const [chooseRock] = useSound(pressRock);
+    const [choosePaper] = useSound(pressPaper, { volume: 0.2 });
+    const [chooseScissors] = useSound(pressScissors);
 
 
     const history = useHistory();
@@ -299,7 +303,7 @@ export default function RockPaperScissor(props) {
                     hoverColor='#ff124f' 
                     onClick={() => { sendData('rock', props.location.state.player) }}
                     onMouseEnter={() => {
-                        gameButton();
+                        chooseRock();
                     }}
                     ><Rock>🧱</Rock></Slot>
 
@@ -307,7 +311,7 @@ export default function RockPaperScissor(props) {
                     hoverColor='#7a04eb' 
                     onClick={() => { sendData('paper', props.location.state.player) }}
                     onMouseEnter={() => {
-                        gameButton();
+                        choosePaper();
                     }}
                     ><Paper>📜</Paper></Slot>
 
@@ -315,12 +319,17 @@ export default function RockPaperScissor(props) {
                     hoverColor='#ff00a0' 
                     onClick={() => { sendData('scissor', props.location.state.player) }}
                     onMouseEnter={() => {
-                        gameButton();
+                        chooseScissors();
                     }}
                     ><Scissor>✂️</Scissor></Slot>
 
                 </RockPaperScissorBackground>
-                <chatButton onClick={(e) => { setChatModalOpen(true) }}><img src={chatImg}  width='80em'></img></chatButton>
+                <chatButton 
+                    onClick={(e) => { setChatModalOpen(true) }}
+                    onMouseEnter={() => {
+                        gameButton();
+                    }}
+                    ><img src={chatImg}  width='80em'></img></chatButton>
                 <ChatModal
                     isOpen={isChatModalOpen}
                     style={{

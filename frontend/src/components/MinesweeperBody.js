@@ -8,7 +8,7 @@ import MinesweeperCell from './MinesweeperCell';
 import useSound from 'use-sound';
 import mineSound from '../sounds/mine.mp3';
 import axiosInstance from '../axios';
-import backgroundSound from '../sounds/18heartbeats.mp3';
+import backgroundSound from '../sounds/26computerBeep.mp3';
 
 import youWin from '../sounds/8youWin.mp3';
 import youLose from '../sounds/9youLose.mp3';
@@ -16,6 +16,7 @@ import youTie from '../sounds/10youTied.mp3';
 import gameSelect from '../sounds/11gameSelect.mp3';
 import playAgain from '../sounds/12playAgain.mp3';
 import waitOpponent from '../sounds/13waitForOpponent.wav';
+import joiningOpponent from '../sounds/27computerBeep.mp3';
 
 // import ChatModal from 'react-modal'
 // import chatImg from '../images/chat_button_img.png'
