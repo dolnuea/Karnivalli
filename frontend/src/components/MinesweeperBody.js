@@ -223,6 +223,7 @@ const MinesweeperBody = (props) => {
                 revealBoard(data.payload.board);
                 otherPlayerJoined = false;
                 setMessage("Sorry! You lost");
+                playerLost();
 
                 if (!props.isGuest && !isOtherPlayerGuest) { 
                     axiosInstance
@@ -244,27 +245,18 @@ const MinesweeperBody = (props) => {
             if (data.payload.type === 'over'){
                 otherPlayerJoined = false;
 
-        if (data.state === player) {
-            revealBoard(data.payload.board);
-            currentTurn = true;
-            setMessage("You won!");
-            playerWon();
-            setIsOver(!isOver);
-            return
-        } 
-        else if ((data.state === 'p2' && player === 'p1') || (data.state === 'p1' && player === 'p2')) {
-            revealBoard(data.payload.board);
-            currentTurn = true;
-            setMessage("You lost!");
-            playerLost();
-            setIsOver(!isOver);
-            return
-        }
-        else if (data.payload.state === 'running' && data.payload.player !== player) {
-            swapTurns();
-        }
-            socket.onclose = function (e) {
-                console.log('Socket closed')
+                if(data.payload.winner === player){
+                    revealBoard(data.payload.board);
+                    setMessage("You won! You survived.");
+                    setIsOver(!isOver); 
+                    playerWon();
+                }
+                else if(data.payload.winner === opponent)
+                {
+                    setMessage("Game over! You died.");
+                    setIsOver(!isOver); 
+                    playerLost();
+                }
             }
 
             if (data.payload.type === 'running') {
