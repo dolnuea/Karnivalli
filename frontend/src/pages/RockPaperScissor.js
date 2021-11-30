@@ -6,6 +6,15 @@ import { useHistory } from 'react-router-dom';
 import ChatModal from 'react-modal'
 import chatImg from '../images/chat_button_img.svg'
 
+import useSound from 'use-sound';
+import youWin from '../sounds/8youWin.mp3';
+import youLose from '../sounds/9youLose.mp3';
+import youTie from '../sounds/10youTied.mp3';
+import gameSelect from '../sounds/11gameSelect.mp3';
+import playAgain from '../sounds/12playAgain.mp3';
+import waitOpponent from '../sounds/13waitForOpponent.wav';
+
+import pressButton from '../sounds/15computerbeep.mp3';
 
 
 
@@ -39,6 +48,19 @@ export default function RockPaperScissor(props) {
             setShow(true);
         }
     }, [isOver]);
+
+
+    // getting sounds setup
+    const [playerWon] = useSound(youWin);
+    const [playerLost] = useSound(youLose);
+    const [playerTied] = useSound(youTie);
+    const [goGameSelect] = useSound(gameSelect);
+    const [goPlayAgain] = useSound(playAgain);
+    const [playerWait] = useSound(waitOpponent);
+
+    const [gameButton] = useSound(pressButton, { volume: 0.05 });
+
+
 
     const history = useHistory();
 
@@ -95,17 +117,20 @@ export default function RockPaperScissor(props) {
             if (data.state === "draw") {
                 setModalIsOpen(true)
                 setMessage("Draw!");
+                playerTied();
                 currentTurn = true
                 setIsOver(true);
                 return
             } else if (data.state === props.location.state.player) {
                 currentTurn = true
                 setMessage("You won!");
+                playerWon();
                 setIsOver(true);
                 return
             } else if ((data.state === 'p2' && props.location.state.player === 'p1') || (data.state === 'p1' && props.location.state.player === 'p2')) {
                 currentTurn = true
                 setMessage("You lost!");
+                playerLost();
                 setIsOver(true);
                 return
             }
@@ -141,12 +166,14 @@ export default function RockPaperScissor(props) {
     function sendData(value, player) {
         if (props.location.state.player == "viewer") {
             alert("Well, that would be cheating...")
+            playerWait()
             return;
         }
         console.log(userChoices)
 
         if (currentTurn == false) {
             alert("Please wait for your opponent's turn!")
+            playerWait()
             return
         } else {
             currentTurn = false
@@ -246,19 +273,52 @@ export default function RockPaperScissor(props) {
             <Modal show={show} onHide={handleClose}>
                 <Modal.Title>{message}</Modal.Title>
                 <Modal.Footer>
-                    <Button variant="primary" onClick={selectResetGame}>
-                        Play again!
+                    <Button 
+                        variant="primary" 
+                        onClick={selectResetGame}
+                        onMouseEnter={() => {
+                            goPlayAgain();
+                        }}
+                        >
+                        Play again
                     </Button>
-                    <Button variant="secondary" onClick={selectRouteChange}>
-                        Play another game
+                    <Button 
+                        variant="secondary" 
+                        onClick={selectRouteChange}
+                        onMouseEnter={() => {
+                            goGameSelect();
+                        }}
+                        >
+                        Game Select Screen
                     </Button>
                 </Modal.Footer>
             </Modal>
             <RockPaperScissorBackground>
                 <RockPaperScissorBackground>
-                <Slot hoverColor='#ff124f' onClick={() => { sendData('rock', props.location.state.player) }}><Rock>🧱</Rock></Slot>
-                <Slot hoverColor='#7a04eb' onClick={() => { sendData('paper', props.location.state.player) }}><Paper>📜</Paper></Slot>
-                <Slot hoverColor='#ff00a0' onClick={() => { sendData('scissor', props.location.state.player) }}><Scissor>✂️</Scissor></Slot>
+                <Slot 
+                    hoverColor='#ff124f' 
+                    onClick={() => { sendData('rock', props.location.state.player) }}
+                    onMouseEnter={() => {
+                        gameButton();
+                    }}
+                    ><Rock>🧱</Rock></Slot>
+
+                <Slot 
+                    hoverColor='#7a04eb' 
+                    onClick={() => { sendData('paper', props.location.state.player) }}
+                    onMouseEnter={() => {
+                        gameButton();
+                    }}
+                    ><Paper>📜</Paper></Slot>
+
+                <Slot 
+                    hoverColor='#ff00a0' 
+                    onClick={() => { sendData('scissor', props.location.state.player) }}
+                    onMouseEnter={() => {
+                        gameButton();
+                    }}
+                    ><Scissor>✂️</Scissor></Slot>
+
                 </RockPaperScissorBackground>
                 <chatButton onClick={(e) => { setChatModalOpen(true) }}><img src={chatImg}  width='80em'></img></chatButton>
                 <ChatModal
