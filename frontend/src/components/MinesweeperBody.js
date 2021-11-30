@@ -190,7 +190,16 @@ const MinesweeperBody = (props) => {
             //game end
             if (data.payload.type === 'end' && player === "viewer") {
                 revealBoard(data.payload.board);
-                alert("Game ended!!");
+                setMessage("Game ended! " + data.payload.winner + " won");
+                setIsOver(!isOver); 
+                return;
+            }
+
+            //game end
+            if (data.payload.type === 'over' && player === "viewer") {
+                revealBoard(data.payload.board);
+                setMessage("Game ended! " + data.payload.winner + " won");
+                setIsOver(!isOver); 
                 return;
             }
 
@@ -227,11 +236,6 @@ const MinesweeperBody = (props) => {
                 else if(data.payload.winner === opponent)
                 {
                     setMessage("Game over! You died.");
-                    setIsOver(!isOver); 
-                }
-                else if(data.player === "viewer"){
-                    revealBoard(data.payload.board);
-                    setMessage("Game ended!!");
                     setIsOver(!isOver); 
                 }
             }
