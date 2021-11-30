@@ -103,11 +103,6 @@ const MinesweeperBody = (props) => {
             //     setMsgs(chat_messages)
             // }
 
-            if(data.payload.board !== undefined) {
-            setboardData(data.payload.board);
-            updateBoard(data.payload.board);
-            }
-
             console.log('isguest ' + data.payload.isGuest)
 
             if (data.payload.type === "joined") {
@@ -229,16 +224,26 @@ const MinesweeperBody = (props) => {
                     setMessage("You won! You survived.");
                     setIsOver(!isOver); 
                 }
-                else
+                else if(data.payload.winner === opponent)
                 {
                     setMessage("Game over! You died.");
                     setIsOver(!isOver); 
                 }
+                else if(data.player === "viewer"){
+                    revealBoard(data.payload.board);
+                    setMessage("Game ended!!");
+                    setIsOver(!isOver); 
+                }
             }
-            else if (data.payload.type === 'running' && data.payload.player !== player) {
-                //update other player's board?
-                //setAnotherUserText(data.payload.index, data.payload.player)
-                renderBoard(data.payload.board, data.payload.player)
+            else if (data.payload.type === 'running') {
+                setboardData(data.payload.board);
+                updateBoard(data.payload.board);
+
+                if(data.payload.currentTurn === player){
+                    currentTurn = true;
+                    console.log("current turn : " + true)
+                }
+                else console.log("current turn : " + false)
             }
         }
 
@@ -631,7 +636,7 @@ const MinesweeperBody = (props) => {
                 alert("Please wait for your opponent's turn!")
                 return
         } 
-        else currentTurn = false;
+        // else currentTurn = false;
 
         // check if revealed. return if true.
         if (boardData[x][y].isRevealed) {
@@ -683,8 +688,11 @@ const MinesweeperBody = (props) => {
             'type' : 'running',
             'board' : updatedData,
             'reset' : '',
-            'winner' : ''
+            'winner' : '',
+            'currentTurn' : opponent
         }
+
+        currentTurn = false;
 
         let win = false;
 
@@ -812,7 +820,7 @@ const MinesweeperBody = (props) => {
      */
     function renderBoard(data, player) {
         console.log("render board!")
-        currentTurn = true; //swap current turn
+        // currentTurn = true; //swap current turn
 
         return data.map((dataRow) => {
             return (
