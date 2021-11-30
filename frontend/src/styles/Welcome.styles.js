@@ -52,6 +52,7 @@ export const ImageSVG = styled.img `
         animation-name: shakeit;
         animation-duration: 1s;
         animation-iteration-count: infinite;
+        animation-timing-function: ease;
 
         @keyframes shakeit {
             0% {left: 0px; top: -30px}
@@ -66,6 +67,7 @@ export const ImageSVG = styled.img `
         top: 150px;
         right: 10px;
         animation: secondmove 2s infinite;
+        animation-timing-function: ease-in-out;
 
         @keyframes secondmove {
             50% {transform: rotate(45deg);}
@@ -77,6 +79,7 @@ export const ImageSVG = styled.img `
         left: 50px;
 
         animation: thirdmove 2s infinite;
+        animation-timing-function: ease-in-out;
 
         @keyframes thirdmove {
             50% {transform: rotate(45deg);}
@@ -88,6 +91,7 @@ export const ImageSVG = styled.img `
         left: -100px;
 
         animation: forthmove 2s infinite;
+        animation-timing-function: ease-in-out;
 
         @keyframes forthmove {
             50% {transform: rotate(45deg);}

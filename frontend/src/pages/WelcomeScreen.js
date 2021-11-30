@@ -11,7 +11,15 @@ import redController from "../images/filledBrightRedController.svg"
 import blueController from "../images/filledDarkBlueController.svg"
 import purpleController from "../images/filledLightBlueController.svg"
 
+import useSound from 'use-sound';
+import welcomeSoundHover from '../sounds/1welcome.mp3';
+
+
+
 function WelcomeScreen(props) {
+
+    const [playWelcome] = useSound(welcomeSoundHover);
+
 
     const history = useHistory();
 
@@ -35,7 +43,12 @@ function WelcomeScreen(props) {
                             Welcome to Karnivali!
                         </TitleTextShake>
 
-                        <StartButton hoverColor='rgb(88, 24, 69, 0.7)' onClick={routeChange}>
+                        <StartButton 
+                            hoverColor='rgb(88, 24, 69, 0.7)' 
+                            onClick={routeChange} 
+                            onMouseEnter={() => {
+                                playWelcome();
+                            }}>
                             Click Here to Start!
                         </StartButton>
                     </WelcomeColumnLeft>

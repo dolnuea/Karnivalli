@@ -5,6 +5,19 @@ import { useHistory } from 'react-router-dom';
 import { Board, BoardContainer, Body, Game, ScoreBoard, Slot } from '../styles/TicTacToe.styles';
 import axiosInstance from '../axios';
 
+import useSound from 'use-sound';
+import youWin from '../sounds/8youWin.mp3';
+import youLose from '../sounds/9youLose.mp3';
+import youTie from '../sounds/10youTied.mp3';
+import gameSelect from '../sounds/11gameSelect.mp3';
+import playAgain from '../sounds/12playAgain.mp3';
+import waitOpponent from '../sounds/13waitForOpponent.wav';
+
+import pressButton from '../sounds/14computerbeep.mp3';
+import pressButton2 from '../sounds/15computerbeep.mp3';
+import pressButton3 from '../sounds/16computerbeep.mp3';
+import pressButton4 from '../sounds/17computerbeep.mp3';
+
 let defaultColor = 'grey'
 let otherPlayerJoined = false
 let gameState = [defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor, defaultColor]
@@ -17,7 +30,18 @@ let game_session_id = null
 
 const TicTacToeBody = (props) => {
 
-    
+    // getting sounds setup
+    const [playerWon] = useSound(youWin);
+    const [playerLost] = useSound(youLose);
+    const [playerTied] = useSound(youTie);
+    const [goGameSelect] = useSound(gameSelect);
+    const [goPlayAgain] = useSound(playAgain);
+    const [playerWait] = useSound(waitOpponent);
+
+    const [gameButton] = useSound(pressButton, { volume: 0.1 });
+    const [gameButton2] = useSound(pressButton2, { volume: 0.1 });
+    const [gameButton3] = useSound(pressButton3, { volume: 0.1 });
+    const [gameButton4] = useSound(pressButton4, { volume: 0.1 });
 
     const [box1, setBox1] = useState(defaultColor)
     const [box2, setBox2] = useState(defaultColor)
@@ -67,6 +91,7 @@ const TicTacToeBody = (props) => {
     useEffect(() => {
         socket.onopen = function () {
             console.log('Socket connected')
+
             if (props.player === "p2" && otherPlayerJoined === false) {
                 var data = data = { 'type': 'joined', 'playerName': props.username, 'isGuest': props.isGuest, 'player': props.player }
                 //socket.send(JSON.stringify({ data }))
@@ -167,6 +192,7 @@ const TicTacToeBody = (props) => {
                 //alert("Sorry! you lost")
                 otherPlayerJoined = false;
                 setMessage("Sorry! You lost");
+                playerLost();
 
                 if (!props.isGuest && !isOtherPlayerGuest) { 
                     axiosInstance
@@ -188,6 +214,7 @@ const TicTacToeBody = (props) => {
                 //alert("Game over! game end no one won")
                 otherPlayerJoined = false;
                 setMessage("Game over! No one won");
+                playerTied();
                 //options page
                 setIsOver(!isOver);
             } else if (data.payload.type == 'running' && data.payload.player !== player) {
@@ -282,6 +309,7 @@ const TicTacToeBody = (props) => {
                     });
             }
             setMessage("Game ends in a draw!");
+            playerTied();
             setIsOver(!isOver);
             //options page
         }
@@ -342,6 +370,7 @@ const TicTacToeBody = (props) => {
             }
 
             setMessage("Good job! You won");
+            playerWon();
             setIsOver(!isOver);
         } else {
             //options page
@@ -359,6 +388,7 @@ const TicTacToeBody = (props) => {
         console.log(socket.readyState)
         if (otherPlayerJoined === false) {
             alert("Please wait for the other player to join...")
+            playerWait();
             return;
         }
 
@@ -497,11 +527,23 @@ const TicTacToeBody = (props) => {
             <Modal show={show} onHide={handleClose}>
                 <Modal.Title>{message}</Modal.Title>
                 <Modal.Footer>
-                    <Button variant="primary" onClick={selectResetGame}>
-                        Play again!
+                    <Button 
+                        variant="primary" 
+                        onClick={selectResetGame}
+                        onMouseEnter={() => {
+                            goPlayAgain();
+                        }}
+                        >
+                        Play again
                     </Button>
-                    <Button variant="secondary" onClick={selectRouteChange}>
-                        Play another game
+                    <Button 
+                        variant="secondary" 
+                        onClick={selectRouteChange}
+                        onMouseEnter={() => {
+                            goGameSelect();
+                        }}
+                        >
+                        Game Select Screen
                     </Button>
                 </Modal.Footer>
             </Modal>
@@ -513,15 +555,86 @@ const TicTacToeBody = (props) => {
                     </ScoreBoard>
                     <BoardContainer>
                         <Board>
-                            <Slot style={{ backgroundColor: box1 }} data-cell-index="0" onClick={() => { setText("0", player) }}></Slot>
-                            <Slot style={{ backgroundColor: box2 }} data-cell-index="1" onClick={() => { setText("1", player) }}></Slot>
-                            <Slot style={{ backgroundColor: box3 }} data-cell-index="2" onClick={() => { setText("2", player) }}></Slot>
-                            <Slot style={{ backgroundColor: box4 }} data-cell-index="3" onClick={() => { setText("3", player) }}></Slot>
-                            <Slot style={{ backgroundColor: box5 }} data-cell-index="4" onClick={() => { setText("4", player) }}></Slot>
-                            <Slot style={{ backgroundColor: box6 }} data-cell-index="5" onClick={() => { setText("5", player) }}></Slot>
-                            <Slot style={{ backgroundColor: box7 }} data-cell-index="6" onClick={() => { setText("6", player) }}></Slot>
-                            <Slot style={{ backgroundColor: box8 }} data-cell-index="7" onClick={() => { setText("7", player) }}></Slot>
-                            <Slot style={{ backgroundColor: box9 }} data-cell-index="8" onClick={() => { setText("8", player) }}></Slot>
+                            <Slot 
+                                style={{ backgroundColor: box1 }} 
+                                data-cell-index="0" 
+                                onClick={() => { setText("0", player) }}
+                                onMouseEnter={() => {
+                                    gameButton();
+                                }}
+                                ></Slot>
+
+                            <Slot 
+                                style={{ backgroundColor: box2 }} 
+                                data-cell-index="1" 
+                                onClick={() => { setText("1", player) }}
+                                onMouseEnter={() => {
+                                    gameButton2();
+                                }}
+                                ></Slot>
+
+                            <Slot 
+                                style={{ backgroundColor: box3 }} 
+                                data-cell-index="2" 
+                                onClick={() => { setText("2", player) }}
+                                onMouseEnter={() => {
+                                    gameButton3();
+                                }}
+                                ></Slot>
+
+                            <Slot 
+                                style={{ backgroundColor: box4 }} 
+                                data-cell-index="3" 
+                                onClick={() => { setText("3", player) }}
+                                onMouseEnter={() => {
+                                    gameButton4();
+                                }}
+                                ></Slot>
+
+                            <Slot 
+                                style={{ backgroundColor: box5 }} 
+                                data-cell-index="4" 
+                                onClick={() => { setText("4", player) }}
+                                onMouseEnter={() => {
+                                    gameButton();
+                                }}
+                                ></Slot>
+
+                            <Slot 
+                                style={{ backgroundColor: box6 }} 
+                                data-cell-index="5" 
+                                onClick={() => { setText("5", player) }}
+                                onMouseEnter={() => {
+                                    gameButton2();
+                                }}
+                                ></Slot>
+                                
+                            <Slot 
+                                style={{ backgroundColor: box7 }} 
+                                data-cell-index="6" 
+                                onClick={() => { setText("6", player) }}
+                                onMouseEnter={() => {
+                                    gameButton3();
+                                }}
+                                ></Slot>
+
+                            <Slot 
+                                style={{ backgroundColor: box8 }} 
+                                data-cell-index="7" 
+                                onClick={() => { setText("7", player) }}
+                                onMouseEnter={() => {
+                                    gameButton4();
+                                }}
+                                ></Slot>
+
+                            <Slot 
+                                style={{ backgroundColor: box9 }} 
+                                data-cell-index="8" 
+                                onClick={() => { setText("8", player) }}
+                                onMouseEnter={() => {
+                                    gameButton();
+                                }}
+                                ></Slot>
                         </Board>
                     </BoardContainer>
                 </Game>

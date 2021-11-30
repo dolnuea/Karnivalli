@@ -37,7 +37,6 @@ export const PlayAgainWinLose = styled.div `
         }
     }
 
-    // this should be removed
 `;
 
 

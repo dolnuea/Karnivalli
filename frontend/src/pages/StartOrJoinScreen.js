@@ -10,6 +10,11 @@ import {
 } from "../styles/StartJoin.styles";
 import { Modal, Button } from "react-bootstrap";
 
+import useSound from 'use-sound';
+import chooseStartGame from '../sounds/5startGame.mp3';
+import chooseJoinGame from '../sounds/6joinGame.mp3';
+import chooseWatchGame from '../sounds/7watchGame.mp3';
+
 function StartOrJoinScreen(props) {""
   const [show, setShow] = useState(false);
   const [option, setOption] = useState("");
@@ -21,6 +26,11 @@ function StartOrJoinScreen(props) {""
   // The selected game passed from GameSelectionScreen
    const selectedGame = props.location.state;
 
+
+  // getting sounds setup
+  const [chooseStart] = useSound(chooseStartGame);
+  const [chooseJoin] = useSound(chooseJoinGame);
+  const [chooseWatch] = useSound(chooseWatchGame);
 
   const history = useHistory();
 
@@ -132,16 +142,31 @@ const routeChange = () => {
 
          {/* <h1>{selectedGame}</h1> */}
 
-        <GameboxStart onClick={() => {setOption("start"); setShow(true); }}>
+        <GameboxStart 
+          onClick={() => {setOption("start"); setShow(true); }}
+          onMouseEnter={() => {
+            chooseStart();
+        }}
+        >
           <h1>Start New Game</h1>
         </GameboxStart>
 
-        <GameboxJoin onClick={() => {setOption("join"); setShow(true); }}>
+        <GameboxJoin 
+          onClick={() => {setOption("join"); setShow(true); }}
+          onMouseEnter={() => {
+            chooseJoin();
+        }}
+        >
           <h1>Join Game</h1>
         </GameboxJoin>
 
 
-        <GameboxWatch onClick={() => { setOption("viewer"); setShow(true); }}>
+        <GameboxWatch 
+          onClick={() => { setOption("viewer"); setShow(true); }}
+          onMouseEnter={() => {
+            chooseWatch();
+          }}
+          >
            <h1>Watch Game</h1>
         </GameboxWatch>
 

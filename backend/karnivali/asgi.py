@@ -21,6 +21,8 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'karnivali.settings')
 application = get_asgi_application()
 
 
+
+
 application = ProtocolTypeRouter(
     {
         'websocket': AuthMiddlewareStack(URLRouter([
