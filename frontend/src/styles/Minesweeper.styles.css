@@ -1,4 +1,18 @@
+
+
+body{
+    background-image: url("../images/vs_two.gif");
+    background-size: cover;
+    
+   
+}
+
+
+
+
 .cell {
+   
+   
     background: #fff;
     border: 1px solid #414c69;
     float: left;
@@ -10,6 +24,7 @@
 }
 
 .cell:focus {
+    
     outline: none;
 }
 
@@ -21,3 +36,4 @@
 .is-mine {
     color: #fc543c;
 }
+
