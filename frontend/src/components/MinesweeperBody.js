@@ -150,7 +150,7 @@ const MinesweeperBody = (props) => {
                     var data = data = { 'type': 'joined', 'playerName': props.username, 'isGuest': props.isGuest }
                     sendMessage(socket, JSON.stringify({ data }))
                     otherPlayerJoined = true
-                    alert("Your opponent just joined. They joined as a guest");
+                    alert("Your partner just joined. They joined as a guest");
                     return;
                 }
 
@@ -160,7 +160,7 @@ const MinesweeperBody = (props) => {
                     //socket.send(JSON.stringify({ data }))
                     sendMessage(socket, JSON.stringify({ data }))
                     otherPlayerJoined = true
-                    alert("Your opponent just joined, Their name is " + otherPlayerName);
+                    alert("Your partner just joined, Their name is " + otherPlayerName);
                     return;
                 }
 
@@ -655,11 +655,13 @@ const MinesweeperBody = (props) => {
 
         if (otherPlayerJoined === false) {
             alert("Please wait for the other player to join...")
+            playerWait();
             return;
         }
 
         if (currentTurn === false) {
-                alert("Please wait for your opponent's turn!")
+                alert("Please wait for your partner's turn!")
+                playerWait();
                 return
         } 
         // else currentTurn = false;
