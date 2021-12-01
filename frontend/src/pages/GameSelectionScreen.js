@@ -8,6 +8,7 @@ import useSound from 'use-sound';
 import chooseTicTacToe from '../sounds/2ticTacToe.mp3';
 import chooseRockPaperScissors from '../sounds/3rockPaperScissors.mp3';
 import chooseMinesweeper from '../sounds/4minesweeper.mp3';
+import Navbar from "../Navbar";
 
 function GameSelectionScreen(props) {
 
@@ -30,10 +31,10 @@ function GameSelectionScreen(props) {
             isGuest: props.location.state.isGuest
         });
     }
-
+   
     return (
         <div>
-            {/* <Navbar state={props.location} /> */}
+            <Navbar state={props.location} />
             <SelectionPanel>
                 <Panel 
                     hoverColor='#ff124f' 

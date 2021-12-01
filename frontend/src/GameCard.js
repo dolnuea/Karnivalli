@@ -18,7 +18,7 @@ function GameCard(props) {
         else if (game_name === "tic-tac-toe") {
             return "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Tic_tac_toe.svg/1200px-Tic_tac_toe.svg.png"
         }
-        else if (game_name === "ms") {
+        else if (game_name === "minesweeper") {
             return "https://minesweeper.online/img/homepage/beginner.png"
         }
         else {

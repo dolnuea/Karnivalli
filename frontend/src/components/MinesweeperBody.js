@@ -682,17 +682,6 @@ const MinesweeperBody = (props) => {
             sendMessage(socket, JSON.stringify({ data }))
             otherPlayerJoined = false;
 
-            if (!props.isGuest && !isOtherPlayerGuest) {
-                axiosInstance
-                    .post(`gamedata/update_game/`, {
-                        game_session_id: game_session_id,
-                        status: "draw"
-                    })
-                    .then((res) => {
-                        console.log("Status Updated")
-                    });
-            }
-
             setMessage("Game Over");
             setIsOver(!isOver);
             return;

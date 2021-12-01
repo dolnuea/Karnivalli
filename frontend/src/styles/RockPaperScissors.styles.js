@@ -120,7 +120,7 @@ export const Scissor = styled.div `
         }
 `;
 
-export const chatButton = styled.button ` 
+export const ChatButton = styled.button ` 
     border: none;
     max-width: 10%;
 

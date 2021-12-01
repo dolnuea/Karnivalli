@@ -72,21 +72,25 @@ const TicTacToeBody = (props) => {
 
     const history = useHistory();
 
-    const routeChange = () => { //for end of game
-        resetGame();
-        let path = 'game-selection';
-        const userDetails = {
-            username: props.username,
-            isGuest: props.isGuest
-        }
-        history.push(path, userDetails);
-    }
+    
 
     var room_code = props.roomNumber
     var player = props.playColor
     console.log('start')
     let socket = new W3CWebSocket('ws://localhost:8000/ws/game/' + room_code)
     setTimeout(() => { console.log("connecting..."); }, 1000);
+
+    const routeChange = () => { //for end of game
+        resetGame();
+        otherPlayerJoined = false;
+        let path = 'game-selection';
+        const userDetails = {
+            username: props.username,
+            isGuest: props.isGuest
+        }
+        socket.close();
+        history.push(path, userDetails);
+    }
 
     useEffect(() => {
         socket.onopen = function () {
@@ -241,7 +245,7 @@ const TicTacToeBody = (props) => {
     
     const waitForOpenConnection = (socket) => {
         return new Promise((resolve, reject) => {
-            const maxNumberOfAttempts = 10
+            const maxNumberOfAttempts = 100
             const intervalTime = 200 //ms
 
             let currentAttempt = 0

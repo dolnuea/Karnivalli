@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { Modal, Button } from "react-bootstrap";
-import { RockPaperScissorBackground, Slot, Rock, Paper, Scissor, chatButton, chatModalButton } from "../styles/RockPaperScissors.styles";
+import { RockPaperScissorBackground, Slot, Rock, Paper, Scissor, ChatButton, chatModalButton } from "../styles/RockPaperScissors.styles";
 import { useHistory } from 'react-router-dom';
 import ChatModal from 'react-modal'
 import chatImg from '../images/chat_button_img.svg'
@@ -204,12 +204,13 @@ export default function RockPaperScissor(props) {
         }
 
         let reset = '';
-        socket.send(JSON.stringify({
+        sendMessage(socket, JSON.stringify({
             value,
             player,
             state,
             reset
         }))
+        //socket.send(JSON.stringify({value,player,state,reset}))
     }
 
     function resetGame() {
@@ -228,10 +229,11 @@ export default function RockPaperScissor(props) {
         let reset = 'reset';
         let player = props.location.state.player;
         resetGamePlayers[player] = reset;
-        socket.send(JSON.stringify({
+        sendMessage(socket, JSON.stringify({
             reset,
             player
         }))
+        //socket.send(JSON.stringify({ reset, player}))
         checkForResetOrNewGame();
         if (show) {
             setShow(!show);
@@ -242,12 +244,43 @@ export default function RockPaperScissor(props) {
         let reset = 'change';
         let player = props.location.state.player;
         resetGamePlayers[player] = reset;
-        socket.send(JSON.stringify({
+        sendMessage(socket, JSON.stringify({
             reset,
             player,
         }))
+        //socket.send(JSON.stringify({reset,player,}))
 
         routeChange();
+    }
+
+    const waitForOpenConnection = (socket) => {
+        return new Promise((resolve, reject) => {
+            const maxNumberOfAttempts = 100
+            const intervalTime = 200 //ms
+
+            let currentAttempt = 0
+            const interval = setInterval(() => {
+                if (currentAttempt > maxNumberOfAttempts - 1) {
+                    clearInterval(interval)
+                    reject(new Error('Maximum number of attempts exceeded'))
+                } else if (socket.readyState === socket.OPEN) {
+                    clearInterval(interval)
+                    resolve()
+                }
+                currentAttempt++
+            }, intervalTime)
+        })
+    }
+
+    const sendMessage = async (socket, msg) => {
+        if (socket.readyState !== socket.OPEN) {
+            try {
+                await waitForOpenConnection(socket)
+                socket.send(msg)
+            } catch (err) { console.error(err) }
+        } else {
+            socket.send(msg)
+        }
     }
 
     function checkForResetOrNewGame() {
@@ -263,11 +296,12 @@ export default function RockPaperScissor(props) {
     }
 
     function sendChatData(player) {
-        socket.send(JSON.stringify({
+        sendMessage(socket, JSON.stringify({
             msg_type: "chat_msg",
             player,
             chatMsg
         }))
+        //socket.send(JSON.stringify({msg_type: "chat_msg",player,chatMsg }))
 
         setChatMsg("")
     }
@@ -324,12 +358,12 @@ export default function RockPaperScissor(props) {
                     ><Scissor>✂️</Scissor></Slot>
 
                 </RockPaperScissorBackground>
-                <chatButton 
+                <ChatButton 
                     onClick={(e) => { setChatModalOpen(true) }}
                     onMouseEnter={() => {
                         gameButton();
                     }}
-                    ><img src={chatImg}  width='80em'></img></chatButton>
+                    ><img src={chatImg}  width='80em'></img></ChatButton>
                 <ChatModal
                     isOpen={isChatModalOpen}
                     style={{
