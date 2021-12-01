@@ -87,10 +87,10 @@ ASGI_APPLICATION = 'karnivali.asgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'admin',
-        'HOST': 'localhost',
+        'NAME': 'online_kar',
+        'USER': 'karnivali',
+        'PASSWORD': 'karnivali',
+        'HOST': 'database-1.cryv4fddb5ta.us-east-2.rds.amazonaws.com',
         'PORT': '5432',
     }
 }
