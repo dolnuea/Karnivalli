@@ -80,6 +80,10 @@ const MinesweeperBody = (props) => {
     //take user to game selection screen when game is over
     const routeChange = () => { //for end of game
         resetGame();
+        otherPlayerJoined = false;
+        game_session_id = null;
+        otherPlayerName = "Guest"
+        isOtherPlayerGuest = false
         let path = 'game-selection';
         const userDetails = {
             username: props.username,
@@ -231,7 +235,7 @@ const MinesweeperBody = (props) => {
                         .post(`gamedata/createOrUpdate_game_score/`, {
                             owner: props.username,
                             game: "minesweeper",
-                            score: 100
+                            score: -100
                         })
                         .then((res) => {
                             console.log("Score successfully added")
@@ -249,6 +253,29 @@ const MinesweeperBody = (props) => {
                 if(data.payload.winner === player){
                     revealBoard(data.payload.board);
                     setMessage("You won! You survived.");
+
+                    if (!props.isGuest && !isOtherPlayerGuest) {
+                        axiosInstance
+                            .post(`gamedata/createOrUpdate_game_score/`, {
+                                owner: props.username,
+                                game: "minesweeper",
+                                score: 100
+                            })
+                            .then((res) => {
+                                console.log("Score successfully added")
+                            });
+
+                        axiosInstance
+                            .post(`gamedata/update_game/`, {
+                                game_session_id: game_session_id,
+                                status: props.username
+                            })
+                            .then((res) => {
+                                console.log("Status Updated")
+                            });
+
+                    }
+
                     setIsOver(!isOver); 
                     playerWon();
                 }
@@ -726,7 +753,7 @@ const MinesweeperBody = (props) => {
                     .post(`gamedata/createOrUpdate_game_score/`, {
                         owner: props.username,
                         game: "minesweeper",
-                        score: -100
+                        score: 100
                     })
                     .then((res) => {
                         console.log("Score successfully added")

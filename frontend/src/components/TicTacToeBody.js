@@ -83,12 +83,17 @@ const TicTacToeBody = (props) => {
     const routeChange = () => { //for end of game
         resetGame();
         otherPlayerJoined = false;
+        game_session_id = null;
+        otherPlayerName = "Guest"
+        isOtherPlayerGuest = false
+        //if (socket.readyState == socket.OPEN) {
+        //    socket.close();
+        //}
         let path = 'game-selection';
         const userDetails = {
             username: props.username,
             isGuest: props.isGuest
         }
-        socket.close();
         history.push(path, userDetails);
     }
 
@@ -291,7 +296,7 @@ const TicTacToeBody = (props) => {
 
         var count = 0;
         gameState.map((game) => {
-            if (game == "#FFC30F" || game == "#581845") {
+            if (game == "#ff124f" || game == "#120458") {
                 count++;
             }
         })
@@ -407,7 +412,7 @@ const TicTacToeBody = (props) => {
 
 
 
-        if (gameState[parseInt(i)] != "#FFC30F" && gameState[parseInt(i)] != "#581845") {
+        if (gameState[parseInt(i)] != "#ff124f" && gameState[parseInt(i)] != "120458") {
 
             if (currentTurn == false) {
                 alert("Please wait for the oppsition's turn!!")
@@ -506,8 +511,8 @@ const TicTacToeBody = (props) => {
     function checkForResetOrNewGame() {
         console.log("checkForResetOrNewGame");
         console.log(resetGamePlayers);
-        if (resetGamePlayers['#FFC30F'] !== undefined && resetGamePlayers['#581845'] !== undefined) {
-            if (resetGamePlayers['#FFC30F'] === "reset" && resetGamePlayers['#581845'] === "reset") {
+        if (resetGamePlayers['#ff124f'] !== undefined && resetGamePlayers['#120458'] !== undefined) {
+            if (resetGamePlayers['#ff124f'] === "reset" && resetGamePlayers['#120458'] === "reset") {
                 console.log("resetting")
                 resetGame();
 
