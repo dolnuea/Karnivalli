@@ -4,7 +4,7 @@ import { MinesweeperContainer } from '../styles/Minesweeper.styles';
 
 /**
  * The goal of the game is to find all the mines on the board.
-You reveal mines by clicking the cells, if you reveal a mine you loose.
+You reveal mines by clicking the cells, if you reveal a mine you lose.
 If you reveal a cell without mine it will show number of mines surrounding the cell.
 You can flag a field by right clicking it.
 You win the game if you are able to reveal all the cells that is not a mine or you have flagged all the cells that is a mine.
